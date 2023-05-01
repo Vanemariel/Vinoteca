@@ -58,7 +58,7 @@ export default function SignInSide() {
               }}
             >
               <Typography component="h1" variant="h5">
-                Sign in
+                Bienvenidos a "La Tirolesa"
               </Typography>
               <Box
                 component="form"
@@ -71,7 +71,7 @@ export default function SignInSide() {
                   required
                   fullWidth
                   id="email"
-                  label="Email Address"
+                  label="Email "
                   name="email"
                   autoComplete="email"
                   autoFocus
@@ -81,33 +81,26 @@ export default function SignInSide() {
                   required
                   fullWidth
                   name="password"
-                  label="Password"
+                  label="Contraseña"
                   type="password"
                   id="password"
                   autoComplete="current-password"
                 />
-                <FormControlLabel
-                  control={<Checkbox value="remember" color="primary" />}
-                  label="Remember me"
-                />
+                
                 <Button
                   type="submit"
                   fullWidth
                   variant="contained"
                   sx={{ mt: 3, mb: 2 }}
                 >
-                  Sign In
+                  INGRESAR
                 </Button>
                 <Grid container>
                   <Grid item xs>
-                    <Link href="#" variant="body2">
-                      Forgot password?
-                    </Link>
+                    
                   </Grid>
                   <Grid item>
-                    <Link href="#" variant="body2">
-                      {"Don't have an account? Sign Up"}
-                    </Link>
+                    
                   </Grid>
                 </Grid>
               </Box>

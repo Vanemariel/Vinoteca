@@ -3,10 +3,10 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Checkbox, InputAdornment, Grid, MenuItem, RadioGroup, Radio, TextField, OutlinedInput, Box } from "@mui/material";
 
-export default function FormProvedores() {
+export default function FormProductos() {
   const [name, setName] = useState('');
-  const [atencionStart, setAtencionStart] = useState('0');
-  const [atencionEnd, setAtencionEnd] = useState('0');
+  const [price, setPrice] = useState('0');
+  const [quantity, setQuantity] = useState('0');
   const [description, setDescription] = useState('');
   const [provider, setProvider] = useState('');
 
@@ -16,7 +16,7 @@ export default function FormProvedores() {
 
         <Grid item xs={12} sm={8}>
           <TextField
-          label="Nombre del provedor"
+          label="Nombre del producto"
           variant="outlined"
           fullWidth
           value={name}
@@ -26,38 +26,45 @@ export default function FormProvedores() {
 
         <Grid item xs={12} sm={2}>
           <TextField
-          label="Atiende desde"
-          type="time"
+          label="Precio unitario"
           fullWidth
-          value={atencionStart}
-          onChange={(e) => setAtencionStart(e.target.value)}
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
           InputProps={{
-            endAdornment: <InputAdornment position="start">hs</InputAdornment>,
+            startAdornment: <InputAdornment position="start">$</InputAdornment>,
           }}
           />
         </Grid>
 
         <Grid item xs={12} sm={2}>
           <TextField
-          label="Atiende hasta"
-          type="time"
+          label="Cantidad adquirida"
           fullWidth
-          value={atencionEnd}
-          onChange={(e) => setAtencionEnd(e.target.value)}
+          value={quantity}
+          onChange={(e) => setQuantity(e.target.value)}
           InputProps={{
-            endAdornment: <InputAdornment position="start">hs</InputAdornment>,
+            endAdornment: <InputAdornment position="start">unidades</InputAdornment>,
           }}
           />
         </Grid>
 
         <Grid item xs={12} sm={12}>
           <TextField
-          label="Descripción del provedor"
+          label="Descripción del producto"
           variant="outlined"
           fullWidth multiline rows={4}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           />
+        </Grid>
+
+        {/* Por si llego a necesitar este tipo de input */}
+        <Grid item xs={12} sm={12}>
+          <TextField select label="Seleccionar provedor" variant="outlined" fullWidth value={provider} onChange={(e) => setProvider(e.target.value)}>
+            <MenuItem value="Option 1">Option 1</MenuItem>
+            <MenuItem value="Option 2">Option 2</MenuItem>
+            <MenuItem value="Option 3">Option 3</MenuItem>
+          </TextField>
         </Grid>
 
         {/* Por si llego a necesitar este tipo de input */}

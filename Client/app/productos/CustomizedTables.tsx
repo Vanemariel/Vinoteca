@@ -43,11 +43,11 @@ export default function CustomizedTables() {
   }
 
   const rows = [
-    createData("Frozen yoghurt", 159, 640.0, "Arcor"),
-    createData("Ice cream sandwich", 237, 90.0, "Arcor"),
-    createData("Eclair", 262, 160.0, "Arcor"),
-    createData("Cupcake", 305, 300.7, "Arcor"),
-    createData("Gingerbread", 356, 160.0, "Arcor"),
+    createData("Fernet", 50, 1450, "Gallardo"),
+    createData("Viña de Balbo", 50, 90.0, "Gallardo"),
+    createData("Vino Toro Tinto", 50, 160.0, "Gallardo"),
+    createData("Gancia", 50, 800, "Gallardo"),
+    createData("campari", 50, 900, "Gallardo"),
   ];
 
   return (
