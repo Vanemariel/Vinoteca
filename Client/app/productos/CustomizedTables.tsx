@@ -18,7 +18,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-import { Checkbox, InputAdornment, MenuItem, RadioGroup, Radio, TextField, OutlinedInput } from "@mui/material";
+import { Checkbox,Autocomplete , InputAdornment, MenuItem, RadioGroup, Radio, TextField, OutlinedInput } from "@mui/material";
 
 import { IconButton } from '@mui/material';
 
@@ -44,16 +44,16 @@ export default function CustomizedTables() {
     },
   }));
 
-  const createData = ( name: string, cantidad: number, precio: number, costo: number, provedor: string ) => {
-    return { name, cantidad, precio, costo, provedor };
+  const createData = ( name: string, cantidad: number, precio: number, costo: number ) => {
+    return { name, cantidad, precio, costo };
   }
 
   const rows = [
-    createData("Fernet", 50, 1450, 1000, "Gallardo"),
-    createData("Viña de Balbo", 50, 90.0, 40, "Gallardo"),
-    createData("Vino Toro Tinto", 50, 160.0, 130, "Gallardo"),
-    createData("Gancia", 50, 800,550, "Gallardo"),
-    createData("campari", 50, 900, 775, "Gallardo"),
+    createData("Fernet", 50, 1450, 1000),
+    createData("Viña de Balbo", 50, 90.0, 40),
+    createData("Vino Toro Tinto", 50, 160.0, 130),
+    createData("Gancia", 50, 800,550),
+    createData("campari", 50, 900, 775),
   ];
 
   const style = {
@@ -77,8 +77,23 @@ export default function CustomizedTables() {
   const [description, setDescription] = useState('');
   const [provider, setProvider] = useState('');
 
+  const top100Films = [
+    { title: 'The Shawshank Redemption', year: 1994 },
+    { title: 'The Godfather', year: 1972 },
+    { title: 'The Godfather: Part II', year: 1974 },
+  ];
+
   return (
+    
     <TableContainer component={Paper} >
+      <Autocomplete
+      id="combo-box-demo"
+      options={top100Films}
+      getOptionLabel={(option) => option.title}
+      style={{ width: 300 }}
+      renderInput={(params) => <TextField {...params} label="Busca aqui tu producto" variant="outlined" />}
+    />
+      
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
         <TableHead>
 
@@ -104,9 +119,7 @@ export default function CustomizedTables() {
 							Precio de costo
 						</StyledTableCell>
             
-						<StyledTableCell align="right">
-							Provedor
-						</StyledTableCell>
+						
           </TableRow>
 
         </TableHead>
@@ -124,7 +137,7 @@ export default function CustomizedTables() {
               <StyledTableCell align="right">{row.cantidad}</StyledTableCell>
               <StyledTableCell align="right"> ${row.precio}</StyledTableCell>
               <StyledTableCell align="right"> ${row.costo}</StyledTableCell>
-              <StyledTableCell align="right">{row.provedor}</StyledTableCell>
+           
 
             </StyledTableRow>
           ))}
@@ -157,7 +170,7 @@ export default function CustomizedTables() {
           />
         </Grid>
 
-        <Grid item xs={12} sm={2}>
+        <Grid item xs={12} sm={8}>
           <TextField
           label="Precio unitario"
           fullWidth
@@ -169,9 +182,20 @@ export default function CustomizedTables() {
           />
         </Grid>
 
-        <Grid item xs={12} sm={2}>
+        <Grid item xs={12} sm={8}>
           <TextField
           label="Cantidad adquirida"
+          fullWidth
+          value={quantity}
+          onChange={(e) => setQuantity(e.target.value)}
+          InputProps={{
+            endAdornment: <InputAdornment position="start">unidades</InputAdornment>,
+          }}
+          />
+        </Grid>
+        <Grid item xs={12} sm={8}>
+          <TextField
+          label="Fecha de compra"
           fullWidth
           value={quantity}
           onChange={(e) => setQuantity(e.target.value)}
