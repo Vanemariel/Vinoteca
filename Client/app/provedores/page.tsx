@@ -1,13 +1,13 @@
 import FormProvedores from "./FormProvedores";
-import FormProductos from "./FormProductos";
+//import FormProductos from "./FormProveedoresTable";
 
 export default function ProvedoresPage() {
   return (
     <div>
-      <div className="header">Ingresar producto</div>
-      <FormProductos />
+      {/* <div className="header">Proveedores</div>
+      <FormProductos /> */}
 
-      <div className="header">Añadir provedor</div>
+      <div className="header">Provedores</div>
       <FormProvedores />
     </div>
   );

@@ -8,18 +8,18 @@ import { AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Avatar, 
 import MenuIcon from '@mui/icons-material/Menu';
 import AdbIcon from '@mui/icons-material/Adb';
 
-const routes = [
+const routes = [  
   {
-    label: "Ventas",
-    path: "/ventas"
+    label: "Productos",
+    path: "/productos"
   },
   {
     label: "Provedores",
     path: "/provedores"
   },
   {
-    label: "Productos",
-    path: "/productos"
+    label: "Ventas",
+    path: "/ventas"
   },
 ];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];

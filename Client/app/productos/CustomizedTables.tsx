@@ -154,7 +154,7 @@ export default function CustomizedTables() {
         >
           <Box sx={style}>
             <Typography id="modal-modal-title" variant="h6" component="h2">
-              Añadir
+              
             </Typography>
             <Typography id="modal-modal-description" sx={{ mt: 2 }}>
             <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
