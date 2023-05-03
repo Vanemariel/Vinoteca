@@ -100,7 +100,7 @@ export default function CustomizedTables() {
           <TableRow>
 						
 						<StyledTableCell width={115} align="center">
-							Acciones
+							Opciones
 						</StyledTableCell>
             
 						<StyledTableCell>
@@ -108,15 +108,15 @@ export default function CustomizedTables() {
 						</StyledTableCell>
             
 						<StyledTableCell align="right">
-							Cantidad
+							stock
 						</StyledTableCell>
             
             <StyledTableCell align="right">
-							Precio
+							Precio de compra
 						</StyledTableCell>
 
 						<StyledTableCell align="right">
-							Precio de costo
+							Precio de venta
 						</StyledTableCell>
             
 						
@@ -145,7 +145,7 @@ export default function CustomizedTables() {
 
       </Table>
      
-        <Button onClick={handleOpen}>Añadir</Button>
+        <Button onClick={handleOpen}>Agregar Producto</Button>
         <Modal
           open={open}
           onClose={handleClose}
@@ -243,7 +243,7 @@ export default function CustomizedTables() {
             Cancelar
           </Button>
           <Button variant="contained" color="primary">
-            Añadir
+            Guardar Producto
           </Button>
         </Grid>
 
