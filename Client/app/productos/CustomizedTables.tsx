@@ -172,7 +172,18 @@ export default function CustomizedTables() {
 
         <Grid item xs={12} sm={8}>
           <TextField
-          label="Precio unitario"
+          label="Precio Compra"
+          fullWidth
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+          InputProps={{
+            startAdornment: <InputAdornment position="start">$</InputAdornment>,
+          }}
+          />
+        </Grid>
+        <Grid item xs={12} sm={8}>
+          <TextField
+          label="Precio Venta"
           fullWidth
           value={price}
           onChange={(e) => setPrice(e.target.value)}
@@ -200,7 +211,7 @@ export default function CustomizedTables() {
           value={quantity}
           onChange={(e) => setQuantity(e.target.value)}
           InputProps={{
-            endAdornment: <InputAdornment position="start">unidades</InputAdornment>,
+            endAdornment: <InputAdornment position="start"></InputAdornment>,
           }}
           />
         </Grid>
@@ -243,7 +254,7 @@ export default function CustomizedTables() {
             Cancelar
           </Button>
           <Button variant="contained" color="primary">
-            Guardar Producto
+            Guardar
           </Button>
         </Grid>
 

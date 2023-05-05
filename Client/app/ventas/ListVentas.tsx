@@ -3,7 +3,7 @@
 import * as React from "react";
 import  { useEffect, useState } from 'react';
 
-import { styled } from "@mui/material/styles";
+import { styled, Theme, createStyles } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
@@ -14,15 +14,15 @@ import Paper from "@mui/material/Paper";
 import { Button, Grid} from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-
-import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-import { Checkbox,Autocomplete , InputAdornment, MenuItem, RadioGroup, Radio, TextField, OutlinedInput } from "@mui/material";
+import { Box,InputAdornment, TextField, IconButton } from "@mui/material";
+import { makeStyles } from '@material-ui/styles';
 
-import { IconButton } from '@mui/material';
 
 export default function CustomizedTables() {
+
+
   
 	const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -44,16 +44,16 @@ export default function CustomizedTables() {
     },
   }));
 
-  const createData = ( name: string, preciounitario: number, total: number, vendedor: string, fecha: string ) => {
-    return { name, preciounitario, total, vendedor, fecha };
+  const createData = ( producto: string, preciounitario: number, cantidad: number, preciototal: number) => {
+    return { producto, preciounitario, cantidad, preciototal };
   }
 
   const rows = [
-    createData("Fernet", 50, 1450, "Roxana", "12-3-23"),
-    createData("Viña de Balbo", 50, 90.0,  "Ricardo", "12-3-23"),
-    createData("Vino Toro Tinto", 50, 160.0,  "Roxana", "12-3-23"),
-    createData("Gancia", 50, 800, "Roxana", "12-3-23"),
-    createData("campari", 50, 900,  "Roxana", "12-3-23"),
+    createData("Fernet", 2000, 1, 2000 ),
+    createData("Viña de Balbo", 890, 5, 4450 ),
+    createData("Vino Toro Tinto", 890, 2, 1780 ),
+    createData("Gancia", 375, 3, 1125 ),
+    createData("campari", 567, 7, 3969 ),
   ];
 
   const style = {
@@ -84,86 +84,22 @@ export default function CustomizedTables() {
   ];
 
   return (
-    
-    <TableContainer component={Paper} >
-      <Autocomplete
-      id="combo-box-demo"
-      options={top100Films}
-      getOptionLabel={(option) => option.title}
-      style={{ width: 300 }}
-      renderInput={(params) => <TextField {...params} label="Busca una venta" variant="outlined" />}
-    />
-      
-      <Table sx={{ minWidth: 700 }} aria-label="customized table">
-        <TableHead>
-
-          <TableRow>
-						
-						<StyledTableCell width={115} align="center">
-							Opciones
-						</StyledTableCell>
-            
-						<StyledTableCell>
-							Nombre
-						</StyledTableCell>
-            
-						<StyledTableCell align="right">
-							Precio Unitario
-						</StyledTableCell>
-            
-                        <StyledTableCell align="right">
-							Total
-						</StyledTableCell>
-
-						<StyledTableCell align="right">
-							Vendedor
-						</StyledTableCell>
-
-                        <StyledTableCell align="right">
-							Fecha
-						</StyledTableCell>
-            
-						
-          </TableRow>
-
-        </TableHead>
-
-        <TableBody>
-          {rows.map((row) => (
-            <StyledTableRow key={row.name}>
-              
-							<StyledTableCell component="th" scope="row" >
-								<IconButton color="primary"> <EditIcon/> </IconButton>
-								<IconButton color="error"> <DeleteIcon/> </IconButton>
-							</StyledTableCell>
-              
-							<StyledTableCell component="th" scope="row"> {row.name} </StyledTableCell>
-              <StyledTableCell align="right"> ${row.preciounitario}</StyledTableCell>
-              <StyledTableCell align="right"> ${row.total}</StyledTableCell>
-              <StyledTableCell align="right"> {row.vendedor}</StyledTableCell>
-              <StyledTableCell align="right"> {row.fecha}</StyledTableCell>
-
-
-            </StyledTableRow>
-          ))}
-        </TableBody>
-
-      </Table>
-     
-        <Button onClick={handleOpen}>Agregar Venta</Button>
-        <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-              
-            </Typography>
-            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
-      <Grid container spacing={3}>
+    <div>
+      <TableContainer component={Paper} >
+          <Button onClick={handleOpen}>Agregar Venta</Button>
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box sx={style}>
+              <Typography id="modal-modal-title" variant="h6" component="h2">
+                
+              </Typography>
+              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+        <Grid container spacing={3}>
 
         <Grid item xs={12} sm={8}>
           <TextField
@@ -189,23 +125,22 @@ export default function CustomizedTables() {
 
         <Grid item xs={12} sm={8}>
           <TextField
+          label="Cantidad"
+          variant="outlined"
+          fullWidth
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={8}>
+          <TextField
           label="Total"
           fullWidth
           value={quantity}
           onChange={(e) => setQuantity(e.target.value)}
           InputProps={{
             startAdornment: <InputAdornment position="start">$</InputAdornment>,
-          }}
-          />
-        </Grid>
-        <Grid item xs={12} sm={8}>
-          <TextField
-          label="Fecha de Venta"
-          fullWidth
-          value={quantity}
-          onChange={(e) => setQuantity(e.target.value)}
-          InputProps={{
-            endAdornment: <InputAdornment position="start"></InputAdornment>,
           }}
           />
         </Grid>
@@ -218,14 +153,6 @@ export default function CustomizedTables() {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           />
-        </Grid>
-
-        {/* Por si llego a necesitar este tipo de input */}
-        <Grid item xs={12} sm={12}>
-          <TextField select label="Seleccionar vendedor" variant="outlined" fullWidth value={provider} onChange={(e) => setProvider(e.target.value)}>
-            <MenuItem value="Option 1">Roxana</MenuItem>
-            <MenuItem value="Option 2">Ricardo</MenuItem>
-          </TextField>
         </Grid>
 
         {/* Por si llego a necesitar este tipo de input */}
@@ -247,7 +174,7 @@ export default function CustomizedTables() {
             Cancelar
           </Button>
           <Button variant="contained" color="primary">
-            Guardar Venta
+            Guardar
           </Button>
         </Grid>
 
@@ -256,7 +183,54 @@ export default function CustomizedTables() {
             </Typography>
           </Box>
         </Modal>
-            </TableContainer>
+      <Table sx={{ minWidth: 700 }} aria-label="customized table">
+        <TableHead>
+
+          <TableRow>
+						
+						<StyledTableCell width={115} align="center">
+							Opciones
+						</StyledTableCell>
             
+						<StyledTableCell>
+							Producto
+						</StyledTableCell>
+            
+						<StyledTableCell align="right">
+							Precio Unitario
+						</StyledTableCell>
+            
+            <StyledTableCell align="right">
+							Cantidad
+						</StyledTableCell>
+
+						<StyledTableCell align="right">
+							Precio Total
+						</StyledTableCell>
+      		
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {rows.map((row) => (
+            <StyledTableRow key={row.producto}>
+              
+							<StyledTableCell component="th" scope="row" >
+								<IconButton color="primary"> <EditIcon/> </IconButton>
+								<IconButton color="error"> <DeleteIcon/> </IconButton>
+							</StyledTableCell>
+              
+							<StyledTableCell component="th" scope="row"> {row.producto} </StyledTableCell>
+              <StyledTableCell align="right"> ${row.preciounitario}</StyledTableCell>
+              <StyledTableCell align="right"> ${row.cantidad}</StyledTableCell>
+              <StyledTableCell align="right"> {row.preciototal}</StyledTableCell>
+
+
+            </StyledTableRow>
+          ))}
+        </TableBody>
+      </Table>      
+            </TableContainer>
+            </div>
+
           );
 }
