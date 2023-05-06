@@ -54,20 +54,51 @@ export default function CustomizedTables() {
   }));
 
   const createData = (
+    cliente: string,
     producto: string,
     preciounitario: number,
     cantidad: number,
-    preciototal: number
+    preciototal: number,
+    formapago: string,
+    vendedor: string,
+    fecha: string
   ) => {
-    return { producto, preciounitario, cantidad, preciototal };
-  };
+    return {
+      cliente,
+      producto,
+      cantidad,
+      preciounitario,
+      preciototal,
+      formapago,
+      vendedor,
+      fecha,
+    }
+  }
 
   const rows = [
-    createData("Fernet", 2000, 1, 2000),
-    createData("Viña de Balbo", 890, 5, 4450),
-    createData("Vino Toro Tinto", 890, 2, 1780),
-    createData("Gancia", 375, 3, 1125),
-    createData("campari", 567, 7, 3969),
+    createData("carla", "Fernet", 1, 2000, 2000, "efectivo", "roxana", ""),
+    createData(
+      "victor",
+      "Viña de Balbo",
+      5,
+      890,
+      4450,
+      "transferencia",
+      "ricardo",
+      "4"
+    ),
+    createData(
+      "mabel",
+      "Vino Toro Tinto",
+      2,
+      890,
+      1780,
+      "transferencia",
+      "ricardo",
+      "5"
+    ),
+    createData("pablo", "Gancia", 3, 375, 1125, "efectivo", "roxana", ""),
+    createData("matias", "campari", 7, 567, 3969, "efectivo", "roxana", ""),
   ];
 
   const style = {
@@ -108,7 +139,6 @@ export default function CustomizedTables() {
         autoComplete="off"
       >
         <Grid container spacing={2}>
-          
           <Grid item xs={6} md={4}>
             <TextField
               id="filled-helperText"
@@ -130,7 +160,7 @@ export default function CustomizedTables() {
               style={{ background: "#fff" }}
             />
           </Grid>
-          
+
           <Grid item xs={6} md={4}>
             <TextField
               id="filled-helperText"
@@ -152,12 +182,11 @@ export default function CustomizedTables() {
               style={{ background: "#fff" }}
             />
           </Grid>
-          
         </Grid>
       </Box>
 
-      <TableContainer component={Paper} sx={{marginTop: '50px'}}>
-        <Button onClick={handleOpen}>Agregar Venta</Button>
+      <TableContainer component={Paper} sx={{ marginTop: "50px" }}>
+        <Button onClick={handleOpen}>Agregar Compra</Button>
         <Modal
           open={open}
           onClose={handleClose}
@@ -189,7 +218,7 @@ export default function CustomizedTables() {
                   </Grid>
                   <Grid item xs={12} sm={8}>
                     <TextField
-                      label="Precio unitario"
+                      label="Precio de costo x unidad"
                       fullWidth
                       value={price}
                       onChange={(e) => setPrice(e.target.value)}
@@ -265,7 +294,7 @@ export default function CustomizedTables() {
           </Box>
         </Modal>
 
-        {/*Table*/ }
+        {/*Table*/}
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
