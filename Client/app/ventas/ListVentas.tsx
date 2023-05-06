@@ -54,20 +54,51 @@ export default function CustomizedTables() {
   }));
 
   const createData = (
+    cliente: string,
     producto: string,
-    preciounitario: number,
     cantidad: number,
-    preciototal: number
+    preciounitario: number,
+    preciototal: number,
+    formapago: string,
+    vendedor: string,
+    fecha: string
   ) => {
-    return { producto, preciounitario, cantidad, preciototal };
+    return {
+      cliente,
+      producto,
+      cantidad,
+      preciounitario,
+      preciototal,
+      formapago,
+      vendedor,
+      fecha,
+    }
   };
 
   const rows = [
-    createData("Fernet", 2000, 1, 2000),
-    createData("Viña de Balbo", 890, 5, 4450),
-    createData("Vino Toro Tinto", 890, 2, 1780),
-    createData("Gancia", 375, 3, 1125),
-    createData("campari", 567, 7, 3969),
+    createData("carla", "Fernet", 1, 2000, 2000, "efectivo", "roxana", ""),
+    createData(
+      "victor",
+      "Viña de Balbo",
+      5,
+      890,
+      4450,
+      "transferencia",
+      "ricardo",
+      "4"
+    ),
+    createData(
+      "mabel",
+      "Vino Toro Tinto",
+      2,
+      890,
+      1780,
+      "transferencia",
+      "ricardo",
+      "5"
+    ),
+    createData("pablo", "Gancia", 3, 375, 1125, "efectivo", "roxana", ""),
+    createData("matias", "campari", 7, 567, 3969, "efectivo", "roxana", ""),
   ];
 
   const style = {
@@ -237,20 +268,6 @@ export default function CustomizedTables() {
                     />
                   </Grid>
 
-                  {/* Por si llego a necesitar este tipo de input */}
-                  {/* <Grid item xs={12} sm={6}>
-          <RadioGroup aria-label="gender" name="gender" value={selectedOption} onChange={(e) => setSelectedOption(e.target.value)}>
-            <FormControlLabel value="option1" control={<Radio />} label="Option 1" />
-            <FormControlLabel value="option2" control={<Radio />} label="Option 2" />
-            <FormControlLabel value="option3" control={<Radio />} label="Option 3" />
-          </RadioGroup>
-        </Grid> */}
-
-                  {/* Por si llego a necesitar este tipo de input */}
-                  {/* <Grid item xs={12} sm={6}>
-          <FormControlLabel control={<Checkbox checked={checked} onChange={(e) => setChecked(e.target.checked)} />} label="Checkbox" />
-        </Grid> */}
-
                   <Grid item container xs={12} justifyContent="space-between">
                     <Button variant="contained" color="warning">
                       Cancelar
@@ -273,13 +290,13 @@ export default function CustomizedTables() {
                 Opciones
               </StyledTableCell>
 
-              <StyledTableCell>Producto</StyledTableCell>
-
-              <StyledTableCell align="right">Precio Unitario</StyledTableCell>
-
+              <StyledTableCell>Cliente</StyledTableCell>
+              <StyledTableCell align="right">Producto</StyledTableCell>
               <StyledTableCell align="right">Cantidad</StyledTableCell>
-
               <StyledTableCell align="right">Precio Total</StyledTableCell>
+              <StyledTableCell align="right">Forma de pago</StyledTableCell>
+              <StyledTableCell align="right">Vendedor</StyledTableCell>
+              <StyledTableCell align="right">Fecha</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -298,11 +315,11 @@ export default function CustomizedTables() {
 
                 <StyledTableCell component="th" scope="row">
                   {" "}
-                  {row.producto}{" "}
+                  {row.cliente}{" "}
                 </StyledTableCell>
                 <StyledTableCell align="right">
                   {" "}
-                  ${row.preciounitario}
+                  ${row.producto}
                 </StyledTableCell>
                 <StyledTableCell align="right">
                   {" "}
@@ -311,6 +328,18 @@ export default function CustomizedTables() {
                 <StyledTableCell align="right">
                   {" "}
                   {row.preciototal}
+                </StyledTableCell>
+                <StyledTableCell align="right">
+                  {" "}
+                  {row.formapago}
+                </StyledTableCell>
+                <StyledTableCell align="right">
+                  {" "}
+                  {row.vendedor}
+                </StyledTableCell>
+                <StyledTableCell align="right">
+                  {" "}
+                  {row.fecha}
                 </StyledTableCell>
               </StyledTableRow>
             ))}

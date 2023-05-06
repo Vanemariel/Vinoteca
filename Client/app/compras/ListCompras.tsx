@@ -184,6 +184,7 @@ export default function CustomizedTables() {
           </Grid>
         </Grid>
       </Box>
+        
 
       <TableContainer component={Paper} sx={{ marginTop: "50px" }}>
         <Button onClick={handleOpen}>Agregar Compra</Button>
@@ -266,20 +267,6 @@ export default function CustomizedTables() {
                     />
                   </Grid>
 
-                  {/* Por si llego a necesitar este tipo de input */}
-                  {/* <Grid item xs={12} sm={6}>
-          <RadioGroup aria-label="gender" name="gender" value={selectedOption} onChange={(e) => setSelectedOption(e.target.value)}>
-            <FormControlLabel value="option1" control={<Radio />} label="Option 1" />
-            <FormControlLabel value="option2" control={<Radio />} label="Option 2" />
-            <FormControlLabel value="option3" control={<Radio />} label="Option 3" />
-          </RadioGroup>
-        </Grid> */}
-
-                  {/* Por si llego a necesitar este tipo de input */}
-                  {/* <Grid item xs={12} sm={6}>
-          <FormControlLabel control={<Checkbox checked={checked} onChange={(e) => setChecked(e.target.checked)} />} label="Checkbox" />
-        </Grid> */}
-
                   <Grid item container xs={12} justifyContent="space-between">
                     <Button variant="contained" color="warning">
                       Cancelar
@@ -302,13 +289,13 @@ export default function CustomizedTables() {
                 Opciones
               </StyledTableCell>
 
-              <StyledTableCell>Producto</StyledTableCell>
-
-              <StyledTableCell align="right">Precio Unitario</StyledTableCell>
-
+              <StyledTableCell>Cliente</StyledTableCell>
+              <StyledTableCell align="right">Producto</StyledTableCell>
               <StyledTableCell align="right">Cantidad</StyledTableCell>
-
               <StyledTableCell align="right">Precio Total</StyledTableCell>
+              <StyledTableCell align="right">Forma de pago</StyledTableCell>
+              <StyledTableCell align="right">Vendedor</StyledTableCell>
+              <StyledTableCell align="right">Fecha</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -320,6 +307,7 @@ export default function CustomizedTables() {
                     <EditIcon />{" "}
                   </IconButton>
                   <IconButton color="error">
+
                     {" "}
                     <DeleteIcon />{" "}
                   </IconButton>
@@ -327,11 +315,11 @@ export default function CustomizedTables() {
 
                 <StyledTableCell component="th" scope="row">
                   {" "}
-                  {row.producto}{" "}
+                  {row.cliente}{" "}
                 </StyledTableCell>
                 <StyledTableCell align="right">
                   {" "}
-                  ${row.preciounitario}
+                  ${row.producto}
                 </StyledTableCell>
                 <StyledTableCell align="right">
                   {" "}
@@ -340,6 +328,18 @@ export default function CustomizedTables() {
                 <StyledTableCell align="right">
                   {" "}
                   {row.preciototal}
+                </StyledTableCell>
+                <StyledTableCell align="right">
+                  {" "}
+                  {row.formapago}
+                </StyledTableCell>
+                <StyledTableCell align="right">
+                  {" "}
+                  {row.vendedor}
+                </StyledTableCell>
+                <StyledTableCell align="right">
+                  {" "}
+                  {row.fecha}
                 </StyledTableCell>
               </StyledTableRow>
             ))}
