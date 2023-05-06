@@ -22,8 +22,8 @@ const routes = [
     path: "/ventas"
   },
   {
-    label: "Compra",
-    path: "/compra"
+    label: "Compras",
+    path: "/compras"
   },
 ];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];

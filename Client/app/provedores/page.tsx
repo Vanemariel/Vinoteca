@@ -3,11 +3,11 @@ import FormProvedores from "./FormProvedores";
 
 export default function ProvedoresPage() {
   return (
-    <div>
+    <div style={{ margin: "20px" }}>
       {/* <div className="header">Proveedores</div>
       <FormProductos /> */}
 
-      <div className="header">Provedores</div>
+      {/* <div className="header">Provedores</div> */}
       <FormProvedores />
     </div>
   );

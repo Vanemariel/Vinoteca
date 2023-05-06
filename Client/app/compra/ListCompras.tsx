@@ -123,7 +123,7 @@ export default function CustomizedTables() {
           <Grid item xs={6} md={8}>
             <TextField
               id="filled-helperText"
-              label="Vendedor"
+              label="Proveedor"
               defaultValue=""
               helperText=""
               variant="filled"
@@ -134,7 +134,7 @@ export default function CustomizedTables() {
           <Grid item xs={6} md={4}>
             <TextField
               id="filled-helperText"
-              label="Cliente"
+              label="Comprador"
               defaultValue=""
               helperText=""
               variant="filled"

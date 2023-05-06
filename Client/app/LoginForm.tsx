@@ -2,7 +2,7 @@
 
 import { FormEvent } from "react";
 
-import { Container, Button, CssBaseline, TextField, FormControlLabel, Checkbox, Link, Paper, Box, Grid, Typography } from "@mui/material";
+import { Container, Button, CssBaseline, TextField,  Paper, Box, Grid, Typography } from "@mui/material";
 
 export default function SignInSide() {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -15,7 +15,7 @@ export default function SignInSide() {
   };
 
   return (
-    <Container component="main" maxWidth="lg">
+    <Container component="main" maxWidth="lg" >
       <Box
         sx={{
           marginTop: 8,
