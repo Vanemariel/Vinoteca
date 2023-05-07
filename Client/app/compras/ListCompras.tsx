@@ -202,9 +202,9 @@ export default function CustomizedTables() {
                   margin="normal"
                   required
                   fullWidth
-                  label="Vendedor"
-                  name="vendedor"
-                  autoComplete="vendedor"
+                  label="Proveedor"
+                  name="proveedor"
+                  autoComplete="proveedor"
                   autoFocus
                 />
                    </Grid>
