@@ -22,6 +22,10 @@ const routes = [
     path: "/ventas"
   },
   {
+    label: "Historial Ventas",
+    path: "/ventasHistorial"
+  },
+  {
     label: "Compras",
     path: "/compras"
   },
