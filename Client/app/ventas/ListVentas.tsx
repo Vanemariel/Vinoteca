@@ -67,19 +67,15 @@ export default function CustomizedTables() {
     producto: string,
     cantidad: number,
     preciounitario: number,
-    preciototal: number,
-    formapago: string
   ) => {
     return {
       producto,
       cantidad,
-      preciounitario,
-      preciototal,
-      formapago,
+      preciounitario, 
     };
   };
 
-  const rows = [createData("Fernet", 1, 2000, 2000, "efectivo")];
+  const rows = [createData("Fernet", 1, 2000)];
 
   const style = {
     position: "absolute" as "absolute",
@@ -118,10 +114,12 @@ export default function CustomizedTables() {
 
   return (
     <div>
+
+      {/**Box encabezado */}
       <Box
         sx={{
           marginTop: 8,
-          width: "2000px",
+          width: "2500px",
         }}
       >
         <Grid container>
@@ -202,10 +200,13 @@ export default function CustomizedTables() {
         </Grid>
       </Box>
 
+      {/**Box INGRESAR PRODUCTOS Y TOTALES */}
+      <Grid container spacing={2} columns={12}>
+      <Grid item xs={6}>
       <Box
         sx={{
           marginTop: 8,
-          width: "2000px"
+          width: "1500px",
         }}
       >
         <Grid container>
@@ -273,28 +274,6 @@ export default function CustomizedTables() {
                       autoFocus
                     />
                   </Grid>
-                  <Grid item xs={6}>
-                    <TextField
-                      margin="normal"
-                      required
-                      fullWidth
-                      label="Precio total "
-                      name="preciototal"
-                      autoComplete="preciototal"
-                      autoFocus
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <TextField
-                      margin="normal"
-                      required
-                      fullWidth
-                      label="Forma de pago"
-                      name="formapago"
-                      autoComplete="formapago"
-                      autoFocus
-                    />
-                  </Grid>
                 </Grid>
                 <Button
                   type="submit"
@@ -313,9 +292,105 @@ export default function CustomizedTables() {
           </Grid>
         </Grid>
       </Box>
+      </Grid>
 
+      <Grid item xs={6}>
+      <Box
+        sx={{
+          marginTop: 8,
+          width: "1500px",
+        }}
+      >
+        <Grid container>
+          <CssBaseline />
+          <Grid
+            item
+            xs={12}
+            sm={8}
+            md={5}
+            component={Paper}
+            elevation={6}
+            square
+          >
+            <Box
+              sx={{
+                my: 8,
+                mx: 4,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <Typography component="h1" variant="h5">
+                Detalle de venta
+              </Typography>
+              <Box
+                component="form"
+                noValidate
+                onSubmit={handleSubmit}
+                sx={{ mt: 1 }}
+              >
+                <Grid
+                  container
+                  rowSpacing={1}
+                  columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+                >
+                 
+                    <TextField
+                      margin="normal"
+                      required
+                      fullWidth
+                      label="Sub Total "
+                      name="Subtotal"
+                      autoComplete="subtotal"
+                      autoFocus
+                    />
+ 
+                    <TextField
+                      margin="normal"
+                      required
+                      fullWidth
+                      label="Total "
+                      name="Total"
+                      autoComplete="total"
+                      autoFocus
+                    />
+               
+                  
+                  <Button onClick={handleOpen} style={{ marginTop: "-6px"}}>Terminar Venta</Button>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Su venta ha sido registrada 
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+           Numero de vta
+          </Typography>
+          <Button onClick={handleOpen}>oka!</Button>
+        </Box>
+      </Modal>
+                </Grid>
+                <Grid container>
+                  <Grid item xs></Grid>
+                  <Grid item></Grid>
+                </Grid>
+              </Box>
+            </Box>
+          </Grid>
+        </Grid>
+      </Box>
+      </Grid>
+      </Grid>
+
+
+      {/*Table*/}
       <TableContainer component={Paper} sx={{ marginTop: "50px" }}>
-        {/*Table*/}
+        
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
@@ -324,8 +399,8 @@ export default function CustomizedTables() {
               </StyledTableCell>
               <StyledTableCell align="right">Producto</StyledTableCell>
               <StyledTableCell align="right">Cantidad</StyledTableCell>
-              <StyledTableCell align="right">Precio Total</StyledTableCell>
-              <StyledTableCell align="right">Forma de pago</StyledTableCell>
+              <StyledTableCell align="right">Precio Unitario</StyledTableCell>
+             
             </TableRow>
           </TableHead>
           <TableBody>
@@ -345,35 +420,13 @@ export default function CustomizedTables() {
                 <StyledTableCell align="right"> {row.cantidad}</StyledTableCell>
                 <StyledTableCell align="right">
                   {" "}
-                  ${row.preciototal}
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  {" "}
-                  {row.formapago}
+                  ${row.preciounitario}
                 </StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>
         </Table>
-      </TableContainer>
-
-      <Button onClick={handleOpen} style={{ background: "#fff", marginTop: "50px"}}>Terminar Venta</Button>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Su venta ha sido registrada 
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-           Numero de vta
-          </Typography>
-          <Button onClick={handleOpen}>oka!</Button>
-        </Box>
-      </Modal>
+      </TableContainer>     
     </div>
   );
 }

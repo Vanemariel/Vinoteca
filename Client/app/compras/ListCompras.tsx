@@ -55,52 +55,36 @@ export default function CustomizedTables() {
     },
   }));
 
-  const createData = (
-    cliente: string,
-    producto: string,
-    preciounitario: number,
-    cantidad: number,
-    preciototal: number,
-    formapago: string,
+
+  const createTable = (
+   
     proveedor: string,
     fecha: string
   ) => {
     return {
-      cliente,
-      producto,
-      cantidad,
-      preciounitario,
-      preciototal,
-      formapago,
       proveedor,
       fecha,
     }
   }
 
+  const rowss = [
+    createTable("carla",  ""),
+  ];
+
+  const createData = (
+    producto: string,
+    preciounitario: number,
+    cantidad: number,
+  ) => {
+    return {
+      producto,
+      cantidad,
+      preciounitario,
+    }
+  }
+
   const rows = [
-    createData("carla", "Fernet", 1, 2000, 2000, "efectivo", "roxana", ""),
-    createData(
-      "victor",
-      "Viña de Balbo",
-      5,
-      890,
-      4450,
-      "transferencia",
-      "ricardo",
-      "4"
-    ),
-    createData(
-      "mabel",
-      "Vino Toro Tinto",
-      2,
-      890,
-      1780,
-      "transferencia",
-      "ricardo",
-      "5"
-    ),
-    createData("pablo", "Gancia", 3, 375, 1125, "efectivo", "roxana", ""),
-    createData("matias", "campari", 7, 567, 3969, "efectivo", "roxana", ""),
+    createData("Fernet", 1, 2000),
   ];
 
   const style = {
@@ -132,236 +116,9 @@ export default function CustomizedTables() {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
   };
 
   return (
-    <div>
-         <Box
-        sx={{
-          marginTop: 8,
-        }}
-      >
-        <Grid container>
-          <CssBaseline />
-          <Grid
-            item
-            xs={12}
-            sm={8}
-            md={5}
-            component={Paper}
-            elevation={6}
-            square
-          >
-            <Box
-              sx={{
-                my: 8,
-                mx: 4,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <Typography component="h1" variant="h5">
-                Bienvenidos "Registra tus compras"
-              </Typography>
-              <Box
-                component="form"
-                noValidate
-                onSubmit={handleSubmit}
-                sx={{ mt: 1 }}
-              >
-                <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                <Grid item xs={4}>
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  label="Cliente "
-                  name="cliente"
-                  autoComplete="cliente"
-                  autoFocus
-                />
-                </Grid>
-                <Grid item xs={4}>
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  label="Fecha "
-                  name="fecha"
-                  autoComplete="fecha"
-                  autoFocus
-                />
-                </Grid>
-                <Grid item xs={4}>
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  label="Proveedor"
-                  name="proveedor"
-                  autoComplete="proveedor"
-                  autoFocus
-                />
-                   </Grid>
-                <TextField
-                      select
-                      label="Selecciona el producto"
-                      variant="outlined"
-                      fullWidth
-                      value={provider}
-                      onChange={(e) => setProvider(e.target.value)}
-                    >
-                      <MenuItem value="Option 1">Option 1</MenuItem>
-                      <MenuItem value="Option 2">Option 2</MenuItem>
-                      <MenuItem value="Option 3">Option 3</MenuItem>
-                    </TextField>
-                    <Grid item xs={6}>   
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  label="Cantidad "
-                  name="cantidad"
-                  autoComplete="cantidad"
-                  autoFocus
-                />
-                </Grid>
-                <Grid item xs={6}>   
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  label="Precio unitario "
-                  name="preciounitario"
-                  autoComplete="preciounitario"
-                  autoFocus
-                />
-                </Grid>
-                <Grid item xs={6}>
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  label="Precio total "
-                  name="preciototal"
-                  autoComplete="preciototal"
-                  autoFocus
-                />
-                   </Grid>
-                  <Grid item xs={6}>
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  label="Forma de pago"
-                  name="formapago"
-                  autoComplete="formapago"
-                  autoFocus
-                />
-                   </Grid>
-                   </Grid>
-                
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{ mt: 3, mb: 2 }}
-                >
-                  AÑADIR
-                </Button>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{ mt: 3, mb: 2 }}
-                >
-                  CANCELAR
-                </Button>
-                <Grid container>
-                  <Grid item xs>
-                    
-                  </Grid>
-                  <Grid item>
-                    
-                  </Grid>
-                </Grid>
-              </Box>
-            </Box>
-          </Grid>
-        </Grid>
-      </Box>
-
-      <TableContainer component={Paper} sx={{ marginTop: "50px" }}>
-        {/*Table*/}
-        <Table sx={{ minWidth: 700 }} aria-label="customized table">
-          <TableHead>
-            <TableRow>
-              <StyledTableCell width={115} align="center">
-                Opciones
-              </StyledTableCell>
-
-              <StyledTableCell>Cliente</StyledTableCell>
-              <StyledTableCell align="right">Producto</StyledTableCell>
-              <StyledTableCell align="right">Cantidad</StyledTableCell>
-              <StyledTableCell align="right">Precio Total</StyledTableCell>
-              <StyledTableCell align="right">Forma de pago</StyledTableCell>
-              <StyledTableCell align="right">Proveedor</StyledTableCell>
-              <StyledTableCell align="right">Fecha</StyledTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row) => (
-              <StyledTableRow key={row.producto}>
-                <StyledTableCell component="th" scope="row">
-                  <IconButton color="primary">
-                    {" "}
-                    <EditIcon />{" "}
-                  </IconButton>
-                  <IconButton color="error">
-
-                    {" "}
-                    <DeleteIcon />{" "}
-                  </IconButton>
-                </StyledTableCell>
-
-                <StyledTableCell component="th" scope="row">
-                  {" "}
-                  {row.cliente}{" "}
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  {" "}
-                  ${row.producto}
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  {" "}
-                  ${row.cantidad}
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  {" "}
-                  {row.preciototal}
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  {" "}
-                  {row.formapago}
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  {" "}
-                  {row.proveedor}
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  {" "}
-                  {row.fecha}
-                </StyledTableCell>
-              </StyledTableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </div>
+    <div></div>
   );
 }
