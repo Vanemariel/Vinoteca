@@ -54,53 +54,39 @@ export default function CustomizedTables() {
       border: 0,
     },
   }));
+  const createTable = (
+    cliente: string,
+    fecha: string,
+    vendedor: string,
+    ) => {
+      return {
+        cliente,
+        fecha,
+        vendedor
+      }
+  };
+  const rowss = [
+    createTable("roxana", "1", "ricardo"),
+  ];
 
   const createData = (
-    cliente: string,
     producto: string,
     cantidad: number,
     preciounitario: number,
     preciototal: number,
-    formapago: string,
-    vendedor: string,
-    fecha: string
+    formapago: string
   ) => {
     return {
-      cliente,
       producto,
       cantidad,
       preciounitario,
       preciototal,
       formapago,
-      vendedor,
-      fecha,
     }
   };
 
   const rows = [
-    createData("carla", "Fernet", 1, 2000, 2000, "efectivo", "roxana", ""),
-    createData(
-      "victor",
-      "Viña de Balbo",
-      5,
-      890,
-      4450,
-      "transferencia",
-      "ricardo",
-      "4"
-    ),
-    createData(
-      "mabel",
-      "Vino Toro Tinto",
-      2,
-      890,
-      1780,
-      "transferencia",
-      "ricardo",
-      "5"
-    ),
-    createData("pablo", "Gancia", 3, 375, 1125, "efectivo", "roxana", ""),
-    createData("matias", "campari", 7, 567, 3969, "efectivo", "roxana", ""),
+    createData("Fernet", 1, 2000, 2000, "efectivo"),
   ];
 
   const style = {
@@ -143,7 +129,7 @@ export default function CustomizedTables() {
       
       <Box
         sx={{
-          marginTop: 8,
+          marginTop: 8,  
         }}
       >
         <Grid container>
@@ -209,6 +195,119 @@ export default function CustomizedTables() {
                   autoFocus
                 />
                    </Grid>
+                   </Grid>                
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                >
+                  AÑADIR
+                </Button>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                >
+                  CANCELAR
+                </Button>
+                <Grid container>
+                  <Grid item xs>
+                    
+                  </Grid>
+                  <Grid item>
+                    
+                  </Grid>
+                </Grid>
+              </Box>
+            </Box>
+          </Grid>
+        </Grid>
+      </Box>
+
+    <TableContainer component={Paper} sx={{marginTop: '50px'}}>
+        {/*Table*/ }
+        <Table sx={{ minWidth: 700 }} aria-label="customized table">
+          <TableHead>
+            <TableRow>
+              <StyledTableCell width={115} align="center">
+                Opciones
+              </StyledTableCell>
+              <StyledTableCell align="right">Cliente</StyledTableCell>
+              <StyledTableCell align="right">Fecha</StyledTableCell>
+              <StyledTableCell align="right">Vendedor</StyledTableCell>
+              
+              
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rowss.map((rowss) => (
+              <StyledTableRow key={rowss.cliente}>
+                <StyledTableCell component="th" scope="row">
+                  <IconButton color="primary">
+                    {" "}
+                    <EditIcon />{" "}
+                  </IconButton>
+                  <IconButton color="error">
+                    {" "}
+                    <DeleteIcon />{" "}
+                  </IconButton>
+                </StyledTableCell>
+                <StyledTableCell align="right">
+                  {" "}
+                  {rowss.cliente}
+                </StyledTableCell>
+                <StyledTableCell align="right">
+                  {" "}
+                  {rowss.fecha}
+                </StyledTableCell>
+                <StyledTableCell align="right">
+                  {" "}
+                  {rowss.vendedor}
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>  
+
+
+
+      <Box
+        sx={{
+          marginTop: 8,
+        }}
+      >
+        <Grid container>
+          <CssBaseline />
+          <Grid
+            item
+            xs={12}
+            sm={8}
+            md={5}
+            component={Paper}
+            elevation={6}
+            square
+          >
+            <Box
+              sx={{
+                my: 8,
+                mx: 4,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+
+              <Box
+                component="form"
+                noValidate
+                onSubmit={handleSubmit}
+                sx={{ mt: 1 }}
+              >
+                <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                
                 <TextField
                       select
                       label="Selecciona el producto"
@@ -305,14 +404,11 @@ export default function CustomizedTables() {
               <StyledTableCell width={115} align="center">
                 Opciones
               </StyledTableCell>
-
-              <StyledTableCell>Cliente</StyledTableCell>
               <StyledTableCell align="right">Producto</StyledTableCell>
               <StyledTableCell align="right">Cantidad</StyledTableCell>
               <StyledTableCell align="right">Precio Total</StyledTableCell>
               <StyledTableCell align="right">Forma de pago</StyledTableCell>
-              <StyledTableCell align="right">Vendedor</StyledTableCell>
-              <StyledTableCell align="right">Fecha</StyledTableCell>
+              
             </TableRow>
           </TableHead>
           <TableBody>
@@ -328,34 +424,21 @@ export default function CustomizedTables() {
                     <DeleteIcon />{" "}
                   </IconButton>
                 </StyledTableCell>
-
-                <StyledTableCell component="th" scope="row">
+                <StyledTableCell align="right">
                   {" "}
-                  {row.cliente}{" "}
+                  {row.producto}
                 </StyledTableCell>
                 <StyledTableCell align="right">
                   {" "}
-                  ${row.producto}
+                  {row.cantidad}
                 </StyledTableCell>
                 <StyledTableCell align="right">
                   {" "}
-                  ${row.cantidad}
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  {" "}
-                  {row.preciototal}
+                  ${row.preciototal}
                 </StyledTableCell>
                 <StyledTableCell align="right">
                   {" "}
                   {row.formapago}
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  {" "}
-                  {row.vendedor}
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  {" "}
-                  {row.fecha}
                 </StyledTableCell>
               </StyledTableRow>
             ))}
