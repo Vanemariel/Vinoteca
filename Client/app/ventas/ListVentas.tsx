@@ -22,7 +22,7 @@ import {
   TextField,
   IconButton,
   MenuItem,
-  CssBaseline
+  CssBaseline,
 } from "@mui/material";
 import { FormEvent } from "react";
 
@@ -54,20 +54,14 @@ export default function CustomizedTables() {
       border: 0,
     },
   }));
-  const createTable = (
-    cliente: string,
-    fecha: string,
-    vendedor: string,
-    ) => {
-      return {
-        cliente,
-        fecha,
-        vendedor
-      }
+  const createTable = (cliente: string, fecha: string, vendedor: string) => {
+    return {
+      cliente,
+      fecha,
+      vendedor,
+    };
   };
-  const rowss = [
-    createTable("roxana", "1", "ricardo"),
-  ];
+  const rowss = [createTable("roxana", "1", "ricardo")];
 
   const createData = (
     producto: string,
@@ -82,12 +76,10 @@ export default function CustomizedTables() {
       preciounitario,
       preciototal,
       formapago,
-    }
+    };
   };
 
-  const rows = [
-    createData("Fernet", 1, 2000, 2000, "efectivo"),
-  ];
+  const rows = [createData("Fernet", 1, 2000, 2000, "efectivo")];
 
   const style = {
     position: "absolute" as "absolute",
@@ -126,10 +118,10 @@ export default function CustomizedTables() {
 
   return (
     <div>
-      
       <Box
         sx={{
-          marginTop: 8,  
+          marginTop: 8,
+          width: "2000px",
         }}
       >
         <Grid container>
@@ -161,64 +153,48 @@ export default function CustomizedTables() {
                 onSubmit={handleSubmit}
                 sx={{ mt: 1 }}
               >
-                <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                <Grid item xs={4}>
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  label="Cliente "
-                  name="cliente"
-                  autoComplete="cliente"
-                  autoFocus
-                />
-                </Grid>
-                <Grid item xs={4}>
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  label="Fecha "
-                  name="fecha"
-                  autoComplete="fecha"
-                  autoFocus
-                />
-                </Grid>
-                <Grid item xs={4}>
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  label="Vendedor"
-                  name="vendedor"
-                  autoComplete="vendedor"
-                  autoFocus
-                />
-                   </Grid>
-                   </Grid>                
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{ mt: 3, mb: 2 }}
+                <Grid
+                  container
+                  rowSpacing={1}
+                  columnSpacing={{ xs: 1, sm: 2, md: 3 }}
                 >
-                  AÑADIR
-                </Button>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{ mt: 3, mb: 2 }}
-                >
-                  CANCELAR
-                </Button>
+                  <Grid item xs={4}>
+                    <TextField
+                      margin="normal"
+                      required
+                      fullWidth
+                      label="Cliente "
+                      name="cliente"
+                      autoComplete="cliente"
+                      autoFocus
+                    />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <TextField
+                      margin="normal"
+                      required
+                      fullWidth
+                      label="Fecha "
+                      name="fecha"
+                      autoComplete="fecha"
+                      autoFocus
+                    />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <TextField
+                      margin="normal"
+                      required
+                      fullWidth
+                      label="Vendedor"
+                      name="vendedor"
+                      autoComplete="vendedor"
+                      autoFocus
+                    />
+                  </Grid>
+                </Grid>
                 <Grid container>
-                  <Grid item xs>
-                    
-                  </Grid>
-                  <Grid item>
-                    
-                  </Grid>
+                  <Grid item xs></Grid>
+                  <Grid item></Grid>
                 </Grid>
               </Box>
             </Box>
@@ -226,57 +202,10 @@ export default function CustomizedTables() {
         </Grid>
       </Box>
 
-    <TableContainer component={Paper} sx={{marginTop: '50px'}}>
-        {/*Table*/ }
-        <Table sx={{ minWidth: 700 }} aria-label="customized table">
-          <TableHead>
-            <TableRow>
-              <StyledTableCell width={115} align="center">
-                Opciones
-              </StyledTableCell>
-              <StyledTableCell align="right">Cliente</StyledTableCell>
-              <StyledTableCell align="right">Fecha</StyledTableCell>
-              <StyledTableCell align="right">Vendedor</StyledTableCell>
-              
-              
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rowss.map((rowss) => (
-              <StyledTableRow key={rowss.cliente}>
-                <StyledTableCell component="th" scope="row">
-                  <IconButton color="primary">
-                    {" "}
-                    <EditIcon />{" "}
-                  </IconButton>
-                  <IconButton color="error">
-                    {" "}
-                    <DeleteIcon />{" "}
-                  </IconButton>
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  {" "}
-                  {rowss.cliente}
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  {" "}
-                  {rowss.fecha}
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  {" "}
-                  {rowss.vendedor}
-                </StyledTableCell>
-              </StyledTableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>  
-
-
-
       <Box
         sx={{
           marginTop: 8,
+          width: "2000px"
         }}
       >
         <Grid container>
@@ -299,73 +228,74 @@ export default function CustomizedTables() {
                 alignItems: "center",
               }}
             >
-
               <Box
                 component="form"
                 noValidate
                 onSubmit={handleSubmit}
                 sx={{ mt: 1 }}
               >
-                <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                
-                <TextField
-                      select
-                      label="Selecciona el producto"
-                      variant="outlined"
-                      fullWidth
-                      value={provider}
-                      onChange={(e) => setProvider(e.target.value)}
-                    >
-                      <MenuItem value="Option 1">Option 1</MenuItem>
-                      <MenuItem value="Option 2">Option 2</MenuItem>
-                      <MenuItem value="Option 3">Option 3</MenuItem>
-                    </TextField>
-                    <Grid item xs={6}>   
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  label="Cantidad "
-                  name="cantidad"
-                  autoComplete="cantidad"
-                  autoFocus
-                />
-                </Grid>
-                <Grid item xs={6}>   
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  label="Precio unitario "
-                  name="preciounitario"
-                  autoComplete="preciounitario"
-                  autoFocus
-                />
-                </Grid>
-                <Grid item xs={6}>
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  label="Precio total "
-                  name="preciototal"
-                  autoComplete="preciototal"
-                  autoFocus
-                />
-                   </Grid>
+                <Grid
+                  container
+                  rowSpacing={1}
+                  columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+                >
+                  <TextField
+                    select
+                    label="Selecciona el producto"
+                    variant="outlined"
+                    fullWidth
+                    value={provider}
+                    onChange={(e) => setProvider(e.target.value)}
+                  >
+                    <MenuItem value="Option 1">Option 1</MenuItem>
+                    <MenuItem value="Option 2">Option 2</MenuItem>
+                    <MenuItem value="Option 3">Option 3</MenuItem>
+                  </TextField>
                   <Grid item xs={6}>
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  label="Forma de pago"
-                  name="formapago"
-                  autoComplete="formapago"
-                  autoFocus
-                />
-                   </Grid>
-                   </Grid>
-                
+                    <TextField
+                      margin="normal"
+                      required
+                      fullWidth
+                      label="Cantidad "
+                      name="cantidad"
+                      autoComplete="cantidad"
+                      autoFocus
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      margin="normal"
+                      required
+                      fullWidth
+                      label="Precio unitario "
+                      name="preciounitario"
+                      autoComplete="preciounitario"
+                      autoFocus
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      margin="normal"
+                      required
+                      fullWidth
+                      label="Precio total "
+                      name="preciototal"
+                      autoComplete="preciototal"
+                      autoFocus
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      margin="normal"
+                      required
+                      fullWidth
+                      label="Forma de pago"
+                      name="formapago"
+                      autoComplete="formapago"
+                      autoFocus
+                    />
+                  </Grid>
+                </Grid>
                 <Button
                   type="submit"
                   fullWidth
@@ -374,30 +304,18 @@ export default function CustomizedTables() {
                 >
                   AÑADIR
                 </Button>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{ mt: 3, mb: 2 }}
-                >
-                  CANCELAR
-                </Button>
                 <Grid container>
-                  <Grid item xs>
-                    
-                  </Grid>
-                  <Grid item>
-                    
-                  </Grid>
+                  <Grid item xs></Grid>
+                  <Grid item></Grid>
                 </Grid>
               </Box>
             </Box>
           </Grid>
         </Grid>
       </Box>
-      
-      <TableContainer component={Paper} sx={{marginTop: '50px'}}>
-        {/*Table*/ }
+
+      <TableContainer component={Paper} sx={{ marginTop: "50px" }}>
+        {/*Table*/}
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
@@ -408,7 +326,6 @@ export default function CustomizedTables() {
               <StyledTableCell align="right">Cantidad</StyledTableCell>
               <StyledTableCell align="right">Precio Total</StyledTableCell>
               <StyledTableCell align="right">Forma de pago</StyledTableCell>
-              
             </TableRow>
           </TableHead>
           <TableBody>
@@ -424,14 +341,8 @@ export default function CustomizedTables() {
                     <DeleteIcon />{" "}
                   </IconButton>
                 </StyledTableCell>
-                <StyledTableCell align="right">
-                  {" "}
-                  {row.producto}
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  {" "}
-                  {row.cantidad}
-                </StyledTableCell>
+                <StyledTableCell align="right"> {row.producto}</StyledTableCell>
+                <StyledTableCell align="right"> {row.cantidad}</StyledTableCell>
                 <StyledTableCell align="right">
                   {" "}
                   ${row.preciototal}
@@ -445,6 +356,24 @@ export default function CustomizedTables() {
           </TableBody>
         </Table>
       </TableContainer>
+
+      <Button onClick={handleOpen} style={{ background: "#fff", marginTop: "50px"}}>Terminar Venta</Button>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Su venta ha sido registrada 
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+           Numero de vta
+          </Typography>
+          <Button onClick={handleOpen}>oka!</Button>
+        </Box>
+      </Modal>
     </div>
   );
 }
