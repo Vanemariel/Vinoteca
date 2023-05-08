@@ -26,7 +26,7 @@ import {
 } from "@mui/material";
 import { FormEvent } from "react";
 
-export default function CustomizedTables() {
+export default function ListVentas() {
   const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
     ...theme.typography.body2,
