@@ -56,17 +56,18 @@ export default function CustomizedTables() {
     name: string,
     cantidad: number,
     precio: number,
-    costo: number
+    costo: number,
+    detalle: string
   ) => {
-    return { name, cantidad, precio, costo };
+    return { name, cantidad, precio, costo, detalle};
   };
 
   const rows = [
-    createData("Fernet", 50, 1450, 1000),
-    createData("Viña de Balbo", 50, 90.0, 40),
-    createData("Vino Toro Tinto", 50, 160.0, 130),
-    createData("Gancia", 50, 800, 550),
-    createData("campari", 50, 900, 775),
+    createData("Fernet", 50, 1450, 1000, ""),
+    createData("Viña de Balbo", 50, 90.0, 40, ""),
+    createData("Vino Toro Tinto", 50, 160.0, 130, ""),
+    createData("Gancia", 50, 800, 550, ""),
+    createData("campari", 50, 900, 775, ""),
   ];
 
   const style = {
@@ -98,7 +99,6 @@ export default function CustomizedTables() {
 
   return (
     <Fragment>
-
       <Autocomplete
         id="combo-box-demo"
         options={top100Films}
@@ -121,13 +121,10 @@ export default function CustomizedTables() {
               <StyledTableCell width={115} align="center">
                 Opciones
               </StyledTableCell>
-
               <StyledTableCell>Nombre</StyledTableCell>
-
               <StyledTableCell align="right">stock</StyledTableCell>
-
+              <StyledTableCell align="right">Detalle</StyledTableCell>
               <StyledTableCell align="right">Precio de compra</StyledTableCell>
-
               <StyledTableCell align="right">Precio de venta</StyledTableCell>
             </TableRow>
           </TableHead>
@@ -150,6 +147,7 @@ export default function CustomizedTables() {
                   {row.name}{" "}
                 </StyledTableCell>
                 <StyledTableCell align="right">{row.cantidad}</StyledTableCell>
+                <StyledTableCell align="right">{row.detalle}</StyledTableCell>
                 <StyledTableCell align="right"> ${row.precio}</StyledTableCell>
                 <StyledTableCell align="right"> ${row.costo}</StyledTableCell>
               </StyledTableRow>
@@ -241,7 +239,7 @@ export default function CustomizedTables() {
 
                   <Grid item xs={12} sm={12}>
                     <TextField
-                      label="Descripción del producto"
+                      label="Detalle"
                       variant="outlined"
                       fullWidth
                       multiline
@@ -266,20 +264,6 @@ export default function CustomizedTables() {
                       <MenuItem value="Option 3">Option 3</MenuItem>
                     </TextField>
                   </Grid>
-
-                  {/* Por si llego a necesitar este tipo de input */}
-                  {/* <Grid item xs={12} sm={6}>
-          <RadioGroup aria-label="gender" name="gender" value={selectedOption} onChange={(e) => setSelectedOption(e.target.value)}>
-            <FormControlLabel value="option1" control={<Radio />} label="Option 1" />
-            <FormControlLabel value="option2" control={<Radio />} label="Option 2" />
-            <FormControlLabel value="option3" control={<Radio />} label="Option 3" />
-          </RadioGroup>
-        </Grid> */}
-
-                  {/* Por si llego a necesitar este tipo de input */}
-                  {/* <Grid item xs={12} sm={6}>
-          <FormControlLabel control={<Checkbox checked={checked} onChange={(e) => setChecked(e.target.checked)} />} label="Checkbox" />
-        </Grid> */}
 
                   <Grid item container xs={12} justifyContent="space-between">
                     <Button variant="contained" color="warning">

@@ -20,14 +20,19 @@ const routes = [
   {
     label: "Ventas",
     path: "/ventas"
+  }, 
+  {
+    label: "Compras",
+    path: "/compras"
   },
+ 
   {
     label: "Historial Ventas",
     path: "/ventasHistorial"
   },
   {
-    label: "Compras",
-    path: "/compras"
+    label: "Historial Compras",
+    path: "/comorasHistorial"
   },
 ];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];

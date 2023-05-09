@@ -23,6 +23,7 @@ import {
   IconButton,
   MenuItem,
   CssBaseline,
+  Checkbox
 } from "@mui/material";
 import { FormEvent } from "react";
 
@@ -97,6 +98,7 @@ export default function ListVentas() {
   const [quantity, setQuantity] = useState("0");
   const [description, setDescription] = useState("");
   const [provider, setProvider] = useState("");
+  const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
   const top100Films = [
     { title: "The Shawshank Redemption", year: 1994 },
@@ -114,10 +116,11 @@ export default function ListVentas() {
 
   return (
     <div>
-
       {/**Box encabezado */}
       <Box
         sx={{
+          position: "relative",
+          left: "120px",
           marginTop: 8,
           width: "2500px",
         }}
@@ -199,7 +202,7 @@ export default function ListVentas() {
           </Grid>
         </Grid>
       </Box>
-
+      
       {/**Box INGRESAR PRODUCTOS Y TOTALES */}
       <Grid container spacing={2} columns={12}>
       <Grid item xs={6}>
@@ -366,10 +369,22 @@ export default function ListVentas() {
       >
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            Su venta ha sido registrada 
+            Seleccione el metodo de pago
           </Typography>
+          <label htmlFor="checkbox1">Efectivo</label>
+              <Checkbox
+                {...label}
+                id="checkbox1"
+                defaultChecked
+                sx={{ mr: 2 }}
+              />
+              <label htmlFor="checkbox2">Transferencia</label>
+              <Checkbox {...label} id="checkbox2" sx={{ mr: 2 }} />
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
            Numero de vta
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+           ¿Seguro desea finalizar la venta?
           </Typography>
           <Button onClick={handleOpen}>oka!</Button>
         </Box>

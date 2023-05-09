@@ -125,6 +125,8 @@ const rowss = [createTable("", 1)];
       <Grid item xs={6}>
       <Box
         sx={{
+          position: "relative",
+          left: "300px",
           marginTop: 8,
           width: "1500px",
         }}
@@ -259,8 +261,7 @@ const rowss = [createTable("", 1)];
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-        <TableContainer component={Paper} sx={{ marginTop: "50px"}}>
-        
+        <TableContainer component={Paper} sx={{ marginTop: "50px"}}>        
         <Table sx={{ minWidth: 700}} aria-label="customized table">
           <TableHead>
             <TableRow>
