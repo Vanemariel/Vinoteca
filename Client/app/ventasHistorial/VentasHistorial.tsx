@@ -26,7 +26,7 @@ import {
 } from "@mui/material";
 import { FormEvent } from "react";
 
-export default function ListVentas() {
+export default function VentasHistorial() {
   const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
     ...theme.typography.body2,
@@ -54,28 +54,35 @@ export default function ListVentas() {
       border: 0,
     },
   }));
-  const createTable = (cliente: string, fecha: string, vendedor: string) => {
-    return {
-      cliente,
-      fecha,
-      vendedor,
-    };
-  };
-  const rowss = [createTable("roxana", "1", "ricardo")];
-
+  
   const createData = (
-    producto: string,
-    cantidad: number,
-    preciounitario: number,
+    cliente: string,
+    fecha: string,
+    vendedor: string,
+    total: number,
   ) => {
     return {
-      producto,
-      cantidad,
-      preciounitario, 
+     cliente,
+     fecha,
+     vendedor,
+     total,
     };
   };
+  const rows = [createData("", "","", 1)];
 
-  const rows = [createData("Fernet", 1, 2000)];
+
+const createTable = (
+  
+  producto: string,
+  cantidad: number,
+) => {
+  return {
+   producto,
+   cantidad,
+  };
+}
+
+const rowss = [createTable("", 1)];
 
   const style = {
     position: "absolute" as "absolute",
@@ -114,9 +121,7 @@ export default function ListVentas() {
 
   return (
     <div>
-
       {/**Box INGRESAR PRODUCTOS Y TOTALES */}
-      <Grid container spacing={2} columns={12}>
       <Grid item xs={6}>
       <Box
         sx={{
@@ -157,38 +162,29 @@ export default function ListVentas() {
                 >
                   <TextField
                     select
-                    label="Selecciona el producto"
+                    label="Buscar aqui por..."
                     variant="outlined"
                     fullWidth
                     value={provider}
                     onChange={(e) => setProvider(e.target.value)}
                   >
-                    <MenuItem value="Option 1">Option 1</MenuItem>
-                    <MenuItem value="Option 2">Option 2</MenuItem>
-                    <MenuItem value="Option 3">Option 3</MenuItem>
+                    <MenuItem value="Option 1">Fecha</MenuItem>
+                    <MenuItem value="Option 2">Numero de Venta</MenuItem>
+                    <MenuItem value="Option 3">Vendedor</MenuItem>
+                    
                   </TextField>
                   <Grid item xs={6}>
                     <TextField
                       margin="normal"
                       required
                       fullWidth
-                      label="Cantidad "
-                      name="cantidad"
-                      autoComplete="cantidad"
+                      label="Ingresa el dato "
+                      name="Ingresa el dato"
+                      autoComplete="Ingresa el dato"
                       autoFocus
                     />
                   </Grid>
-                  <Grid item xs={6}>
-                    <TextField
-                      margin="normal"
-                      required
-                      fullWidth
-                      label="Precio unitario "
-                      name="preciounitario"
-                      autoComplete="preciounitario"
-                      autoFocus
-                    />
-                  </Grid>
+                  
                 </Grid>
                 <Button
                   type="submit"
@@ -196,7 +192,7 @@ export default function ListVentas() {
                   variant="contained"
                   sx={{ mt: 3, mb: 2 }}
                 >
-                  AÑADIR
+                  BUSCAR
                 </Button>
                 <Grid container>
                   <Grid item xs></Grid>
@@ -210,96 +206,7 @@ export default function ListVentas() {
       </Grid>
 
       <Grid item xs={6}>
-      <Box
-        sx={{
-          marginTop: 8,
-          width: "1500px",
-        }}
-      >
-        <Grid container>
-          <CssBaseline />
-          <Grid
-            item
-            xs={12}
-            sm={8}
-            md={5}
-            component={Paper}
-            elevation={6}
-            square
-          >
-            <Box
-              sx={{
-                my: 8,
-                mx: 4,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <Typography component="h1" variant="h5">
-                Detalle de venta
-              </Typography>
-              <Box
-                component="form"
-                noValidate
-                onSubmit={handleSubmit}
-                sx={{ mt: 1 }}
-              >
-                <Grid
-                  container
-                  rowSpacing={1}
-                  columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-                >
-                 
-                    <TextField
-                      margin="normal"
-                      required
-                      fullWidth
-                      label="Sub Total "
-                      name="Subtotal"
-                      autoComplete="subtotal"
-                      autoFocus
-                    />
- 
-                    <TextField
-                      margin="normal"
-                      required
-                      fullWidth
-                      label="Total "
-                      name="Total"
-                      autoComplete="total"
-                      autoFocus
-                    />
-               
-                  
-                  <Button onClick={handleOpen} style={{ marginTop: "-6px"}}>Terminar Venta</Button>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Su venta ha sido registrada 
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-           Numero de vta
-          </Typography>
-          <Button onClick={handleOpen}>oka!</Button>
-        </Box>
-      </Modal>
-                </Grid>
-                <Grid container>
-                  <Grid item xs></Grid>
-                  <Grid item></Grid>
-                </Grid>
-              </Box>
-            </Box>
-          </Grid>
-        </Grid>
-      </Box>
-      </Grid>
+     
       </Grid>
 
 
@@ -312,15 +219,15 @@ export default function ListVentas() {
               <StyledTableCell width={115} align="center">
                 Opciones
               </StyledTableCell>
-              <StyledTableCell align="right">Producto</StyledTableCell>
-              <StyledTableCell align="right">Cantidad</StyledTableCell>
-              <StyledTableCell align="right">Precio Unitario</StyledTableCell>
-             
+              <StyledTableCell align="right">Cliente</StyledTableCell>
+              <StyledTableCell align="right">Fecha</StyledTableCell>
+              <StyledTableCell align="right">Vendedor</StyledTableCell>
+              <StyledTableCell align="right">Total</StyledTableCell>             
             </TableRow>
           </TableHead>
           <TableBody>
             {rows.map((row) => (
-              <StyledTableRow key={row.producto}>
+              <StyledTableRow key={row.cliente}>
                 <StyledTableCell component="th" scope="row">
                   <IconButton color="primary">
                     {" "}
@@ -331,17 +238,50 @@ export default function ListVentas() {
                     <DeleteIcon />{" "}
                   </IconButton>
                 </StyledTableCell>
-                <StyledTableCell align="right"> {row.producto}</StyledTableCell>
-                <StyledTableCell align="right"> {row.cantidad}</StyledTableCell>
+                <StyledTableCell align="right"> {row.cliente}</StyledTableCell>
+                <StyledTableCell align="right"> {row.fecha}</StyledTableCell>
+                <StyledTableCell align="right"> {row.vendedor}</StyledTableCell>
                 <StyledTableCell align="right">
                   {" "}
-                  ${row.preciounitario}
+                  ${row.total}
                 </StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>
         </Table>
-      </TableContainer>     
+      </TableContainer>   
+
+       <Button onClick={handleOpen} style={{ marginTop: "-6px"}}>Ver Detalle de la Venta</Button>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+        <TableContainer component={Paper} sx={{ marginTop: "50px"}}>
+        
+        <Table sx={{ minWidth: 700}} aria-label="customized table">
+          <TableHead>
+            <TableRow>
+              
+              <StyledTableCell align="right">producto</StyledTableCell>
+              <StyledTableCell align="right">cantidad</StyledTableCell>      
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rowss.map((rowss) => (
+              <StyledTableRow key={rowss.producto}>
+                <StyledTableCell align="right"> {rowss.producto}</StyledTableCell>
+                <StyledTableCell align="right"> {rowss.cantidad}</StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>   
+          <Button onClick={handleOpen}>Cerrar</Button>
+        </Box>
+      </Modal>  
     </div>
   );
 }
