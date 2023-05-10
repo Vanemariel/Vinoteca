@@ -121,14 +121,14 @@ const rowss = [createTable("", 1)];
 
   return (
     <div>
-      {/**Box INGRESAR PRODUCTOS Y TOTALES */}
+      {/**Box INGRESAR PRODUCTOS */}
       <Grid item xs={6}>
       <Box
         sx={{
           position: "relative",
           left: "300px",
           marginTop: 8,
-          width: "1500px",
+          //width: "1500px",
         }}
       >
         <Grid container>
@@ -254,15 +254,15 @@ const rowss = [createTable("", 1)];
       </TableContainer>   
 
        <Button onClick={handleOpen} style={{ marginTop: "-6px"}}>Ver Detalle de la Venta</Button>
-      <Modal
+      <Modal 
         open={open}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
+        <Box sx={{style}}>
         <TableContainer component={Paper} sx={{ marginTop: "50px"}}>        
-        <Table sx={{ minWidth: 700}} aria-label="customized table">
+        <Table sx={{ minWidth: 400}} aria-label="customized table">
           <TableHead>
             <TableRow>
               
