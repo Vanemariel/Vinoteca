@@ -67,15 +67,16 @@ export default function FormProvedores() {
     name: string,
     descripcion: string,
     telefonodecontacto: number,
-    horariodeatencion: number
+    horariodesde: number,
+    horariohasta: number
   ) => {
-    return { name, descripcion, telefonodecontacto, horariodeatencion };
+    return { name, descripcion, telefonodecontacto, horariodesde, horariohasta };
   };
 
   const rows = [
-    createData("Gallardo", " ", 1450, 3513030411),
-    createData("Baggio", " ", 90.0, 3516652888),
-    createData("Pritty", "", 160.0, 351339097),
+    createData("Gallardo", " ",  3513030411, 11, 13),
+    createData("Baggio", " ",  3516652888, 14, 12),
+    createData("Pritty", "",  351339097, 9 , 22),
   ];
 
   const style = {
@@ -126,7 +127,11 @@ export default function FormProvedores() {
               <StyledTableCell align="right">Descripcion</StyledTableCell>
 
               <StyledTableCell align="right">
-                Horario de atencion
+                Horario desde
+              </StyledTableCell>
+
+              <StyledTableCell align="right">
+                Horario hasta
               </StyledTableCell>
 
               <StyledTableCell align="right">
@@ -162,7 +167,11 @@ export default function FormProvedores() {
                 </StyledTableCell>
                 <StyledTableCell align="right">
                   {" "}
-                  {row.horariodeatencion}
+                  {row.horariodesde}
+                </StyledTableCell>
+                <StyledTableCell align="right">
+                  {" "}
+                  {row.horariohasta}
                 </StyledTableCell>
               </StyledTableRow>
             ))}

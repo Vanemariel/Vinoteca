@@ -18,15 +18,15 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import {
   Box,
+  InputAdornment,
   TextField,
   IconButton,
   MenuItem,
   CssBaseline,
-  Checkbox
 } from "@mui/material";
 import { FormEvent } from "react";
 
-export default function ListComoras() {
+export default function ComprasHistorial() {
   const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
     ...theme.typography.body2,
@@ -54,27 +54,35 @@ export default function ListComoras() {
       border: 0,
     },
   }));
-  const createTable = (proveedor: string, fecha: string) => {
-    return {
-      proveedor,
-      fecha,
-    };
-  };
-  const rowss = [createTable("roxana", "1")];
-
+  
   const createData = (
-    producto: string,
-    cantidad: number,
-    preciounitario: number,
+    proveedor: string,
+    fecha: string,
+    vendedor: string,
+    total: number,
   ) => {
     return {
-      producto,
-      cantidad,
-      preciounitario, 
+     proveedor,
+     fecha,
+     vendedor,
+     total,
     };
   };
+  const rows = [createData("", "","", 1)];
 
-  const rows = [createData("Fernet", 1, 2000)];
+
+const createTable = (
+  
+  producto: string,
+  cantidad: number,
+) => {
+  return {
+   producto,
+   cantidad,
+  };
+}
+
+const rowss = [createTable("", 1)];
 
   const style = {
     position: "absolute" as "absolute",
@@ -96,7 +104,6 @@ export default function ListComoras() {
   const [quantity, setQuantity] = useState("0");
   const [description, setDescription] = useState("");
   const [provider, setProvider] = useState("");
-  const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
   const top100Films = [
     { title: "The Shawshank Redemption", year: 1994 },
@@ -114,13 +121,14 @@ export default function ListComoras() {
 
   return (
     <div>
-      {/**Box encabezado */}
+      {/**Box INGRESAR PRODUCTOS */}
+      <Grid item xs={6}>
       <Box
         sx={{
           position: "relative",
-          left: "120px",
+          left: "300px",
           marginTop: 8,
-          width: "2500px",
+          //width: "1500px",
         }}
       >
         <Grid container>
@@ -136,16 +144,13 @@ export default function ListComoras() {
           >
             <Box
               sx={{
-                my: 4,
+                my: 8,
                 mx: 4,
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
               }}
             >
-              <Typography component="h1" variant="h5">
-                Bienvenidos "Registra tus compras"
-              </Typography>
               <Box
                 component="form"
                 noValidate
@@ -157,62 +162,30 @@ export default function ListComoras() {
                   rowSpacing={1}
                   columnSpacing={{ xs: 1, sm: 2, md: 3 }}
                 >
-                  <Grid item xs={4}>
-                    <TextField
-                      margin="normal"
-                      required
-                      fullWidth
-                      label="Proveedor"
-                      name="proveedor"
-                      autoComplete="proveedor"
-                      autoFocus
-                    />
-                  </Grid>
-                  <Grid item xs={4}>
-                    <TextField
-                      margin="normal"
-                      required
-                      fullWidth
-                      label="Fecha "
-                      name="fecha"
-                      autoComplete="fecha"
-                      autoFocus
-                    />
-                  </Grid>
                   <TextField
                     select
-                    label="Selecciona el producto"
+                    label="Buscar aqui por..."
                     variant="outlined"
                     fullWidth
                     value={provider}
                     onChange={(e) => setProvider(e.target.value)}
                   >
-                    <MenuItem value="Option 1">Option 1</MenuItem>
-                    <MenuItem value="Option 2">Option 2</MenuItem>
-                    <MenuItem value="Option 3">Option 3</MenuItem>
+                    <MenuItem value="Option 1">Fecha</MenuItem>
+                    <MenuItem value="Option 2">Proveedor</MenuItem>
+                    
                   </TextField>
                   <Grid item xs={6}>
                     <TextField
                       margin="normal"
                       required
                       fullWidth
-                      label="Cantidad "
-                      name="cantidad"
-                      autoComplete="cantidad"
+                      label="Ingresa el dato "
+                      name="Ingresa el dato"
+                      autoComplete="Ingresa el dato"
                       autoFocus
                     />
                   </Grid>
-                  <Grid item xs={6}>
-                    <TextField
-                      margin="normal"
-                      required
-                      fullWidth
-                      label="Precio unitario "
-                      name="preciounitario"
-                      autoComplete="preciounitario"
-                      autoFocus
-                    />
-                  </Grid>
+                  
                 </Grid>
                 <Button
                   type="submit"
@@ -220,7 +193,7 @@ export default function ListComoras() {
                   variant="contained"
                   sx={{ mt: 3, mb: 2 }}
                 >
-                  AÑADIR
+                  BUSCAR
                 </Button>
                 <Grid container>
                   <Grid item xs></Grid>
@@ -231,7 +204,12 @@ export default function ListComoras() {
           </Grid>
         </Grid>
       </Box>
-      
+      </Grid>
+
+      <Grid item xs={6}>
+     
+      </Grid>
+
 
       {/*Table*/}
       <TableContainer component={Paper} sx={{ marginTop: "50px" }}>
@@ -242,15 +220,15 @@ export default function ListComoras() {
               <StyledTableCell width={115} align="center">
                 Opciones
               </StyledTableCell>
-              <StyledTableCell align="right">Producto</StyledTableCell>
-              <StyledTableCell align="right">Cantidad</StyledTableCell>
-              <StyledTableCell align="right">Precio Unitario</StyledTableCell>
-             
+              <StyledTableCell align="right">Proveedores</StyledTableCell>
+              <StyledTableCell align="right">Fecha</StyledTableCell>
+              <StyledTableCell align="right">Vendedor</StyledTableCell>
+              <StyledTableCell align="right">Total</StyledTableCell>             
             </TableRow>
           </TableHead>
           <TableBody>
             {rows.map((row) => (
-              <StyledTableRow key={row.producto}>
+              <StyledTableRow key={row.proveedor}>
                 <StyledTableCell component="th" scope="row">
                   <IconButton color="primary">
                     {" "}
@@ -261,102 +239,49 @@ export default function ListComoras() {
                     <DeleteIcon />{" "}
                   </IconButton>
                 </StyledTableCell>
-                <StyledTableCell align="right"> {row.producto}</StyledTableCell>
-                <StyledTableCell align="right"> {row.cantidad}</StyledTableCell>
+                <StyledTableCell align="right"> {row.proveedor}</StyledTableCell>
+                <StyledTableCell align="right"> {row.fecha}</StyledTableCell>
+                <StyledTableCell align="right"> {row.vendedor}</StyledTableCell>
                 <StyledTableCell align="right">
                   {" "}
-                  ${row.preciounitario}
+                  ${row.total}
                 </StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>
         </Table>
-      </TableContainer>     
+      </TableContainer>   
 
-     
-            <Box
-              sx={{
-                my: 8,
-                mx: 4,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <Typography component="h1" variant="h5">
-                Detalle de compra
-              </Typography>
-              <Box
-                component="form"
-                noValidate
-                onSubmit={handleSubmit}
-                sx={{ mt: 1 }}
-              >
-                <Grid
-                  container
-                  rowSpacing={1}
-                  columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-                >
-                 
-                    <TextField
-                      margin="normal"
-                      required
-                      fullWidth
-                      label="Sub Total "
-                      name="Subtotal"
-                      autoComplete="subtotal"
-                      autoFocus
-                    />
- 
-                    <TextField
-                      margin="normal"
-                      required
-                      fullWidth
-                      label="Total "
-                      name="Total"
-                      autoComplete="total"
-                      autoFocus
-                    />
-               
-                  
-                  <Button onClick={handleOpen} style={{ marginTop: "-6px"}}>Terminar Compra</Button>
-      <Modal
+       <Button onClick={handleOpen} style={{ marginTop: "-6px"}}>Ver Detalle de la Compra</Button>
+      <Modal 
         open={open}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Seleccione el metodo de pago
-          </Typography>
-          <label htmlFor="checkbox1">Efectivo</label>
-              <Checkbox
-                {...label}
-                id="checkbox1"
-                defaultChecked
-                sx={{ mr: 2 }}
-              />
-              <label htmlFor="checkbox2">Transferencia</label>
-              <Checkbox {...label} id="checkbox2" sx={{ mr: 2 }} />
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-           Numero de vta
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-           ¿Seguro desea finalizar la compra?
-          </Typography>
-          <Button onClick={handleOpen}>oka!</Button>
-          <Button onClick={handleOpen}>cancelar!</Button>
+        <Box sx={{style}}>
+        <TableContainer component={Paper} sx={{ marginTop: "50px"}}>        
+        <Table sx={{ minWidth: 400}} aria-label="customized table">
+          <TableHead>
+            <TableRow>
+              
+              <StyledTableCell align="right">producto</StyledTableCell>
+              <StyledTableCell align="right">cantidad</StyledTableCell>      
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rowss.map((rowss) => (
+              <StyledTableRow key={rowss.producto}>
+                <StyledTableCell align="right"> {rowss.producto}</StyledTableCell>
+                <StyledTableCell align="right"> {rowss.cantidad}</StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>   
+          <Button onClick={handleOpen}>Cerrar</Button>
         </Box>
-      </Modal>
-                </Grid>
-                <Grid container>
-                  <Grid item xs></Grid>
-                  <Grid item></Grid>
-                </Grid>
-              </Box>
-            </Box>
+      </Modal>  
     </div>
   );
 }
-

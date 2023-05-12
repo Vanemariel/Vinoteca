@@ -114,6 +114,7 @@ export default function ListVentas() {
     });
   };
 
+  
   return (
     <div>
       {/**Box encabezado */}
@@ -138,7 +139,7 @@ export default function ListVentas() {
           >
             <Box
               sx={{
-                my: 8,
+                my: 4,
                 mx: 4,
                 display: "flex",
                 flexDirection: "column",
@@ -192,57 +193,6 @@ export default function ListVentas() {
                       autoFocus
                     />
                   </Grid>
-                </Grid>
-                <Grid container>
-                  <Grid item xs></Grid>
-                  <Grid item></Grid>
-                </Grid>
-              </Box>
-            </Box>
-          </Grid>
-        </Grid>
-      </Box>
-      
-      {/**Box INGRESAR PRODUCTOS Y TOTALES */}
-      <Grid container spacing={2} columns={12}>
-      <Grid item xs={6}>
-      <Box
-        sx={{
-          marginTop: 8,
-          width: "1500px",
-        }}
-      >
-        <Grid container>
-          <CssBaseline />
-          <Grid
-            item
-            xs={12}
-            sm={8}
-            md={5}
-            component={Paper}
-            elevation={6}
-            square
-          >
-            <Box
-              sx={{
-                my: 8,
-                mx: 4,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <Box
-                component="form"
-                noValidate
-                onSubmit={handleSubmit}
-                sx={{ mt: 1 }}
-              >
-                <Grid
-                  container
-                  rowSpacing={1}
-                  columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-                >
                   <TextField
                     select
                     label="Selecciona el producto"
@@ -295,27 +245,49 @@ export default function ListVentas() {
           </Grid>
         </Grid>
       </Box>
-      </Grid>
+     
+      
+      {/*Table*/}
+      <TableContainer component={Paper} sx={{ marginTop: "50px" }}>
+        
+        <Table sx={{ minWidth: 700 }} aria-label="customized table">
+          <TableHead>
+            <TableRow>
+              <StyledTableCell width={115} align="center">
+                Opciones
+              </StyledTableCell>
+              <StyledTableCell align="right">Producto</StyledTableCell>
+              <StyledTableCell align="right">Cantidad</StyledTableCell>
+              <StyledTableCell align="right">Precio Unitario</StyledTableCell>
+             
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows.map((row) => (
+              <StyledTableRow key={row.producto}>
+                <StyledTableCell component="th" scope="row">
+                  <IconButton color="primary">
+                    {" "}
+                    <EditIcon />{" "}
+                  </IconButton>
+                  <IconButton color="error">
+                    {" "}
+                    <DeleteIcon />{" "}
+                  </IconButton>
+                </StyledTableCell>
+                <StyledTableCell align="right"> {row.producto}</StyledTableCell>
+                <StyledTableCell align="right"> {row.cantidad}</StyledTableCell>
+                <StyledTableCell align="right">
+                  {" "}
+                  ${row.preciounitario}
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>    
 
-      <Grid item xs={6}>
       <Box
-        sx={{
-          marginTop: 8,
-          width: "1500px",
-        }}
-      >
-        <Grid container>
-          <CssBaseline />
-          <Grid
-            item
-            xs={12}
-            sm={8}
-            md={5}
-            component={Paper}
-            elevation={6}
-            square
-          >
-            <Box
               sx={{
                 my: 8,
                 mx: 4,
@@ -387,6 +359,7 @@ export default function ListVentas() {
            ¿Seguro desea finalizar la venta?
           </Typography>
           <Button onClick={handleOpen}>oka!</Button>
+          <Button onClick={handleOpen}>cancelar!</Button>
         </Box>
       </Modal>
                 </Grid>
@@ -396,52 +369,7 @@ export default function ListVentas() {
                 </Grid>
               </Box>
             </Box>
-          </Grid>
-        </Grid>
-      </Box>
-      </Grid>
-      </Grid>
-
-
-      {/*Table*/}
-      <TableContainer component={Paper} sx={{ marginTop: "50px" }}>
         
-        <Table sx={{ minWidth: 700 }} aria-label="customized table">
-          <TableHead>
-            <TableRow>
-              <StyledTableCell width={115} align="center">
-                Opciones
-              </StyledTableCell>
-              <StyledTableCell align="right">Producto</StyledTableCell>
-              <StyledTableCell align="right">Cantidad</StyledTableCell>
-              <StyledTableCell align="right">Precio Unitario</StyledTableCell>
-             
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row) => (
-              <StyledTableRow key={row.producto}>
-                <StyledTableCell component="th" scope="row">
-                  <IconButton color="primary">
-                    {" "}
-                    <EditIcon />{" "}
-                  </IconButton>
-                  <IconButton color="error">
-                    {" "}
-                    <DeleteIcon />{" "}
-                  </IconButton>
-                </StyledTableCell>
-                <StyledTableCell align="right"> {row.producto}</StyledTableCell>
-                <StyledTableCell align="right"> {row.cantidad}</StyledTableCell>
-                <StyledTableCell align="right">
-                  {" "}
-                  ${row.preciounitario}
-                </StyledTableCell>
-              </StyledTableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>     
     </div>
   );
 }

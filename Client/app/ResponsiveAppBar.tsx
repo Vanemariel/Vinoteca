@@ -32,7 +32,7 @@ const routes = [
   },
   {
     label: "Historial Compras",
-    path: "/comorasHistorial"
+    path: "/comprasHistorial"
   },
 ];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
