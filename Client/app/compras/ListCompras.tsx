@@ -275,6 +275,7 @@ export default function ListComoras() {
 
      
             <Box
+             component={Paper}
               sx={{
                 my: 8,
                 mx: 4,

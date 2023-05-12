@@ -288,12 +288,14 @@ export default function ListVentas() {
       </TableContainer>    
 
       <Box
+       component={Paper}
               sx={{
                 my: 8,
                 mx: 4,
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
+                
               }}
             >
               <Typography component="h1" variant="h5">
