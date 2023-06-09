@@ -66,15 +66,20 @@ export default function ListComoras() {
     producto: string,
     cantidad: number,
     preciounitario: number,
+    proveedor: string,
+    fecha: string,
+    formadepago: string,
   ) => {
     return {
       producto,
       cantidad,
       preciounitario, 
+      proveedor,
+      fecha,
     };
   };
 
-  const rows = [createData("Fernet", 1, 2000)];
+  const rows = [createData("Fernet", 1, 2000, "Branca", "11/11/2023", "efectivo")];
 
   const style = {
     position: "absolute" as "absolute",
@@ -144,7 +149,7 @@ export default function ListComoras() {
               }}
             >
               <Typography component="h1" variant="h5">
-                Bienvenidos "Registra tus compras"
+               "Registra tus compras"
               </Typography>
               <Box
                 component="form"
@@ -245,6 +250,8 @@ export default function ListComoras() {
               <StyledTableCell align="right">Producto</StyledTableCell>
               <StyledTableCell align="right">Cantidad</StyledTableCell>
               <StyledTableCell align="right">Precio Unitario</StyledTableCell>
+              <StyledTableCell align="right">Proveedor</StyledTableCell>
+              <StyledTableCell align="right">Fecha</StyledTableCell>
              
             </TableRow>
           </TableHead>
@@ -267,6 +274,8 @@ export default function ListComoras() {
                   {" "}
                   ${row.preciounitario}
                 </StyledTableCell>
+                <StyledTableCell align="right"> {row.proveedor}</StyledTableCell>
+                <StyledTableCell align="right"> {row.fecha}</StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>
@@ -298,17 +307,7 @@ export default function ListComoras() {
                   rowSpacing={1}
                   columnSpacing={{ xs: 1, sm: 2, md: 3 }}
                 >
-                 
-                    <TextField
-                      margin="normal"
-                      required
-                      fullWidth
-                      label="Sub Total "
-                      name="Subtotal"
-                      autoComplete="subtotal"
-                      autoFocus
-                    />
- 
+
                     <TextField
                       margin="normal"
                       required

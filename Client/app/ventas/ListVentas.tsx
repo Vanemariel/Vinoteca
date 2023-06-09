@@ -68,15 +68,21 @@ export default function ListVentas() {
     producto: string,
     cantidad: number,
     preciounitario: number,
+    cliente: string,
+      fecha: string,
+      vendedor: string
   ) => {
     return {
       producto,
       cantidad,
       preciounitario, 
+      cliente,
+      fecha,
+      vendedor
     };
   };
 
-  const rows = [createData("Fernet", 1, 2000)];
+  const rows = [createData("Fernet", 1, 2000, "Mabel", "22-7-2023", "Matias")];
 
   const style = {
     position: "absolute" as "absolute",
@@ -259,6 +265,9 @@ export default function ListVentas() {
               <StyledTableCell align="right">Producto</StyledTableCell>
               <StyledTableCell align="right">Cantidad</StyledTableCell>
               <StyledTableCell align="right">Precio Unitario</StyledTableCell>
+              <StyledTableCell align="right">Fecha</StyledTableCell>
+              <StyledTableCell align="right">Cliente</StyledTableCell>
+              <StyledTableCell align="right">Vendedor</StyledTableCell>
              
             </TableRow>
           </TableHead>
@@ -281,6 +290,9 @@ export default function ListVentas() {
                   {" "}
                   ${row.preciounitario}
                 </StyledTableCell>
+                <StyledTableCell align="right"> {row.cliente}</StyledTableCell>
+                <StyledTableCell align="right"> {row.fecha}</StyledTableCell>
+                <StyledTableCell align="right"> {row.vendedor}</StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>
@@ -312,17 +324,6 @@ export default function ListVentas() {
                   rowSpacing={1}
                   columnSpacing={{ xs: 1, sm: 2, md: 3 }}
                 >
-                 
-                    <TextField
-                      margin="normal"
-                      required
-                      fullWidth
-                      label="Sub Total "
-                      name="Subtotal"
-                      autoComplete="subtotal"
-                      autoFocus
-                    />
- 
                     <TextField
                       margin="normal"
                       required

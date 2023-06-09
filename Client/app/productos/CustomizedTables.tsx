@@ -54,12 +54,12 @@ export default function CustomizedTables() {
 
   const createData = (
     name: string,
-    cantidad: number,
-    precio: number,
-    costo: number,
+    stock: number,
+    precioventa: number,
+    preciocompra: number,
     detalle: string
   ) => {
-    return { name, cantidad, precio, costo, detalle};
+    return { name, stock, precioventa, preciocompra, detalle};
   };
 
   const rows = [
@@ -146,10 +146,10 @@ export default function CustomizedTables() {
                   {" "}
                   {row.name}{" "}
                 </StyledTableCell>
-                <StyledTableCell align="right">{row.cantidad}</StyledTableCell>
+                <StyledTableCell align="right">{row.stock}</StyledTableCell>
                 <StyledTableCell align="right">{row.detalle}</StyledTableCell>
-                <StyledTableCell align="right"> ${row.precio}</StyledTableCell>
-                <StyledTableCell align="right"> ${row.costo}</StyledTableCell>
+                <StyledTableCell align="right"> ${row.precioventa}</StyledTableCell>
+                <StyledTableCell align="right"> ${row.preciocompra}</StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>
@@ -169,7 +169,7 @@ export default function CustomizedTables() {
               variant="h6"
               component="h2"
             ></Typography>
-            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            <Typography id="modal-modal-description" sx={{ mt: 2}}>
               <Box sx={{ display: "flex", flexWrap: "wrap" }}>
                 <Grid container spacing={3}>
                   <Grid item xs={12} sm={8}>
@@ -278,8 +278,7 @@ export default function CustomizedTables() {
             </Typography>
           </Box>
         </Modal>
-      </TableContainer>
-      
+      </TableContainer>      
     </Fragment>
   );
 }

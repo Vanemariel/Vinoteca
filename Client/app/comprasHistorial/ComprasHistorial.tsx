@@ -151,17 +151,21 @@ const rowss = [createTable("", 1)];
                 alignItems: "center",
               }}
             >
+              <Typography component="h1" variant="h5">
+              "Busca aqui tus compras"
+              </Typography>
               <Box
                 component="form"
                 noValidate
                 onSubmit={handleSubmit}
-                sx={{ mt: 1 }}
+                sx={{ mt: 2 }}
               >
                 <Grid
                   container
                   rowSpacing={1}
                   columnSpacing={{ xs: 1, sm: 2, md: 3 }}
                 >
+                  
                   <TextField
                     select
                     label="Buscar aqui por..."

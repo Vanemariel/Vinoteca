@@ -68,7 +68,7 @@ export default function VentasHistorial() {
      total,
     };
   };
-  const rows = [createData("", "","", 1)];
+  const rows = [createData("Judith", "12-3-2023","Matias", 1000)];
 
 
 const createTable = (
@@ -82,7 +82,7 @@ const createTable = (
   };
 }
 
-const rowss = [createTable("", 1)];
+const rowss = [createTable("Fernet", 1)];
 
   const style = {
     position: "absolute" as "absolute",
@@ -151,6 +151,9 @@ const rowss = [createTable("", 1)];
                 alignItems: "center",
               }}
             >
+              <Typography component="h1" variant="h5">
+              "Busca aqui tus ventas"
+              </Typography>
               <Box
                 component="form"
                 noValidate
