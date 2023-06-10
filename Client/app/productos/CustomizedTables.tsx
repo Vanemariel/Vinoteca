@@ -97,6 +97,11 @@ export default function CustomizedTables() {
     { title: "The Godfather: Part II", year: 1974 },
   ];
 
+  const modalContentStyle = {
+    maxHeight: '400px', // Establece la altura máxima deseada para el contenido del modal
+    overflowY: 'auto', // Agrega una barra de desplazamiento vertical cuando el contenido excede la altura máxima
+  };
+
   return (
     <Fragment>
       <Autocomplete
@@ -171,7 +176,7 @@ export default function CustomizedTables() {
             ></Typography>
             <Typography id="modal-modal-description" sx={{ mt: 2}}>
               <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-                <Grid container spacing={3}>
+                <Grid container spacing={3} className="modalContent" style={modalContentStyle}>
                   <Grid item xs={12} sm={8}>
                     <TextField
                       label="Nombre del producto"

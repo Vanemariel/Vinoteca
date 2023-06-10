@@ -23,7 +23,7 @@ import {
   IconButton,
   MenuItem,
   CssBaseline,
-  Checkbox
+  Checkbox,
 } from "@mui/material";
 import { FormEvent } from "react";
 
@@ -69,16 +69,16 @@ export default function ListVentas() {
     cantidad: number,
     preciounitario: number,
     cliente: string,
-      fecha: string,
-      vendedor: string
+    fecha: string,
+    vendedor: string
   ) => {
     return {
       producto,
       cantidad,
-      preciounitario, 
+      preciounitario,
       cliente,
       fecha,
-      vendedor
+      vendedor,
     };
   };
 
@@ -120,142 +120,151 @@ export default function ListVentas() {
     });
   };
 
-  
+  const [okClicked, setOkClicked] = useState(false);
+  const [cancelClicked, setCancelClicked] = useState(false);
+  const handleOkClick = () => {
+    setOkClicked(true);
+  };
+
+  const handleCancelClick = () => {
+    setCancelClicked(true);
+    handleClose(); // Cierra el modal
+  };
+
   return (
     <div>
       {/**Box encabezado */}
-      <Box
-        sx={{
-          position: "relative",
-          left: "120px",
-          marginTop: 8,
-          width: "2500px",
-        }}
-      >
-        <Grid container>
-          <CssBaseline />
-          <Grid
-            item
-            xs={12}
-            sm={8}
-            md={5}
-            component={Paper}
-            elevation={6}
-            square
-          >
-            <Box
-              sx={{
-                my: 4,
-                mx: 4,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <Box
+          sx={{
+            marginTop: 8,
+            width: "100%", // Ancho ajustado al 100%
+            maxWidth: 1500, // Máximo ancho permitido
+          }}
+        >
+          <Grid container>
+            <CssBaseline />
+            <Grid
+              item
+              xs={12}
+              sm={8}
+              md={5}
+              component={Paper}
+              elevation={6}
+              square
             >
-              <Typography component="h1" variant="h5">
-                Bienvenidos "Registra tus ventas"
-              </Typography>
               <Box
-                component="form"
-                noValidate
-                onSubmit={handleSubmit}
-                sx={{ mt: 1 }}
+                sx={{
+                  my: 4,
+                  mx: 4,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  textAlign: "center", // Centrar el texto
+                }}
               >
-                <Grid
-                  container
-                  rowSpacing={1}
-                  columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+                <Typography component="h1" variant="h5">
+                  Bienvenidos "Registra tus ventas"
+                </Typography>
+                <Box
+                  component="form"
+                  noValidate
+                  onSubmit={handleSubmit}
+                  sx={{ mt: 1 }}
                 >
-                  <Grid item xs={4}>
-                    <TextField
-                      margin="normal"
-                      required
-                      fullWidth
-                      label="Cliente "
-                      name="cliente"
-                      autoComplete="cliente"
-                      autoFocus
-                    />
-                  </Grid>
-                  <Grid item xs={4}>
-                    <TextField
-                      margin="normal"
-                      required
-                      fullWidth
-                      label="Fecha "
-                      name="fecha"
-                      autoComplete="fecha"
-                      autoFocus
-                    />
-                  </Grid>
-                  <Grid item xs={4}>
-                    <TextField
-                      margin="normal"
-                      required
-                      fullWidth
-                      label="Vendedor"
-                      name="vendedor"
-                      autoComplete="vendedor"
-                      autoFocus
-                    />
-                  </Grid>
-                  <TextField
-                    select
-                    label="Selecciona el producto"
-                    variant="outlined"
-                    fullWidth
-                    value={provider}
-                    onChange={(e) => setProvider(e.target.value)}
+                  <Grid
+                    container
+                    rowSpacing={1}
+                    columnSpacing={{ xs: 1, sm: 2, md: 3 }}
                   >
-                    <MenuItem value="Option 1">Option 1</MenuItem>
-                    <MenuItem value="Option 2">Option 2</MenuItem>
-                    <MenuItem value="Option 3">Option 3</MenuItem>
-                  </TextField>
-                  <Grid item xs={6}>
+                    <Grid item xs={4}>
+                      <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        label="Cliente "
+                        name="cliente"
+                        autoComplete="cliente"
+                        autoFocus
+                      />
+                    </Grid>
+                    <Grid item xs={4}>
+                      <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        label="Fecha "
+                        name="fecha"
+                        autoComplete="fecha"
+                        autoFocus
+                      />
+                    </Grid>
+                    <Grid item xs={4}>
+                      <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        label="Vendedor"
+                        name="vendedor"
+                        autoComplete="vendedor"
+                        autoFocus
+                      />
+                    </Grid>
                     <TextField
-                      margin="normal"
-                      required
+                      select
+                      label="Selecciona el producto"
+                      variant="outlined"
                       fullWidth
-                      label="Cantidad "
-                      name="cantidad"
-                      autoComplete="cantidad"
-                      autoFocus
-                    />
+                      value={provider}
+                      onChange={(e) => setProvider(e.target.value)}
+                    >
+                      <MenuItem value="Option 1">Option 1</MenuItem>
+                      <MenuItem value="Option 2">Option 2</MenuItem>
+                      <MenuItem value="Option 3">Option 3</MenuItem>
+                    </TextField>
+                    <Grid item xs={6}>
+                      <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        label="Cantidad "
+                        name="cantidad"
+                        autoComplete="cantidad"
+                        autoFocus
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        label="Precio unitario "
+                        name="preciounitario"
+                        autoComplete="preciounitario"
+                        autoFocus
+                      />
+                    </Grid>
                   </Grid>
-                  <Grid item xs={6}>
-                    <TextField
-                      margin="normal"
-                      required
-                      fullWidth
-                      label="Precio unitario "
-                      name="preciounitario"
-                      autoComplete="preciounitario"
-                      autoFocus
-                    />
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 3, mb: 2 }}
+                  >
+                    AÑADIR
+                  </Button>
+                  <Grid container>
+                    <Grid item xs></Grid>
+                    <Grid item></Grid>
                   </Grid>
-                </Grid>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{ mt: 3, mb: 2 }}
-                >
-                  AÑADIR
-                </Button>
-                <Grid container>
-                  <Grid item xs></Grid>
-                  <Grid item></Grid>
-                </Grid>
+                </Box>
               </Box>
-            </Box>
+            </Grid>
           </Grid>
-        </Grid>
-      </Box>
-     
-      
+        </Box>
+      </div>
       {/*Table*/}
       <TableContainer component={Paper} sx={{ marginTop: "50px" }}>
-        
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
@@ -268,7 +277,6 @@ export default function ListVentas() {
               <StyledTableCell align="right">Fecha</StyledTableCell>
               <StyledTableCell align="right">Cliente</StyledTableCell>
               <StyledTableCell align="right">Vendedor</StyledTableCell>
-             
             </TableRow>
           </TableHead>
           <TableBody>
@@ -297,82 +305,83 @@ export default function ListVentas() {
             ))}
           </TableBody>
         </Table>
-      </TableContainer>    
+      </TableContainer>
 
+      {/*Detalle de venta*/}
       <Box
-       component={Paper}
-              sx={{
-                my: 8,
-                mx: 4,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                
-              }}
-            >
-              <Typography component="h1" variant="h5">
-                Detalle de venta
-              </Typography>
-              <Box
-                component="form"
-                noValidate
-                onSubmit={handleSubmit}
-                sx={{ mt: 1 }}
-              >
-                <Grid
-                  container
-                  rowSpacing={1}
-                  columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-                >
-                    <TextField
-                      margin="normal"
-                      required
-                      fullWidth
-                      label="Total "
-                      name="Total"
-                      autoComplete="total"
-                      autoFocus
-                    />
-               
-                  
-                  <Button onClick={handleOpen} style={{ marginTop: "-6px"}}>Terminar Venta</Button>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+        component={Paper}
+        sx={{
+          my: 8,
+          mx: "auto",
+          width: "80%", // Ancho ajustado
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          textAlign: "center",
+        }}
       >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Seleccione el metodo de pago
-          </Typography>
-          <label htmlFor="checkbox1">Efectivo</label>
-              <Checkbox
-                {...label}
-                id="checkbox1"
-                defaultChecked
-                sx={{ mr: 2 }}
-              />
-              <label htmlFor="checkbox2">Transferencia</label>
-              <Checkbox {...label} id="checkbox2" sx={{ mr: 2 }} />
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-           Numero de vta
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-           ¿Seguro desea finalizar la venta?
-          </Typography>
-          <Button onClick={handleOpen}>oka!</Button>
-          <Button onClick={handleOpen}>cancelar!</Button>
-        </Box>
-      </Modal>
-                </Grid>
-                <Grid container>
-                  <Grid item xs></Grid>
-                  <Grid item></Grid>
-                </Grid>
+        <Typography component="h1" variant="h5">
+          Detalle de venta
+        </Typography>
+        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+          <Grid
+            container
+            rowSpacing={1}
+            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+          >
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              label="Total "
+              name="Total"
+              autoComplete="total"
+              autoFocus
+            />
+
+            <Button onClick={handleOpen} style={{ marginTop: "-6px" }}>
+              Terminar Venta
+            </Button>
+            <Modal
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            >
+              <Box sx={style}>
+                <Typography id="modal-modal-title" variant="h6" component="h2">
+                  Seleccione el metodo de pago
+                </Typography>
+                <label htmlFor="checkbox1">Efectivo</label>
+                <Checkbox
+                  {...label}
+                  id="checkbox1"
+                  defaultChecked
+                  sx={{ mr: 2 }}
+                />
+                <label htmlFor="checkbox2">Transferencia</label>
+                <Checkbox {...label} id="checkbox2" sx={{ mr: 2 }} />
+                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                  Numero de vta
+                </Typography>
+                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                  ¿Seguro desea finalizar la venta?
+                </Typography>
+                <Button onClick={handleOkClick} disabled={okClicked}>
+                  Ok
+                </Button>
+                <Button onClick={handleCancelClick} disabled={cancelClicked}>
+                  Cancelar
+                </Button>
               </Box>
-            </Box>
-        
+            </Modal>
+          </Grid>
+          <Grid container>
+            <Grid item xs></Grid>
+            <Grid item></Grid>
+          </Grid>
+        </Box>
+      </Box>
     </div>
   );
 }

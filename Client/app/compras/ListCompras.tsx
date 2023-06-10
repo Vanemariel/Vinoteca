@@ -117,15 +117,27 @@ export default function ListComoras() {
     });
   };
 
+  const [okClicked, setOkClicked] = useState(false);
+const [cancelClicked, setCancelClicked] = useState(false);
+const handleOkClick = () => {
+  setOkClicked(true);
+};
+
+const handleCancelClick = () => {
+  setCancelClicked(true);
+  handleClose(); // Cierra el modal
+};
+
+
   return (
     <div>
       {/**Box encabezado */}
       <Box
         sx={{
-          position: "relative",
-          left: "120px",
-          marginTop: 8,
-          width: "2500px",
+         marginTop: 8,
+          width: "100%", // Ancho ajustado al 100%
+          maxWidth: 1500, // Máximo ancho permitido
+         
         }}
       >
         <Grid container>
@@ -282,15 +294,17 @@ export default function ListComoras() {
         </Table>
       </TableContainer>     
 
-     
+     {/*Detalle de compra*/}
             <Box
              component={Paper}
               sx={{
                 my: 8,
-                mx: 4,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
+          mx: "auto",
+          width: "80%", // Ancho ajustado
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          textAlign: "center",
               }}
             >
               <Typography component="h1" variant="h5">
@@ -345,8 +359,12 @@ export default function ListComoras() {
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
            ¿Seguro desea finalizar la compra?
           </Typography>
-          <Button onClick={handleOpen}>oka!</Button>
-          <Button onClick={handleOpen}>cancelar!</Button>
+          <Button onClick={handleOkClick} disabled={okClicked}>
+  Ok
+</Button>
+<Button onClick={handleCancelClick} disabled={cancelClicked}>
+  Cancelar
+</Button>
         </Box>
       </Modal>
                 </Grid>
