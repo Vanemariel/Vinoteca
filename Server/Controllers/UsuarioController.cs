@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Omnichannel.Contracts;
 using Vinoteca.BaseDatos;
 using Vinoteca.BaseDatos.Entidades;
 using Vinoteca.Shared.DTO.Auth;
@@ -24,8 +25,8 @@ namespace Vinoteca1.Server.Controllers
             this._configuration = configuration;
         }
 
-        
-        [HttpGet("GetAll")]
+
+        [HttpGet(ApiRoutes.Usuario.GetAll)]
         public async Task<ActionResult<List<Usuario>>> GetAll()
         {
             try
@@ -41,13 +42,13 @@ namespace Vinoteca1.Server.Controllers
         }
 
 
-        [HttpGet("GetOne/{id:int}")]
+        [HttpGet(ApiRoutes.Usuario.GetById)]
         public async Task<ActionResult<Usuario>> GetById(int id)
         {
             try
             {
                 Usuario? Usuario = await this._context.TablaUsuarios
-                    .Where(Usuario => Usuario.Id == id)
+                    .Where(Usuario => Usuario.IdUsuario == id)
                     .FirstOrDefaultAsync();
 
                 if (Usuario == null)
@@ -64,14 +65,14 @@ namespace Vinoteca1.Server.Controllers
         }
 
 
-        [HttpPut("Edit/{id:int}")]
-        public async Task<ActionResult<string>> UpdateAlbum(int id, [FromBody] Usuario NewUsuario)
+        [HttpPut(ApiRoutes.Usuario.Update)]
+        public async Task<ActionResult<string>> Update(int id, [FromBody] Usuario NewUsuario)
         {
             string ResponseDto = "";
             try
             {
                 Usuario? FindUsuario = await this._context.TablaUsuarios
-                    .Where(Usuario => Usuario.Id == id)
+                    .Where(Usuario => Usuario.IdUsuario == id)
                     .FirstOrDefaultAsync();
 
                 if (FindUsuario == null)
@@ -81,8 +82,7 @@ namespace Vinoteca1.Server.Controllers
 
                 FindUsuario.Nombre = NewUsuario.Nombre;
                 FindUsuario.Apellido = NewUsuario.Apellido;
-                FindUsuario.Email = NewUsuario.Email;
-                FindUsuario.Password = NewUsuario.Password;
+
 
                 this._context.TablaUsuarios.Update(FindUsuario);
 
@@ -100,10 +100,10 @@ namespace Vinoteca1.Server.Controllers
         }
 
 
-        [HttpDelete("Delete/{id:int}")]
+        [HttpDelete(ApiRoutes.Usuario.Delete)]
         public async Task<ActionResult<string>> Delete(int id)
         {
-           string ResponseDto = "";
+            string ResponseDto = "";
 
             try
             {
@@ -113,7 +113,7 @@ namespace Vinoteca1.Server.Controllers
                 }
 
                 Usuario? FindUsuario = await this._context.TablaUsuarios
-                    .Where(x => x.Id == id)
+                    .Where(x => x.IdUsuario == id)
                     .FirstOrDefaultAsync();
 
                 if (FindUsuario == null)
@@ -134,171 +134,171 @@ namespace Vinoteca1.Server.Controllers
             }
         }
 
-
+        #region comentado
         ///////////////
 
-        [HttpPost("Create")]
-        public async Task<ActionResult<string>> Register(RegisterData newUsuario)
-        {
-            try
-            {
-                if (newUsuario.Email == null || newUsuario.Email == string.Empty)
-                {
-                    throw new Exception("Email requerido");
-                }
+        //[HttpPost("Create")]
+        //public async Task<ActionResult<string>> Register(RegisterData newUsuario)
+        //{
+        //    try
+        //    {
+        //        if (newUsuario.Email == null || newUsuario.Email == string.Empty)
+        //        {
+        //            throw new Exception("Email requerido");
+        //        }
 
-                if (newUsuario.Nombre == null || newUsuario.Nombre == string.Empty)
-                {
-                    throw new Exception("Nombre de usuario requerido");
-                }
+        //        if (newUsuario.Nombre == null || newUsuario.Nombre == string.Empty)
+        //        {
+        //            throw new Exception("Nombre de usuario requerido");
+        //        }
 
-                if (newUsuario.Password == null || newUsuario.Password == string.Empty)
-                {
-                    throw new Exception("Contraseña requerida");
-                }
+        //        if (newUsuario.Password == null || newUsuario.Password == string.Empty)
+        //        {
+        //            throw new Exception("Contraseña requerida");
+        //        }
 
-                Usuario? UserBD = await this._context.TablaUsuarios.FirstOrDefaultAsync(
-                    Usuario => Usuario.Email == newUsuario.Email
-                );
+        //        Usuario? UserBD = await this._context.TablaUsuarios.FirstOrDefaultAsync(
+        //            Usuario => Usuario.Email == newUsuario.Email
+        //        );
 
-                if (UserBD != null)
-                {
-                    throw new Exception("Ya existe un usuario con este email. Intentelo nuevamente.");
-                }
+        //        if (UserBD != null)
+        //        {
+        //            throw new Exception("Ya existe un usuario con este email. Intentelo nuevamente.");
+        //        }
 
-                var (passwordHash, passwordSalt) = CreatePasswordHash(newUsuario.Password);
+        //        var (passwordHash, passwordSalt) = CreatePasswordHash(newUsuario.Password);
 
-                this._context.TablaUsuarios.Add(new Usuario
-                {
-                    Email = newUsuario.Email,
-                    Nombre = newUsuario.Nombre,
-                    Apellido = newUsuario.Apellido,
-                    Password = passwordHash,
-                    PasswordSalt = passwordSalt
-                });
+        //        this._context.TablaUsuarios.Add(new Usuario
+        //        {
+        //            Email = newUsuario.Email,
+        //            Nombre = newUsuario.Nombre,
+        //            Apellido = newUsuario.Apellido,
+        //            Password = passwordHash,
+        //            PasswordSalt = passwordSalt
+        //        });
 
-                await this._context.SaveChangesAsync();
+        //        await this._context.SaveChangesAsync();
 
-                return Ok("!Se ha registrado correctamente! Ahora inicie sesión!.");
+        //        return Ok("!Se ha registrado correctamente! Ahora inicie sesión!.");
 
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
 
 
-        [HttpPost("Login")]
-        public async Task<ActionResult<LoginResponse>> Login(LoginData usuarioData)
-        {
+        //[HttpPost("Login")]
+        //public async Task<ActionResult<LoginResponse>> Login(LoginData usuarioData)
+        //{
 
-            try
-            {
-                if (usuarioData.Email == null || usuarioData.Email == string.Empty)
-                {
-                    throw new Exception("Email incorrecto");
-                }
+        //    try
+        //    {
+        //        if (usuarioData.Email == null || usuarioData.Email == string.Empty)
+        //        {
+        //            throw new Exception("Email incorrecto");
+        //        }
 
-                if (usuarioData.Password == null || usuarioData.Password == string.Empty)
-                {
-                    throw new Exception("Contraseña incorrecta");
-                }
+        //        if (usuarioData.Password == null || usuarioData.Password == string.Empty)
+        //        {
+        //            throw new Exception("Contraseña incorrecta");
+        //        }
 
-                Usuario? UserBD = await this._context.TablaUsuarios.FirstOrDefaultAsync(Usuario => Usuario.Email == usuarioData.Email);
+        //        Usuario? UserBD = await this._context.TablaUsuarios.FirstOrDefaultAsync(Usuario => Usuario.Email == usuarioData.Email);
 
-                if (UserBD == null)
-                {
-                    throw new Exception("Email ingresado es incorrecto");
-                }
+        //        if (UserBD == null)
+        //        {
+        //            throw new Exception("Email ingresado es incorrecto");
+        //        }
 
-                if (!this.VerifyPasswordHash(usuarioData.Password, UserBD.Password, UserBD.PasswordSalt))
-                {
-                    throw new Exception("Contraseña incorrecta");
-                }
+        //        if (!this.VerifyPasswordHash(usuarioData.Password, UserBD.Password, UserBD.PasswordSalt))
+        //        {
+        //            throw new Exception("Contraseña incorrecta");
+        //        }
 
-                LoginResponse ResponseDto = new LoginResponse
-                {
-                    Email = UserBD.Email,
-                    Id = UserBD.Id,
-                    Nombre = UserBD.Nombre,
-                    Apellido = UserBD.Apellido,
-                    AuthCode = 200,
-                    Token = CreateToken(UserBD),
-                };
+        //        LoginResponse ResponseDto = new LoginResponse
+        //        {
+        //            Email = UserBD.Email,
+        //            Id = UserBD.Id,
+        //            Nombre = UserBD.Nombre,
+        //            Apellido = UserBD.Apellido,
+        //            AuthCode = 200,
+        //            Token = CreateToken(UserBD),
+        //        };
 
-                return Ok(ResponseDto);
+        //        return Ok(ResponseDto);
 
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-    
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
 
 
 
-        #region Metodos complementarios
-
-        private (byte[], byte[]) CreatePasswordHash(string password)
-        {
-            byte[] passwordHash;
-            byte[] passwordSalt;
-
-            using (var hmac = new HMACSHA512()) //Algoritmo de firma 
-            {
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                passwordSalt = hmac.Key;
-            }
-
-            return (passwordHash, passwordSalt);
-        }
-
-        private string CreateToken(Usuario user)
-        {
-            //Permisos para describir la informacion del usuario
-            List<Claim> claims = new List<Claim>
-            {
-               new Claim(ClaimTypes.Email, user.Email) //Permiso de seguridad
-            };
-
-            //Clave simetrica
-            var key = new SymmetricSecurityKey(
-                System.Text.Encoding.UTF8.GetBytes(
-                 this._configuration.GetSection("AppSettings:Token").Value // Obtenemos dato de appSettings para crear Token
-                )
-            );
 
 
-            //Definimos la configuracion del token 
-            var Credencial = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);//Credenciales de firma 
+        //#region Metodos complementarios
 
-            //Defino la carga del token 
-            JwtSecurityToken token = new JwtSecurityToken(
-               claims: claims,
-               expires: DateTime.Now.AddHours(2),
-               signingCredentials: Credencial
-            );
+        //private (byte[], byte[]) CreatePasswordHash(string password)
+        //{
+        //    byte[] passwordHash;
+        //    byte[] passwordSalt;
 
-            //Defino la cadena de token que quiero que retorne 
-            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+        //    using (var hmac = new HMACSHA512()) //Algoritmo de firma 
+        //    {
+        //        passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+        //        passwordSalt = hmac.Key;
+        //    }
 
-            return jwt;
-        }
+        //    return (passwordHash, passwordSalt);
+        //}
 
-        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
-        {
-            using (var hmac = new HMACSHA512(passwordSalt))
-            {
-                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                return computedHash.SequenceEqual(passwordHash);
-            }
-        }
+        //private string CreateToken(Usuario user)
+        //{
+        //    //Permisos para describir la informacion del usuario
+        //    List<Claim> claims = new List<Claim>
+        //    {
+        //       new Claim(ClaimTypes.Email, user.Email) //Permiso de seguridad
+        //    };
 
+        //    //Clave simetrica
+        //    var key = new SymmetricSecurityKey(
+        //        System.Text.Encoding.UTF8.GetBytes(
+        //         this._configuration.GetSection("AppSettings:Token").Value // Obtenemos dato de appSettings para crear Token
+        //        )
+        //    );
+
+
+        //    //Definimos la configuracion del token 
+        //    var Credencial = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);//Credenciales de firma 
+
+        //    //Defino la carga del token 
+        //    JwtSecurityToken token = new JwtSecurityToken(
+        //       claims: claims,
+        //       expires: DateTime.Now.AddHours(2),
+        //       signingCredentials: Credencial
+        //    );
+
+        //    //Defino la cadena de token que quiero que retorne 
+        //    var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+
+        //    return jwt;
+        //}
+
+        //private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
+        //{
+        //    using (var hmac = new HMACSHA512(passwordSalt))
+        //    {
+        //        var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+        //        return computedHash.SequenceEqual(passwordHash);
+        //    }
+        //}
+
+        //#endregion
         #endregion
-
     }
 
 }
