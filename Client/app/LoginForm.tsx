@@ -1,8 +1,15 @@
-"use client"
+"use client";
 
 import { FormEvent } from "react";
-
-import { Container, Button, CssBaseline, TextField,  Paper, Box, Grid, Typography } from "@mui/material";
+import {
+  Container,
+  Button,
+  CssBaseline,
+  Paper,
+  Box,
+  Grid,
+  Typography,
+} from "@mui/material";
 
 export default function SignInSide() {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -14,53 +21,66 @@ export default function SignInSide() {
     });
   };
 
+  const handleIngresar = () => {
+    window.location.href = "/productos";
+  };
+
+
   return (
-    <Container component="main" maxWidth="lg" >
-      <Box
-        sx={{
-          marginTop: 8,
-        }}
-      >
-        <Grid container>
-          <CssBaseline />
-          <Grid
-            item
-            xs={false}
-            sm={4}
-            md={7}
-            sx={{
-              backgroundImage: "url(https://th.bing.com/th/id/OIP.2oTnnt9kDgqLqfYlAkINrwHaE8?pid=ImgDet&rs=1)",
-              backgroundRepeat: "no-repeat",
-              backgroundColor: (t) =>
-                t.palette.mode === "light"
-                  ? t.palette.grey[50]
-                  : t.palette.grey[900],
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          />
-          <Grid
-            item
-            xs={12}
-            sm={8}
-            md={5}
-            component={Paper}
-            elevation={6}
-            square
-          >
-            <Box
-              sx={{
-                my: 8,
-                mx: 4,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <Typography component="h1" variant="h5">
+    <Container component="main" maxWidth="lg">
+      <Box sx={{ display: "flex", justifyContent: "center" }}>
+        <Box sx={{ position: "relative", width: "100%" }}>
+          <Grid container>
+            <Grid item xs={12}>
+              <Typography
+                component="h1"
+                variant="h5"
+                sx={{
+                  textAlign: "center",
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  backgroundColor: "rgba(0, 0, 0, 0.5)",
+                  color: "#fff",
+                  padding: "1rem",
+                  fontSize: "2rem",
+                  zIndex: 1,
+                }}
+              >
                 Bienvenidos a "La Tirolesa"
               </Typography>
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              sm={8}
+              md={7}
+              sx={{
+                backgroundImage:
+                  "url(https://th.bing.com/th/id/OIP.2oTnnt9kDgqLqfYlAkINrwHaE8?pid=ImgDet&rs=1)",
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "contain",
+                backgroundPosition: "center",
+                minHeight: "100vh",
+              }}
+            >
               <Box
+                sx={{
+                  position: "absolute",
+                  bottom: "10rem",
+                  right: "6rem",
+                }}
+              >
+                <Button
+                  onClick={handleIngresar}
+                  variant="contained"
+                  sx={{ mb: 2 }}
+                >
+                  Ingresar
+                </Button>
+              </Box>
+              {/* <Box
                 component="form"
                 noValidate
                 onSubmit={handleSubmit}
@@ -71,7 +91,7 @@ export default function SignInSide() {
                   required
                   fullWidth
                   id="email"
-                  label="Email "
+                  label="Email"
                   name="email"
                   autoComplete="email"
                   autoFocus
@@ -86,7 +106,6 @@ export default function SignInSide() {
                   id="password"
                   autoComplete="current-password"
                 />
-                
                 <Button
                   type="submit"
                   fullWidth
@@ -96,18 +115,17 @@ export default function SignInSide() {
                   INGRESAR
                 </Button>
                 <Grid container>
-                  <Grid item xs>
-                    
-                  </Grid>
-                  <Grid item>
-                    
-                  </Grid>
+                  <Grid item xs></Grid>
+                  <Grid item></Grid>
                 </Grid>
-              </Box>
-            </Box>
+              </Box> */}
+           
           </Grid>
-        </Grid>
-      </Box>
+          </Grid>  
+          </Box>
+          </Box>
+        
+      
     </Container>
   );
 }
