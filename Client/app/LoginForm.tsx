@@ -28,8 +28,7 @@ export default function SignInSide() {
 
   return (
     <Container component="main" maxWidth="lg">
-      <Box sx={{ display: "flex", justifyContent: "center" }}>
-        <Box sx={{ position: "relative", width: "100%" }}>
+      <Box >
           <Grid container>
             <Grid item xs={12}>
               <Typography
@@ -37,15 +36,11 @@ export default function SignInSide() {
                 variant="h5"
                 sx={{
                   textAlign: "center",
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
                   width: "100%",
                   backgroundColor: "rgba(0, 0, 0, 0.5)",
                   color: "#fff",
                   padding: "1rem",
                   fontSize: "2rem",
-                  zIndex: 1,
                 }}
               >
                 Bienvenidos a "La Tirolesa"
@@ -119,13 +114,9 @@ export default function SignInSide() {
                   <Grid item></Grid>
                 </Grid>
               </Box> */}
-           
           </Grid>
           </Grid>  
-          </Box>
-          </Box>
-        
-      
+      </Box>     
     </Container>
   );
 }

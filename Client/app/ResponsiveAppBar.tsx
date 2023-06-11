@@ -34,6 +34,7 @@ const routes = [
     label: "Historial Compras",
     path: "/comprasHistorial"
   },
+  
 ];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
@@ -59,80 +60,21 @@ function ResponsiveAppBar() {
   const isHomePage = window.location.pathname === "/";
 
   return (
-    <AppBar position="static">
-      <Container maxWidth="xl">
-        <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              mr: 2,
-              display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-            }}
-          >
-            LOGO
-          </Typography>
-
-          {!isHomePage && (
-            <>
-              <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-                <IconButton
-                  size="large"
-                  aria-label="account of current user"
-                  aria-controls="menu-appbar"
-                  aria-haspopup="true"
-                  onClick={handleOpenNavMenu}
-                  color="inherit"
-                >
-                  <MenuIcon />
-                </IconButton>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorElNav}
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "left",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "left",
-                  }}
-                  open={Boolean(anchorElNav)}
-                  onClose={handleCloseNavMenu}
-                  sx={{
-                    display: { xs: "block", md: "none" },
-                  }}
-                >
-
-{routes.map(({ label, path }) => (
-                    <Link href={path} key={path}>
-                      <MenuItem onClick={handleCloseNavMenu}>
-                        <Typography textAlign="center">{label}</Typography>
-                </MenuItem>
-							</Link>
-              ))}
-            </Menu>
-          </Box>
-
-          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
+    <>
+      {
+        !isHomePage && (
+          <AppBar position="static">
+          <Container maxWidth="xl">
+            <Toolbar disableGutters>
+              <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
               <Typography
-                variant="h5"
+                variant="h6"
                 noWrap
                 component="a"
-                href=""
+                href="/"
                 sx={{
                   mr: 2,
-                  display: { xs: "flex", md: "none" },
-                  flexGrow: 1,
+                  display: { xs: "none", md: "flex" },
                   fontFamily: "monospace",
                   fontWeight: 700,
                   letterSpacing: ".3rem",
@@ -142,49 +84,115 @@ function ResponsiveAppBar() {
               >
                 LOGO
               </Typography>
-
-              <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-                {routes.map(({ label, path }) => (
-                  <Link href={path} key={path}>
-                    <Button
-                      onClick={handleCloseNavMenu}
-                      sx={{ my: 2, color: "white", display: "block" }}
+    
+              {!isHomePage && (
+                <>
+                  <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+                    <IconButton
+                      size="large"
+                      aria-label="account of current user"
+                      aria-controls="menu-appbar"
+                      aria-haspopup="true"
+                      onClick={handleOpenNavMenu}
+                      color="inherit"
                     >
-                      {label}
-                    </Button>
-                  </Link>
-                ))}
-              </Box>
-
-              <Box sx={{ flexGrow: 0 }}>
-                <Menu
-                  sx={{ mt: "45px" }}
-                  id="menu-appbar"
-                  anchorEl={anchorElUser}
-                  anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  open={Boolean(anchorElUser)}
-                  onClose={handleCloseUserMenu}
-                >
-                  {settings.map((setting) => (
-                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                      <Typography textAlign="center">{setting}</Typography>
+                      <MenuIcon />
+                    </IconButton>
+                    <Menu
+                      id="menu-appbar"
+                      anchorEl={anchorElNav}
+                      anchorOrigin={{
+                        vertical: "bottom",
+                        horizontal: "left",
+                      }}
+                      keepMounted
+                      transformOrigin={{
+                        vertical: "top",
+                        horizontal: "left",
+                      }}
+                      open={Boolean(anchorElNav)}
+                      onClose={handleCloseNavMenu}
+                      sx={{
+                        display: { xs: "block", md: "none" },
+                      }}
+                    >
+    
+    {routes.map(({ label, path }) => (
+                        <Link href={path} key={path}>
+                          <MenuItem onClick={handleCloseNavMenu}>
+                            <Typography textAlign="center">{label}</Typography>
                     </MenuItem>
+                  </Link>
                   ))}
                 </Menu>
               </Box>
-            </>
-          )}
-        </Toolbar>
-      </Container>
-    </AppBar>
+    
+              <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
+                  <Typography
+                    variant="h5"
+                    noWrap
+                    component="a"
+                    href=""
+                    sx={{
+                      mr: 2,
+                      display: { xs: "flex", md: "none" },
+                      flexGrow: 1,
+                      fontFamily: "monospace",
+                      fontWeight: 700,
+                      letterSpacing: ".3rem",
+                      color: "inherit",
+                      textDecoration: "none",
+                    }}
+                  >
+                    LOGO
+                  </Typography>
+    
+                  <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+                    {routes.map(({ label, path }) => (
+                      <Link href={path} key={path}>
+                        <Button
+                          onClick={handleCloseNavMenu}
+                          sx={{ my: 2, color: "white", display: "block" }}
+                        >
+                          {label}
+                        </Button>
+                      </Link>
+                    ))}
+                  </Box>
+    
+                  <Box sx={{ flexGrow: 0 }}>
+                    <Menu
+                      sx={{ mt: "45px" }}
+                      id="menu-appbar"
+                      anchorEl={anchorElUser}
+                      anchorOrigin={{
+                        vertical: "top",
+                        horizontal: "right",
+                      }}
+                      keepMounted
+                      transformOrigin={{
+                        vertical: "top",
+                        horizontal: "right",
+                      }}
+                      open={Boolean(anchorElUser)}
+                      onClose={handleCloseUserMenu}
+                    >
+                      {settings.map((setting) => (
+                        <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                          <Typography textAlign="center">{setting}</Typography>
+                        </MenuItem>
+                      ))}
+                    </Menu>
+                  </Box>
+                </>
+              )}
+            </Toolbar>
+          </Container>
+        </AppBar> 
+        )
+      }
+    </>
+    
   );
 }
 
