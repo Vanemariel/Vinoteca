@@ -102,6 +102,17 @@ export default function CustomizedTables() {
     overflowY: 'auto', // Agrega una barra de desplazamiento vertical cuando el contenido excede la altura máxima
   };
 
+  const [okClicked, setOkClicked] = useState(false);
+  const [cancelClicked, setCancelClicked] = useState(false);
+  const handleOkClick = () => {
+    setOkClicked(true);
+  };
+  const handleCancelClick = () => {
+  setCancelClicked(true);
+  handleClose(); // Cierra el modal
+};
+
+
   return (
     <Fragment>
       <Autocomplete
@@ -271,9 +282,9 @@ export default function CustomizedTables() {
                   </Grid>
 
                   <Grid item container xs={12} justifyContent="space-between">
-                    <Button variant="contained" color="warning">
-                      Cancelar
-                    </Button>
+                    <Button onClick={handleCancelClick} disabled={cancelClicked}>
+  Cancelar
+</Button>
                     <Button variant="contained" color="primary">
                       Guardar
                     </Button>

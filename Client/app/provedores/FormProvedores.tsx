@@ -96,6 +96,15 @@ export default function FormProvedores() {
     { title: "The Godfather", year: 1972 },
     { title: "The Godfather: Part II", year: 1974 },
   ];
+  const [okClicked, setOkClicked] = useState(false);
+  const [cancelClicked, setCancelClicked] = useState(false);
+  const handleOkClick = () => {
+    setOkClicked(true);
+  };
+  const handleCancelClick = () => {
+    setCancelClicked(true);
+    handleClose(); // Cierra el modal
+  };
 
   return (
     <Fragment>
@@ -274,9 +283,9 @@ export default function FormProvedores() {
         </Grid> */}
 
                   <Grid item container xs={12} justifyContent="space-between">
-                    <Button variant="contained" color="warning">
-                      Cancelar
-                    </Button>
+                  <Button onClick={handleCancelClick} disabled={cancelClicked}>
+  Cancelar
+</Button>
                     <Button variant="contained" color="primary">
                       Añadir
                     </Button>

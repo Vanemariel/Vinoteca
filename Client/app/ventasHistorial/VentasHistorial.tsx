@@ -119,6 +119,21 @@ const rowss = [createTable("Fernet", 1)];
     });
   };
 
+  const [dateFrom, setDateFrom] = useState(""); // Agregar esta línea
+  const [dateTo, setDateTo] = useState(""); // Agregar esta línea
+
+  const [isTableVisible, setTableVisible] = useState(false);
+
+  const [showDetails, setShowDetails] = useState(false);
+
+  const handleShowDetails = () => {
+    setShowDetails(true);
+  };
+
+  const handleCloseDetails = () => {
+    setShowDetails(false);
+  };
+
   return (
     <div>
       {/**Box INGRESAR PRODUCTOS */}
@@ -165,7 +180,7 @@ const rowss = [createTable("Fernet", 1)];
                   rowSpacing={1}
                   columnSpacing={{ xs: 1, sm: 2, md: 3 }}
                 >
-                  <TextField
+                  {/* <TextField
                     select
                     label="Buscar aqui por..."
                     variant="outlined"
@@ -177,19 +192,37 @@ const rowss = [createTable("Fernet", 1)];
                     <MenuItem value="Option 2">Numero de Venta</MenuItem>
                     <MenuItem value="Option 3">Vendedor</MenuItem>
                     
-                  </TextField>
-                  <Grid item xs={6}>
+                  </TextField> */}
+               <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      marginBottom: "10px",
+                    }}
+                  >
                     <TextField
-                      margin="normal"
-                      required
+                      label="Fecha desde"
+                      type="date"
                       fullWidth
-                      label="Ingresa el dato "
-                      name="Ingresa el dato"
-                      autoComplete="Ingresa el dato"
-                      autoFocus
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      value={dateFrom}
+                      onChange={(e) => setDateFrom(e.target.value)}
+                      style={{ marginRight: "10px" }}
                     />
-                  </Grid>
-                  
+                    <TextField
+                      label="Fecha hasta"
+                      type="date"
+                      fullWidth
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      value={dateTo}
+                      onChange={(e) => setDateTo(e.target.value)}
+                      style={{ marginLeft: "10px" }}
+                    />
+                  </div>
                 </Grid>
                 <Button
                   type="submit"
@@ -255,37 +288,32 @@ const rowss = [createTable("Fernet", 1)];
           </TableBody>
         </Table>
       </TableContainer>   
-
-       <Button onClick={handleOpen} style={{ marginTop: "-6px"}}>Ver Detalle de la Venta</Button>
-      <Modal 
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={{style}}>
-        <TableContainer component={Paper} sx={{ marginTop: "50px"}}>        
-        <Table sx={{ minWidth: 400}} aria-label="customized table">
-          <TableHead>
-            <TableRow>
-              
-              <StyledTableCell align="right">producto</StyledTableCell>
-              <StyledTableCell align="right">cantidad</StyledTableCell>      
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rowss.map((rowss) => (
-              <StyledTableRow key={rowss.producto}>
-                <StyledTableCell align="right"> {rowss.producto}</StyledTableCell>
-                <StyledTableCell align="right"> {rowss.cantidad}</StyledTableCell>
-              </StyledTableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>   
-          <Button onClick={handleOpen}>Cerrar</Button>
-        </Box>
-      </Modal>  
+      <Button onClick={handleShowDetails} style={{ marginTop: "-6px" }}>
+        Ver Detalle de la venta
+      </Button>
+      {showDetails && (
+        <>
+          <TableContainer component={Paper} style={{ marginTop: "10px" }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell align="right">Producto</TableCell>
+                  <TableCell align="right">Cantidad</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rowss.map((row) => (
+                  <TableRow key={row.producto}>
+                    <TableCell align="right">{row.producto}</TableCell>
+                    <TableCell align="right">{row.cantidad}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <Button onClick={handleCloseDetails}>Cerrar</Button>
+        </>
+      )}
     </div>
   );
 }

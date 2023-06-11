@@ -54,35 +54,30 @@ export default function ComprasHistorial() {
       border: 0,
     },
   }));
-  
+
   const createData = (
     proveedor: string,
     fecha: string,
     vendedor: string,
-    total: number,
+    total: number
   ) => {
     return {
-     proveedor,
-     fecha,
-     vendedor,
-     total,
+      proveedor,
+      fecha,
+      vendedor,
+      total,
     };
   };
-  const rows = [createData("", "","", 1)];
+  const rows = [createData("", "", "", 1)];
 
-
-const createTable = (
-  
-  producto: string,
-  cantidad: number,
-) => {
-  return {
-   producto,
-   cantidad,
+  const createTable = (producto: string, cantidad: number) => {
+    return {
+      producto,
+      cantidad,
+    };
   };
-}
 
-const rowss = [createTable("", 1)];
+  const rowss = [createTable("", 1)];
 
   const style = {
     position: "absolute" as "absolute",
@@ -121,56 +116,62 @@ const rowss = [createTable("", 1)];
 
   const [dateFrom, setDateFrom] = useState(""); // Agregar esta línea
   const [dateTo, setDateTo] = useState(""); // Agregar esta línea
+ 
+  const [isTableVisible, setTableVisible] = useState(false);
+
+  const [showDetails, setShowDetails] = useState(false);
+
+  const handleShowDetails = () => {
+    setShowDetails(true);
+  };
+
+  const handleCloseDetails = () => {
+    setShowDetails(false);
+  };
 
 
   return (
     <div>
       {/**Box INGRESAR PRODUCTOS */}
       <Grid item xs={6}>
-      <Box
-        sx={{
-          position: "relative",
-          left: "300px",
-          marginTop: 8,
-          //width: "1500px",
-        }}
-      >
-        <Grid container>
-          <CssBaseline />
-          <Grid
-            item
-            xs={12}
-            sm={8}
-            md={5}
-            component={Paper}
-            elevation={6}
-            square
-          >
-            <Box
-              sx={{
-                my: 8,
-                mx: 4,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
+        <Box
+          sx={{
+            position: "relative",
+            left: "300px",
+            marginTop: 8,
+            //width: "1500px",
+          }}
+        >
+          <Grid container>
+            <CssBaseline />
+            <Grid
+              item
+              xs={12}
+              sm={8}
+              md={5}
+              component={Paper}
+              elevation={6}
+              square
             >
-              <Typography component="h1" variant="h5">
-              "Busca aqui tus compras"
-              </Typography>
               <Box
-                component="form"
-                noValidate
-                onSubmit={handleSubmit}
-                sx={{ mt: 2 }}
+                sx={{
+                  my: 8,
+                  mx: 4,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
               >
-                <Grid
-                  container
-                  rowSpacing={1}
-                  columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+                <Typography component="h1" variant="h5">
+                  "Busca aqui tus compras"
+                </Typography>
+                <Box
+                  component="form"
+                  noValidate
+                  onSubmit={handleSubmit}
+                  sx={{ mt: 2 }}
                 >
-                  
-                  <TextField
+                  {/* <TextField
                     select
                     label="Buscar un proveedor"
                     variant="outlined"
@@ -181,56 +182,61 @@ const rowss = [createTable("", 1)];
                     <MenuItem value="Option 1">Fecha</MenuItem>
                     <MenuItem value="Option 2">Proveedor</MenuItem>
                     
-                    </TextField>
-            <TextField
-              label="Fecha desde"
-              type="date"
-              fullWidth
-              InputLabelProps={{
-                shrink: true,
-              }}
-              value={dateFrom}
-              onChange={(e) => setDateFrom(e.target.value)}
-            />
-            <TextField
-              label="Fecha hasta"
-              type="date"
-              fullWidth
-              InputLabelProps={{
-                shrink: true,
-              }}
-              value={dateTo}
-              onChange={(e) => setDateTo(e.target.value)}
-            />
+                    </TextField> */}
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      marginBottom: "10px",
+                    }}
+                  >
+                    <TextField
+                      label="Fecha desde"
+                      type="date"
+                      fullWidth
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      value={dateFrom}
+                      onChange={(e) => setDateFrom(e.target.value)}
+                      style={{ marginRight: "10px" }}
+                    />
+                    <TextField
+                      label="Fecha hasta"
+                      type="date"
+                      fullWidth
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      value={dateTo}
+                      onChange={(e) => setDateTo(e.target.value)}
+                      style={{ marginLeft: "10px" }}
+                    />
+                  </div>
+
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 3, mb: 2 }}
+                  >
+                    BUSCAR
+                  </Button>
+                  <Grid container>
+                    <Grid item xs></Grid>
+                    <Grid item></Grid>
                   </Grid>
-       
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{ mt: 3, mb: 2 }}
-                >
-                  BUSCAR
-                </Button>
-                <Grid container>
-                  <Grid item xs></Grid>
-                  <Grid item></Grid>
-                </Grid>
+                </Box>
               </Box>
-            </Box>
+            </Grid>
           </Grid>
-        </Grid>
-      </Box>
+        </Box>
       </Grid>
 
-      <Grid item xs={6}>
-     
-      </Grid>
-
+      <Grid item xs={6}></Grid>
 
       {/*Table*/}
       <TableContainer component={Paper} sx={{ marginTop: "50px" }}>
-        
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
@@ -240,7 +246,7 @@ const rowss = [createTable("", 1)];
               <StyledTableCell align="right">Proveedores</StyledTableCell>
               <StyledTableCell align="right">Fecha</StyledTableCell>
               <StyledTableCell align="right">Vendedor</StyledTableCell>
-              <StyledTableCell align="right">Total</StyledTableCell>             
+              <StyledTableCell align="right">Total</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -256,49 +262,45 @@ const rowss = [createTable("", 1)];
                     <DeleteIcon />{" "}
                   </IconButton>
                 </StyledTableCell>
-                <StyledTableCell align="right"> {row.proveedor}</StyledTableCell>
-                <StyledTableCell align="right"> {row.fecha}</StyledTableCell>
-                <StyledTableCell align="right"> {row.vendedor}</StyledTableCell>
                 <StyledTableCell align="right">
                   {" "}
-                  ${row.total}
+                  {row.proveedor}
                 </StyledTableCell>
+                <StyledTableCell align="right"> {row.fecha}</StyledTableCell>
+                <StyledTableCell align="right"> {row.vendedor}</StyledTableCell>
+                <StyledTableCell align="right"> ${row.total}</StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>
         </Table>
-      </TableContainer>   
+      </TableContainer>
 
-       <Button onClick={handleOpen} style={{ marginTop: "-6px"}}>Ver Detalle de la Compra</Button>
-      <Modal 
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={{style}}>
-        <TableContainer component={Paper} sx={{ marginTop: "50px"}}>        
-        <Table sx={{ minWidth: 400}} aria-label="customized table">
-          <TableHead>
-            <TableRow>
-              
-              <StyledTableCell align="right">producto</StyledTableCell>
-              <StyledTableCell align="right">cantidad</StyledTableCell>      
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rowss.map((rowss) => (
-              <StyledTableRow key={rowss.producto}>
-                <StyledTableCell align="right"> {rowss.producto}</StyledTableCell>
-                <StyledTableCell align="right"> {rowss.cantidad}</StyledTableCell>
-              </StyledTableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>   
-          <Button onClick={handleOpen}>Cerrar</Button>
-        </Box>
-      </Modal>  
+      <Button onClick={handleShowDetails} style={{ marginTop: "-6px" }}>
+        Ver Detalle de la Compra
+      </Button>
+      {showDetails && (
+        <>
+          <TableContainer component={Paper} style={{ marginTop: "10px" }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell align="right">Producto</TableCell>
+                  <TableCell align="right">Cantidad</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rowss.map((row) => (
+                  <TableRow key={row.producto}>
+                    <TableCell align="right">{row.producto}</TableCell>
+                    <TableCell align="right">{row.cantidad}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <Button onClick={handleCloseDetails}>Cerrar</Button>
+        </>
+      )}
     </div>
   );
 }
