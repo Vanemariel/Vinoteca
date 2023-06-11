@@ -75,7 +75,7 @@ export default function SignInSide() {
                 <Button
                   onClick={handleIngresar}
                   variant="contained"
-                  sx={{ mb: 2 }}
+                  sx={{ mb: 2 , borderRadius: "2rem"}}
                 >
                   Ingresar
                 </Button>

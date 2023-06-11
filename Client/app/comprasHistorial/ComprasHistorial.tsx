@@ -119,6 +119,10 @@ const rowss = [createTable("", 1)];
     });
   };
 
+  const [dateFrom, setDateFrom] = useState(""); // Agregar esta línea
+  const [dateTo, setDateTo] = useState(""); // Agregar esta línea
+
+
   return (
     <div>
       {/**Box INGRESAR PRODUCTOS */}
@@ -168,7 +172,7 @@ const rowss = [createTable("", 1)];
                   
                   <TextField
                     select
-                    label="Buscar aqui por..."
+                    label="Buscar un proveedor"
                     variant="outlined"
                     fullWidth
                     value={provider}
@@ -177,20 +181,29 @@ const rowss = [createTable("", 1)];
                     <MenuItem value="Option 1">Fecha</MenuItem>
                     <MenuItem value="Option 2">Proveedor</MenuItem>
                     
-                  </TextField>
-                  <Grid item xs={6}>
-                    <TextField
-                      margin="normal"
-                      required
-                      fullWidth
-                      label="Ingresa el dato "
-                      name="Ingresa el dato"
-                      autoComplete="Ingresa el dato"
-                      autoFocus
-                    />
+                    </TextField>
+            <TextField
+              label="Fecha desde"
+              type="date"
+              fullWidth
+              InputLabelProps={{
+                shrink: true,
+              }}
+              value={dateFrom}
+              onChange={(e) => setDateFrom(e.target.value)}
+            />
+            <TextField
+              label="Fecha hasta"
+              type="date"
+              fullWidth
+              InputLabelProps={{
+                shrink: true,
+              }}
+              value={dateTo}
+              onChange={(e) => setDateTo(e.target.value)}
+            />
                   </Grid>
-                  
-                </Grid>
+       
                 <Button
                   type="submit"
                   fullWidth
