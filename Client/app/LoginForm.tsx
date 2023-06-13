@@ -25,56 +25,61 @@ export default function SignInSide() {
     window.location.href = "/productos";
   };
 
-
   return (
     <Container component="main" maxWidth="lg">
-      <Box >
-          <Grid container>
-            <Grid item xs={12}>
-              <Typography
-                component="h1"
-                variant="h5"
-                sx={{
-                  textAlign: "center",
-                  width: "100%",
-                  backgroundColor: "rgba(0, 0, 0, 0.5)",
-                  color: "#fff",
-                  padding: "1rem",
-                  fontSize: "2rem",
-                }}
-              >
-                Bienvenidos a "La Tirolesa"
-              </Typography>
-            </Grid>
-            <Grid
-              item
-              xs={12}
-              sm={8}
-              md={7}
+      <Box>
+        <Grid container>
+          <Grid item xs={12} sm={6} md={5}>
+            <Box
               sx={{
-                backgroundImage:
-                  "url(https://th.bing.com/th/id/OIP.2oTnnt9kDgqLqfYlAkINrwHaE8?pid=ImgDet&rs=1)",
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "contain",
-                backgroundPosition: "center",
-                minHeight: "100vh",
+                textAlign: "center",
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                color: "#fff",
+                padding: "1rem",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                height: "100%",
               }}
             >
-              <Box
-                sx={{
-                  position: "absolute",
-                  bottom: "10rem",
-                  right: "6rem",
-                }}
+              <Typography component="h1" variant="h5">
+                Bienvenidos a "La Tirolesa"
+              </Typography>
+              <Button
+                onClick={handleIngresar}
+                variant="contained"
+                sx={{ mt: 2, borderRadius: "2rem" }}
               >
-                <Button
-                  onClick={handleIngresar}
-                  variant="contained"
-                  sx={{ mb: 2 , borderRadius: "2rem"}}
-                >
-                  Ingresar
-                </Button>
-              </Box>
+                Ingresar
+              </Button>
+            </Box>
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            md={7}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <img
+              src="https://th.bing.com/th/id/OIP.2oTnnt9kDgqLqfYlAkINrwHaE8?pid=ImgDet&rs=1"
+              alt="Background"
+              style={{ width: "100%", height: "100%", objectFit: "contain" }}
+            />
+          </Grid>
+        </Grid>
+      </Box>
+    </Container>
+  );
+}
+
+
+
+
               {/* <Box
                 component="form"
                 noValidate
@@ -114,9 +119,4 @@ export default function SignInSide() {
                   <Grid item></Grid>
                 </Grid>
               </Box> */}
-          </Grid>
-          </Grid>  
-      </Box>     
-    </Container>
-  );
-}
+         
