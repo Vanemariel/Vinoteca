@@ -174,7 +174,7 @@ const rowss = [createTable("Fernet", 1)];
                 component="form"
                 noValidate
                 onSubmit={handleSubmit}
-                sx={{ mt: 1 }}
+                sx={{ mt: 2 }}
               >
                 <Grid
                   container
