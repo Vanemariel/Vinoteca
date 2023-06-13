@@ -26,34 +26,36 @@ import {
 } from "@mui/material";
 import { FormEvent } from "react";
 
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: "center",
+  color: theme.palette.text.secondary,
+}));
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  "&:nth-of-type(odd)": {
+    backgroundColor: theme.palette.action.hover,
+  },
+  // hide last border
+  "&:last-child td, &:last-child th": {
+    border: 0,
+  },
+}));
+
 export default function ComprasHistorial() {
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  }));
-
-  const StyledTableCell = styled(TableCell)(({ theme }) => ({
-    [`&.${tableCellClasses.head}`]: {
-      backgroundColor: theme.palette.common.black,
-      color: theme.palette.common.white,
-    },
-    [`&.${tableCellClasses.body}`]: {
-      fontSize: 14,
-    },
-  }));
-
-  const StyledTableRow = styled(TableRow)(({ theme }) => ({
-    "&:nth-of-type(odd)": {
-      backgroundColor: theme.palette.action.hover,
-    },
-    // hide last border
-    "&:last-child td, &:last-child th": {
-      border: 0,
-    },
-  }));
+ 
 
   const createData = (
     proveedor: string,
@@ -284,16 +286,16 @@ export default function ComprasHistorial() {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell align="right">Producto</TableCell>
-                  <TableCell align="right">Cantidad</TableCell>
+                  <StyledTableCell align="right">Producto</StyledTableCell>
+                  <StyledTableCell align="right">Cantidad</StyledTableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {rowss.map((row) => (
-                  <TableRow key={row.producto}>
-                    <TableCell align="right">{row.producto}</TableCell>
-                    <TableCell align="right">{row.cantidad}</TableCell>
-                  </TableRow>
+                  <StyledTableRow key={row.producto}>
+                    <StyledTableCell align="right">{row.producto}</StyledTableCell>
+                    <StyledTableCell align="right">{row.cantidad}</StyledTableCell>
+                  </StyledTableRow>
                 ))}
               </TableBody>
             </Table>
