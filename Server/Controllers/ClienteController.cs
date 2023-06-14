@@ -5,10 +5,10 @@ using Omnichannel.Contracts;
 using System;
 using System.Diagnostics.Metrics;
 using Vinoteca.BaseDatos;
-using Vinoteca.BaseDatos.Entidades;
 
 namespace Vinoteca1.Server.Controllers
 {
+///trolos todos
     [ApiController]
     [Route("Api/[controller]")]
     public class ClienteController : ControllerBase
