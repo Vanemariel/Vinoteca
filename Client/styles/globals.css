@@ -6,8 +6,8 @@
     'Roboto Mono', 'Oxygen Mono', 'Ubuntu Monospace', 'Source Code Pro',
     'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
 
-  --foreground: #b02c79;
-  --background-start: red;
+  --foreground: #e6bbd4;
+  --background-start: rgb(247, 162, 242);
   --background-end: #b02c79;
 
   --primary-glow: conic-gradient(

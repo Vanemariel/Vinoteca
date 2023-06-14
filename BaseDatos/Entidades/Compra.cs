@@ -19,12 +19,19 @@ namespace BaseDatos.Entidades
         public decimal Total { get; set; }
         public int NumeroDeFactura { get; set; }
 
-        [ForeignKey("Usuario")]
         public int IdUsuario { get; set; }
+
+        [ForeignKey("IdUsuario")]
         public Usuario Usuario { get; set; }
 
-        [ForeignKey("Proveedor")]
         public int IdProveedor { get; set; }
+
+        [ForeignKey("IdProveedor")]
         public Proveedor Proveedor { get; set; }
+
+
+        [InverseProperty("Compra")]
+        public List<DetalleDeCompra> DetalleDeCompras { get; set; }
+    
     }
 }

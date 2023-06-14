@@ -168,33 +168,32 @@ const rowss = [createTable("Fernet", 1)];
               }}
             >
               <Typography component="h1" variant="h5">
-              "Busca aqui tus ventas"
-              </Typography>
-              <Box
-                component="form"
-                noValidate
-                onSubmit={handleSubmit}
-                sx={{ mt: 2 }}
-              >
-                <Grid
+                  "Busca aqui tus ventas"
+                </Typography>
+                <Box
+                  component="form"
+                  noValidate
+                  onSubmit={handleSubmit}
+                  sx={{ mt: 2 }}
+                >
+                  <Grid
                   container
                   rowSpacing={1}
                   columnSpacing={{ xs: 1, sm: 2, md: 3 }}
                 >
                   {/* <TextField
                     select
-                    label="Buscar aqui por..."
+                    label="Buscar un proveedor"
                     variant="outlined"
                     fullWidth
                     value={provider}
                     onChange={(e) => setProvider(e.target.value)}
                   >
                     <MenuItem value="Option 1">Fecha</MenuItem>
-                    <MenuItem value="Option 2">Numero de Venta</MenuItem>
-                    <MenuItem value="Option 3">Vendedor</MenuItem>
+                    <MenuItem value="Option 2">Proveedor</MenuItem>
                     
-                  </TextField> */}
-               <div
+                    </TextField> */}
+                  <div
                     style={{
                       display: "flex",
                       justifyContent: "space-between",
@@ -224,14 +223,14 @@ const rowss = [createTable("Fernet", 1)];
                       style={{ marginLeft: "10px" }}
                     />
                   </div>
-                </Grid>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{ mt: 3, mb: 2 }}
-                >
-                  BUSCAR
+                  </Grid>
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 3, mb: 2 }}
+                  >
+                    BUSCAR
                 </Button>
                 <Grid container>
                   <Grid item xs></Grid>
@@ -244,9 +243,9 @@ const rowss = [createTable("Fernet", 1)];
       </Box>
       </Grid>
 
-      <Grid item xs={6}>
+      <Grid item xs={6}></Grid>
      
-      </Grid>
+      
 
 
       {/*Table*/}

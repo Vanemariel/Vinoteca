@@ -70,13 +70,19 @@ export default function FormProvedores() {
     horariodesde: number,
     horariohasta: number
   ) => {
-    return { name, descripcion, telefonodecontacto, horariodesde, horariohasta };
+    return {
+      name,
+      descripcion,
+      telefonodecontacto,
+      horariodesde,
+      horariohasta,
+    };
   };
 
   const rows = [
-    createData("Gallardo", " ",  3513030411, 11, 13),
-    createData("Baggio", " ",  3516652888, 14, 12),
-    createData("Pritty", "",  351339097, 9 , 22),
+    createData("Gallardo", " ", 3513030411, 11, 13),
+    createData("Baggio", " ", 3516652888, 14, 12),
+    createData("Pritty", "", 351339097, 9, 22),
   ];
 
   const style = {
@@ -112,13 +118,13 @@ export default function FormProvedores() {
         id="combo-box-demo"
         options={top100Films}
         getOptionLabel={(option) => option.title}
-        style={{ width: 300 }}
+        style={{ width: 300, marginBottom: "1rem" }} // Agregar marginBottom
         renderInput={(params) => (
           <TextField
             {...params}
-            style={{ background: "#fff" }}
-            label="Busca aqui un proveedor"
+            label="Busca aqui tu proveedor"
             variant="outlined"
+            style={{ background: "#fff" }}
           />
         )}
       />
@@ -135,13 +141,9 @@ export default function FormProvedores() {
 
               <StyledTableCell align="right">Descripcion</StyledTableCell>
 
-              <StyledTableCell align="right">
-                Horario desde
-              </StyledTableCell>
+              <StyledTableCell align="right">Horario desde</StyledTableCell>
 
-              <StyledTableCell align="right">
-                Horario hasta
-              </StyledTableCell>
+              <StyledTableCell align="right">Horario hasta</StyledTableCell>
 
               <StyledTableCell align="right">
                 Telefono de contacto
@@ -283,9 +285,12 @@ export default function FormProvedores() {
         </Grid> */}
 
                   <Grid item container xs={12} justifyContent="space-between">
-                  <Button onClick={handleCancelClick} disabled={cancelClicked}>
-  Cancelar
-</Button>
+                    <Button
+                      onClick={handleCancelClick}
+                      disabled={cancelClicked}
+                    >
+                      Cancelar
+                    </Button>
                     <Button variant="contained" color="primary">
                       Añadir
                     </Button>

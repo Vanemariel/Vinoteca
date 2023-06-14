@@ -19,8 +19,9 @@ namespace BaseDatos.Entidades
         public int PrecioVenta { get; set; }
         public int PrecioCompra { get; set; }
 
-        [ForeignKey("Proveedor")]
         public int IdProveedor { get; set; }
+
+        [ForeignKey("IdProveedor")]
         public Proveedor Proveedor { get; set; }
 
         [InverseProperty("Producto")]

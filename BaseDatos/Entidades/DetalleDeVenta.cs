@@ -16,12 +16,13 @@ namespace BaseDatos.Entidades
         public int PrecioVenta { get; set; }
         public int CantidadVenta { get; set; }
 
-        [ForeignKey("Venta")]
         public int IdVenta { get; set; }
+        [ForeignKey("IdVenta")]
         public Venta Venta { get; set; }
 
-        [ForeignKey("Producto")]
         public int IdProducto { get; set; }
+
+        [ForeignKey("IdProducto")]
         public Producto Producto { get; set; }
 
     }

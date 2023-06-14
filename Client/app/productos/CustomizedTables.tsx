@@ -115,20 +115,20 @@ export default function CustomizedTables() {
 
   return (
     <Fragment>
-      <Autocomplete
-        id="combo-box-demo"
-        options={top100Films}
-        getOptionLabel={(option) => option.title}
-        style={{ width: 300 }}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label="Busca aqui tu producto"
-            variant="outlined"
-            style={{background: '#fff'}}
-          />
-        )}
-      />
+    <Autocomplete
+      id="combo-box-demo"
+      options={top100Films}
+      getOptionLabel={(option) => option.title}
+      style={{ width: 300, marginBottom: '1rem' }} // Agregar marginBottom
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label="Busca aqui tu producto"
+          variant="outlined"
+          style={{ background: '#fff' }}
+        />
+      )}
+    />
 
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,5 +18,8 @@ namespace BaseDatos.Entidades
         public DateTime HorarioDesde { get; set; }
         public DateTime HorarioHasta { get; set; }
         public int Telefono { get; set; }
+
+        [InverseProperty("Proveedor")]
+        public List<Producto> Productos { get; set; }
     }
 }

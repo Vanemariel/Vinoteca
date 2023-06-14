@@ -18,12 +18,15 @@ namespace BaseDatos.Entidades
         public string FormaPago { get; set; }
         public decimal Total { get; set; }
 
-        [ForeignKey("Usuario")]
         public int IdUsuario { get; set; }
+        [ForeignKey("IdUsuario")]
         public Usuario Usuario { get; set; }
 
-        [ForeignKey("Cliente")]
         public int IdCliente { get; set; }
+        [ForeignKey("IdCliente")]
         public Cliente Cliente { get; set; }
+
+        [InverseProperty("Venta")]
+        public List<DetalleDeVenta> DetalleDeVentas { get; set; }
     }
 }

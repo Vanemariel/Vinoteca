@@ -173,6 +173,11 @@ export default function ComprasHistorial() {
                   onSubmit={handleSubmit}
                   sx={{ mt: 2 }}
                 >
+                  <Grid
+                  container
+                  rowSpacing={1}
+                  columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+                >
                   {/* <TextField
                     select
                     label="Buscar un proveedor"
@@ -215,7 +220,7 @@ export default function ComprasHistorial() {
                       style={{ marginLeft: "10px" }}
                     />
                   </div>
-
+                  </Grid>
                   <Button
                     type="submit"
                     fullWidth
