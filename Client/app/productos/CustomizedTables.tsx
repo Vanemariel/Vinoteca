@@ -20,6 +20,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { LoadingButton } from "@mui/lab";
+
 import {
   Checkbox,
   Autocomplete,
@@ -35,7 +36,6 @@ import {
 import { IconButton } from "@mui/material";
 import { Producto } from "../../TYPES/crudTypes";
 import { useStore } from "../../stores/crud";
-import { SyntheticEvent } from "axios";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -97,6 +97,11 @@ export default function CustomizedTables() {
     severity: "success",
     message: "",
   });
+  const top100Films = [
+    { title: "The Shawshank Redemption", year: 1994 },
+    { title: "The Godfather", year: 1972 },
+    { title: "The Godfather: Part II", year: 1974 },
+  ];
   const [proveedorList, setProveedorList] = useState<
     Array<{ id: number; name: string }>
   >([]);
@@ -146,7 +151,7 @@ export default function CustomizedTables() {
       });
   }, [getList]);
 
-  const validate = async (e: SyntheticEvent) => {
+  const validate = async (e: Event) => {
     e.preventDefault();
     if (
       formData.nombreproducto != "" &&
@@ -333,7 +338,7 @@ export default function CustomizedTables() {
                     container
                     spacing={3}
                     className="modalContent"
-                    style={modalContentStyle}
+                    sx={modalContentStyle}
                   >
 
                     {/*Nombre Producto*/}
