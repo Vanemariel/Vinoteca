@@ -1,0 +1,83 @@
+import axios from "axios";
+import create from 'zustand';
+
+type State = {
+    getList: (action: string) => Promise<any>;
+    getObject: (action: string, id: number) => Promise<any>;
+    newObject: (action: string, obj: any) => Promise<any>;
+    updateObject: (action: string, obj: any) => Promise<any>;
+    deleteObject: (action: string, id: number) => Promise<any>;
+  };
+export const useStore = create<State>((set) => ({
+    getList: async (action: string) => {
+      let response;
+      await axios
+        .get(action)
+        .then((res) => {
+          response = res;
+        })
+        .catch((err) => {
+          throw err;
+        });
+      if (response) {
+        return response;
+      }
+    },
+    getObject: async (action: string, id: number) => {
+      let response;
+      await axios
+        .get(action + id)
+        .then((res) => {
+          response = res;
+        })
+        .catch((err) => {
+          throw err;
+        });
+      if (response) {
+        return response;
+      }
+    },
+    newObject: async (action: string, obj: any) => {
+      let response;
+      await axios
+        .post(action, obj)
+        .then((res) => {
+          response = res;
+        })
+        .catch((err) => {
+          throw err;
+        });
+      if (response) {
+        return response;
+      }
+    },
+    updateObject: async (action: string, obj: any) => {
+      let response;
+      await axios
+        .put(action, obj)
+        .then((res) => {
+          response = res;
+        })
+        .catch((err) => {
+          throw err;
+        });
+      if (response) {
+        return response;
+      }
+    },
+    deleteObject: async (action: string, id: number) => {
+      let response;
+      await axios
+        .delete(action + id)
+        .then((res) => {
+          response = res;
+        })
+        .catch((err) => {
+          throw err;
+        });
+      if (response) {
+        return response;
+      }
+    },
+  }));
+  

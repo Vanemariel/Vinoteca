@@ -50,5 +50,25 @@ namespace Omnichannel.Contracts
 
         }
 
+        public static class Venta
+        {
+            public const string New = Base + "/venta";
+            public const string GetAll = Base + "/venta";
+            public const string GetById = Base + "/venta/{id}";
+            public const string Delete = Base + "/venta/{id}";
+            public const string Update = Base + "/venta";
+
+        }
+
+        public static class Compra
+        {
+            public const string New = Base + "/compra";
+            public const string GetAll = Base + "/compra";
+            public const string GetById = Base + "/compra/{id}";
+            public const string Delete = Base + "/compra/{id}";
+            public const string Update = Base + "/compra";
+
+        }
+
     }
 }

@@ -12,8 +12,8 @@ using Vinoteca.BaseDatos;
 namespace BaseDatos.Migrations
 {
     [DbContext(typeof(BDContext))]
-    [Migration("20230609125637_First")]
-    partial class First
+    [Migration("20230614104502_first")]
+    partial class first
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -338,7 +338,7 @@ namespace BaseDatos.Migrations
                         .IsRequired();
 
                     b.HasOne("Vinoteca.BaseDatos.Entidades.Usuario", "Usuario")
-                        .WithMany()
+                        .WithMany("Compras")
                         .HasForeignKey("IdUsuario")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -351,7 +351,7 @@ namespace BaseDatos.Migrations
             modelBuilder.Entity("BaseDatos.Entidades.DetalleDeCaja", b =>
                 {
                     b.HasOne("BaseDatos.Entidades.Caja", "Caja")
-                        .WithMany()
+                        .WithMany("DetalleDeCaja")
                         .HasForeignKey("IdCaja")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -369,7 +369,7 @@ namespace BaseDatos.Migrations
             modelBuilder.Entity("BaseDatos.Entidades.DetalleDeCompra", b =>
                 {
                     b.HasOne("BaseDatos.Entidades.Compra", "Compra")
-                        .WithMany()
+                        .WithMany("DetalleDeCompras")
                         .HasForeignKey("IdCompra")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -394,7 +394,7 @@ namespace BaseDatos.Migrations
                         .IsRequired();
 
                     b.HasOne("BaseDatos.Entidades.Venta", "Venta")
-                        .WithMany()
+                        .WithMany("DetalleDeVentas")
                         .HasForeignKey("IdVenta")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -407,7 +407,7 @@ namespace BaseDatos.Migrations
             modelBuilder.Entity("BaseDatos.Entidades.Producto", b =>
                 {
                     b.HasOne("BaseDatos.Entidades.Proveedor", "Proveedor")
-                        .WithMany()
+                        .WithMany("Productos")
                         .HasForeignKey("IdProveedor")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -434,9 +434,34 @@ namespace BaseDatos.Migrations
                     b.Navigation("Usuario");
                 });
 
+            modelBuilder.Entity("BaseDatos.Entidades.Caja", b =>
+                {
+                    b.Navigation("DetalleDeCaja");
+                });
+
+            modelBuilder.Entity("BaseDatos.Entidades.Compra", b =>
+                {
+                    b.Navigation("DetalleDeCompras");
+                });
+
             modelBuilder.Entity("BaseDatos.Entidades.Producto", b =>
                 {
                     b.Navigation("DetallesCompra");
+                });
+
+            modelBuilder.Entity("BaseDatos.Entidades.Proveedor", b =>
+                {
+                    b.Navigation("Productos");
+                });
+
+            modelBuilder.Entity("BaseDatos.Entidades.Venta", b =>
+                {
+                    b.Navigation("DetalleDeVentas");
+                });
+
+            modelBuilder.Entity("Vinoteca.BaseDatos.Entidades.Usuario", b =>
+                {
+                    b.Navigation("Compras");
                 });
 #pragma warning restore 612, 618
         }

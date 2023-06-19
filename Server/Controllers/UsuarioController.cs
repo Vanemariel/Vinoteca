@@ -64,6 +64,22 @@ namespace Vinoteca1.Server.Controllers
             }
         }
 
+        [HttpPost(ApiRoutes.Producto.New)]
+        public async Task<ActionResult<int>> New(Usuario usuario)
+        {
+            try
+            {
+
+                _context.TablaUsuarios.Add(usuario);
+                await _context.SaveChangesAsync();
+                return usuario.IdUsuario;
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
 
         [HttpPut(ApiRoutes.Usuario.Update)]
         public async Task<ActionResult<string>> Update(int id, [FromBody] Usuario NewUsuario)
