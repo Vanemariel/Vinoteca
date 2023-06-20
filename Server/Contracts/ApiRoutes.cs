@@ -67,8 +67,41 @@ namespace Vinoteca.Server.Contracts
             public const string GetById = Base + "/compra/{id}";
             public const string Delete = Base + "/compra/{id}";
             public const string Update = Base + "/compra";
-
+        }
+        public static class Caja
+        {
+            public const string New = Base + "/caja";
+            public const string GetAll = Base + "/caja";
+            public const string GetById = Base + "/caja/{id}";
+            public const string Delete = Base + "/caja/{id}";
+            public const string Update = Base + "/caja";
         }
 
+        public static class DetalleDeCaja
+        {
+            public const string New = Base + "/detalledecaja";
+            public const string GetAll = Base + "/detalledecaja";
+            public const string GetById = Base + "/detalledecaja/{id}";
+            public const string Delete = Base + "/detalledecaja/{id}";
+            public const string Update = Base + "/detalledecaja";
+        }
+
+        public static class DetalleDeVenta
+        {
+            public const string New = Base + "/detalledeventa";
+            public const string GetAll = Base + "/detalledeventa";
+            public const string GetById = Base + "/detalledeventa/{id}";
+            public const string Delete = Base + "/detalledeventa/{id}";
+            public const string Update = Base + "/detalledeventa";
+        }
+
+        public static class DetalleDeCompra
+        {
+            public const string New = Base + "/detalledecompra";
+            public const string GetAll = Base + "/detalledecompra";
+            public const string GetById = Base + "/detalledecompra/{id}";
+            public const string Delete = Base + "/detalledecompra/{id}";
+            public const string Update = Base + "/detalledecompra";
+        }
     }
 }

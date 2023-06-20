@@ -12,26 +12,26 @@ namespace Vinoteca.Server.Controllers
 {
     [ApiController]
     [Route("Api/[controller]")]
-    public class CompraController : ControllerBase
+    public class DetalleDeCompraController : ControllerBase
     {
         private readonly BDContext _context;
         private readonly IConfiguration _configuration;
 
 
-        public CompraController(BDContext context, IConfiguration configuration)
+        public DetalleDeCompraController(BDContext context, IConfiguration configuration)
         {
             this._context = context;
             this._configuration = configuration;
         }
         #region HTTPS
-        [HttpGet(ApiRoutes.Compra.GetAll)]
-        public async Task<ActionResult<List<Compra>>> GetAll()
+        [HttpGet(ApiRoutes.DetalleDeCompra.GetAll)]
+        public async Task<ActionResult<List<DetalleDeCompra>>> GetAll()
         {
             try
             {
-                List<Compra> Compras = await this._context.TablaCompras.ToListAsync();
+                List<DetalleDeCompra> detCompras = await this._context.TablaDetalleDeCompras.ToListAsync();
 
-                return Ok(Compras);
+                return Ok(detCompras);
             }
             catch (Exception ex)
             {
@@ -39,21 +39,21 @@ namespace Vinoteca.Server.Controllers
             }
         }
 
-        [HttpGet(ApiRoutes.Compra.GetById)]
-        public async Task<ActionResult<Compra>> GetById(int id)
+        [HttpGet(ApiRoutes.DetalleDeCompra.GetById)]
+        public async Task<ActionResult<DetalleDeCompra>> GetById(int id)
         {
             try
             {
-                Compra? Compra = await this._context.TablaCompras
-                    .Where(Compra => Compra.IdCompra == id)
+                DetalleDeCompra? detCompras = await this._context.TablaDetalleDeCompras
+                    .Where(detCompras => detCompras.IdDetalleCompra == id)
                     .FirstOrDefaultAsync();
 
-                if (Compra == null)
+                if (detCompras == null)
                 {
                     throw new Exception($"no existe la compra con id igual a {id}.");
                 }
 
-                return Ok(Compra);
+                return Ok(detCompras);
             }
             catch (Exception ex)
             {
@@ -63,21 +63,18 @@ namespace Vinoteca.Server.Controllers
         #endregion
 
         #region HTTP POST
-        [HttpPost(ApiRoutes.Compra.New)]
-        public async Task<ActionResult<bool>> New(CompraDto compradto)
+        [HttpPost(ApiRoutes.DetalleDeCompra.New)]
+        public async Task<ActionResult<bool>> New(DetalleDeCompraDto DetalleDeCompraDTO)
         {
             try
             {
-                _context.TablaCompras.Add(new Compra
+                _context.TablaDetalleDeCompras.Add(new DetalleDeCompra
                 {
-                    FechaCompra=compradto.FechaCompra,
-                    FormaPago=compradto.FormaPago,
-                    Total=compradto.Total,
-                    NumeroDeFactura=compradto.NumeroDeFactura,
-                    IdUsuario=compradto.IdUsuario,
-                    IdProveedor=compradto.IdProveedor,
-                    DetalleDeCompras = new List<DetalleDeCompra>()
-                }) ;
+                    PrecioCompra=DetalleDeCompraDTO.PrecioCompra,
+                    CantidadCompra=DetalleDeCompraDTO.CantidadCompra,
+                    IdCompra=DetalleDeCompraDTO.IdCompra,
+                    IdProducto=DetalleDeCompraDTO.IdProducto
+                });
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -90,29 +87,27 @@ namespace Vinoteca.Server.Controllers
         #endregion
 
         #region HTTP PUT
-        [HttpPut(ApiRoutes.Compra.Update)]
-        public ActionResult Update(int id, [FromBody] Compra compra)
+        [HttpPut(ApiRoutes.DetalleDeCompra.Update)]
+        public ActionResult Update(int id, [FromBody] DetalleDeCompra detalleDeCompra)
         {
-            if (id != compra.IdCompra)
+            if (id != detalleDeCompra.IdDetalleCompra)
             {
                 return BadRequest("Datos incorrectos");
             }
 
-            var comprax = _context.TablaCompras.Where(e => e.IdCompra == id).FirstOrDefault();
-            if (comprax == null)
+            var cAjAjAjA = _context.TablaDetalleDeCompras.Where(e => e.IdDetalleCompra == id).FirstOrDefault();
+            if (cAjAjAjA == null)
             {
                 return NotFound("No existe la compra para modificar");
             }
 
-            comprax.FechaCompra = compra.FechaCompra;
-            comprax.FormaPago = compra.FormaPago;
-            comprax.Total = compra.Total;
-            comprax.NumeroDeFactura= compra.NumeroDeFactura;
+            cAjAjAjA.PrecioCompra = cAjAjAjA.PrecioCompra;
+            cAjAjAjA.CantidadCompra = cAjAjAjA.CantidadCompra;
 
             try
             {
                 //throw(new Exception("Cualquier Verdura"));
-                _context.TablaCompras.Update(comprax);
+                _context.TablaDetalleDeCompras.Update(cAjAjAjA);
                 _context.SaveChanges();
                 return Ok();
             }
@@ -124,20 +119,20 @@ namespace Vinoteca.Server.Controllers
         #endregion
 
         #region HTTP DELETE
-        [HttpDelete(ApiRoutes.Compra.Delete)]
+        [HttpDelete(ApiRoutes.DetalleDeCompra.Delete)]
         public ActionResult Delete(int id)
         {
-            var comprax = _context.TablaCompras.Where(x => x.IdCompra == id).FirstOrDefault();
+            var compraps = _context.TablaDetalleDeCompras.Where(x => x.IdDetalleCompra == id).FirstOrDefault();
 
-            if (comprax == null)
+            if (compraps == null)
             {
                 return NotFound($"El registro {id} no fue encontrado");
             }
             try
             {
-                _context.TablaCompras.Remove(comprax);
+                _context.TablaDetalleDeCompras.Remove(compraps);
                 _context.SaveChanges();
-                return Ok($"El registro de {comprax.IdCompra} ha sido borrado.");
+                return Ok($"El registro de {compraps.IdDetalleCompra} ha sido borrado.");
             }
             catch (Exception e)
             {
@@ -147,3 +142,4 @@ namespace Vinoteca.Server.Controllers
         #endregion
     }
 }
+

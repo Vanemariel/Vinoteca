@@ -6,6 +6,7 @@ using System;
 using System.Diagnostics.Metrics;
 using Vinoteca.BaseDatos;
 using Vinoteca.BaseDatos.Entidades;
+using Shared.DTO;
 
 namespace Vinoteca.Server.Controllers
 {
@@ -63,14 +64,21 @@ namespace Vinoteca.Server.Controllers
 
         #region HTTP POST
         [HttpPost(ApiRoutes.Venta.New)]
-        public async Task<ActionResult<int>> New(Venta venta)
+        public async Task<ActionResult<bool>> New(VentaDto ventadto)
         {
             try
             {
-
-                _context.TablaVentas.Add(venta);
+                _context.TablaVentas.Add(new Venta
+                {
+                    FechaVenta=ventadto.FechaVenta,
+                    FormaPago=ventadto.FormaPago,
+                    Total=ventadto.Total,
+                    IdUsuario=ventadto.IdUsuario,
+                    IdCliente=ventadto.IdCliente,
+                    DetalleDeVentas= new List<DetalleDeVenta>()
+                }) ;
                 await _context.SaveChangesAsync();
-                return venta.IdVenta;
+                return true;
             }
             catch (Exception e)
             {

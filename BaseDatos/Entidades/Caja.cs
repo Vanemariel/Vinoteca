@@ -23,6 +23,6 @@ namespace BaseDatos.Entidades
         public Usuario Usuario { get; set; }
 
         [InverseProperty("Caja")]
-        public List<DetalleDeCaja> DetalleDeCaja { get; set; }
+        public List<DetalleDeCaja> DetalleDeCajas { get; set; }
     }
 }
