@@ -12,31 +12,31 @@ const api = config.apiVersion;
 
 
 
-export const PRODUCTO_CONTROLLER = base + api + "producto";
+export const PRODUCTO_CONTROLLER = base + "Api/Producto/" + api + "producto";
 /**
  * General use endpoints.
  * @constant {string}
  */
 
-export const PROVEEDORES_CONTROLLER = base + api + "proveedor";
+export const PROVEEDORES_CONTROLLER = base + "Api/Proveedores/" + api + "proveedor";
 /**
  * General use endpoints.
  * @constant {string}
  */
 
-export const VENTA_CONTRLLER = base + api + "venta";
+export const VENTA_CONTRLLER = base + "Api/Venta/" + api + "venta";
 /**
  * General use endpoints.
  * @constant {string}
  */
 
-export const COMPRA_CONTROLLER = base + api + "compra/";
+export const COMPRA_CONTROLLER = base + "Api/Compra/" + api + "compra/";
 
 /**
  * HubConnection route used for SignalR connection.
  * @constant {string}
  */
-export const DETLLEVENTA_CONTROLLER = base + "detalleventa/";
+export const DETLLEVENTA_CONTROLLER = base + "Api/DetalleDeVenta/" + "detalleventa/";
 
 /**
  * File handling routes for getting and sending files (not in use).
@@ -44,21 +44,21 @@ export const DETLLEVENTA_CONTROLLER = base + "detalleventa/";
  *
  */
 
-export const DETALLECOMPRA_CONTROLLER = base + api + "detallecompra";
+export const DETALLECOMPRA_CONTROLLER = base + "Api/DetalleDeCompra/" + api + "detallecompra";
 /**
  * General use endpoints.
  * @constant {string}
  */
 
 
-export const CAJA_CONTROLLER = base + api + "caja/";
+export const CAJA_CONTROLLER = base + "Api/Caja/" + api + "caja/";
 /**
  * File handling routes for getting and sending files (not in use).
  * @constant {string}
  */
 
 
-export const DETALLECAJA_CONTROLLER = base + api + "detallecaja/";
+export const DETALLECAJA_CONTROLLER = base + "Api/DetalleDeCaja/" + api + "detallecaja/";
 /**
  * File handling routes for getting and sending files (not in use).
  * @constant {string}

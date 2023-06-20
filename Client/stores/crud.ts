@@ -38,8 +38,7 @@ export const useStore = create<State>((set) => ({
     },
     newObject: async (action: string, obj: any) => {
       let response;
-      await axios
-        .post(action, obj)
+      await axios.post(action, obj)
         .then((res) => {
           response = res;
         })

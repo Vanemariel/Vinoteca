@@ -32,6 +32,8 @@ namespace Vinoteca.Server.Controllers
             try
             {
                 List<Producto> producto = await this._context.TablaProductos.ToListAsync();
+                Console.WriteLine("hola");
+                Console.WriteLine(producto);
 
                 return Ok(producto);
             }
