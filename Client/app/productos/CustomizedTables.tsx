@@ -487,10 +487,10 @@ export default function CustomizedTables() {
               setDialog(false);
               setFormData({
                 Detalle: "",
-                IdProveedor: 0,
-                Stock: 0,
-                PrecioVenta: 0,
-                PrecioCompra: 0,
+                IdProveedor: null,
+                Stock: null,
+                PrecioVenta: null,
+                PrecioCompra: null,
                 NombreProducto: "",
               });
               if (isNew) setIsNew(false);
@@ -502,11 +502,11 @@ export default function CustomizedTables() {
           <LoadingButton
             loading={loading}
             disabled={
-              formData.IdProveedor == null ||
-              formData.PrecioCompra == null ||
-              formData.Detalle == "" ||
-              formData.Stock == null ||
-              formData.PrecioVenta == null ||
+              formData.IdProveedor == null &&
+              formData.PrecioCompra == null &&
+              formData.Detalle == "" &&
+              formData.Stock == null &&
+              formData.PrecioVenta == null &&
               formData.NombreProducto == null
             }
             size="large"
@@ -526,12 +526,13 @@ export default function CustomizedTables() {
                 Opciones
               </StyledTableCell>
               <StyledTableCell>Nombre</StyledTableCell>
-              <StyledTableCell align="right">Stock</StyledTableCell>
-              <StyledTableCell align="right">Detalle</StyledTableCell>
-              <StyledTableCell align="right">Precio de compra</StyledTableCell>
-              <StyledTableCell align="right">Precio de venta</StyledTableCell>
+              <StyledTableCell>Stock</StyledTableCell>
+              <StyledTableCell>Detalle</StyledTableCell>
+              <StyledTableCell>Precio de compra</StyledTableCell>
+              <StyledTableCell>Precio de venta</StyledTableCell>
             </TableRow>
           </TableHead>
+          
           <TableBody>
             {productoList.map((row) => (
               <StyledTableRow key={row.NombreProducto}>

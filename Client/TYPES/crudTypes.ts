@@ -38,13 +38,13 @@ export type Cliente = {
  
  */
 export type Producto = {
-    IdProducto?: number;
+    IdProducto?: number | null;
     NombreProducto: string;
-    Stock: number;
+    Stock: number | null;
     Detalle: string;
-    PrecioVenta: number;
-    PrecioCompra: number;
-    IdProveedor: number;
+    PrecioVenta: number | null;
+    PrecioCompra: number | null;
+    IdProveedor: number | null;
   };
 
    /** proveedor type used in the CRUD operations.
