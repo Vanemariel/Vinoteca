@@ -4,7 +4,7 @@ import * as React from "react";
 import { useEffect, useState, Fragment } from "react";
 import * as action from "../../Utilities/action";
 
-import { styled } from "@mui/material/styles";
+import { styled, useTheme } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
@@ -17,10 +17,21 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { LoadingButton } from "@mui/lab";
-
+import {
+  Toolbar,
+  Typography,
+  InputBase,
+  IconButton,
+  Dialog,
+  DialogContentText,
+  DialogActions,
+  DialogContent,
+  TextField,
+  DialogTitle,
+  useMediaQuery,
+} from "@mui/material";
 import {
   Checkbox,
   Autocomplete,
@@ -28,12 +39,8 @@ import {
   MenuItem,
   RadioGroup,
   Radio,
-  TextField,
   OutlinedInput,
-  DialogActions,
 } from "@mui/material";
-
-import { IconButton } from "@mui/material";
 import { Producto } from "../../TYPES/crudTypes";
 import { useStore } from "../../stores/crud";
 
@@ -105,7 +112,10 @@ export default function CustomizedTables() {
   const [proveedorList, setProveedorList] = useState<
     Array<{ id: number; name: string }>
   >([]);
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const [deleteDialog, setDeleteDialog] = useState(false);
+  const [search, setSearch] = useState("");
   const { deleteObject, getList, newObject, updateObject } = useStore();
   const [loading, setLoading] = useState(false);
   const [dialog, setDialog] = useState(false);
@@ -225,300 +235,361 @@ export default function CustomizedTables() {
 
   return (
     <div>
-      <Fragment>
-        <Autocomplete
-          id="combo-box-demo"
-          options={top100Films}
-          //getOptionLabel={(option) => option.title}
-          style={{ width: 300, marginBottom: "1rem" }} // Agregar marginBottom
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Busca aqui tu producto"
-              value={formData.NombreProducto}
-              variant="outlined"
-              style={{ background: "#fff" }}
-            />
-          )}
+      {/* Header */}
+      <Toolbar
+        sx={{
+          width: "100%",
+          display: "flex",
+          flexFlow: "row",
+          alignItems: "center",
+        }}
+      >
+        <Typography
+          variant="h6"
+          style={{
+            borderRadius: "100px",
+            padding: "5px 10px",
+            paddingLeft: "15px",
+            paddingBottom: "10px",
+            marginRight: "auto",
+          }}
+        >
+          {"Productos"}
+        </Typography>
+        <InputBase
+          sx={{
+            mr: 2,
+          }}
+          style={{
+            backgroundColor: "#F1F3F4",
+            borderRadius: "100px",
+            padding: "0.5px",
+            width: "40%",
+          }}
+          placeholder={"Buscar"}
+          startAdornment={
+            <Typography
+              style={{
+                borderRadius: "100px",
+                padding: "5px 10px",
+                paddingLeft: "15px",
+                paddingBottom: "10px",
+              }}
+            ></Typography>
+          }
+          onChange={(event) => setSearch(event.target.value)}
         />
+        <Grid item xs={3}></Grid>
+        <Button
+          sx={{
+            mr: 5,
+          }}
+          variant="contained"
+          id="containedButton"
+          onClick={() => {
+            setDialog(true);
+            setIsNew(true);
+          }}
+        >
+          {"Agregar nuevo"}
+        </Button>
+      </Toolbar>
 
-        {/*Table */}
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 700 }} aria-label="customized table">
-            <TableHead>
-              <TableRow>
-                <StyledTableCell width={115} align="center">
-                  Opciones
-                </StyledTableCell>
-                <StyledTableCell>Nombre</StyledTableCell>
-                <StyledTableCell align="right">Stock</StyledTableCell>
-                <StyledTableCell align="right">Detalle</StyledTableCell>
-                <StyledTableCell align="right">
-                  Precio de compra
-                </StyledTableCell>
-                <StyledTableCell align="right">Precio de venta</StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {productoList.map((row) => (
-                <StyledTableRow key={row.NombreProducto}>
-                  <StyledTableCell component="th" scope="row">
-                    <IconButton
-                      aria-label="edit"
-                      onClick={() => {
-                        setDialog(true);
-                        setIsNew(false);
-                        setFormData({
-                          IdProducto: row.IdProducto,
-                          Detalle: row.Detalle,
-                          PrecioVenta: row.PrecioVenta,
-                          PrecioCompra: row.PrecioCompra,
-                          Stock: row.Stock,
-                          IdProveedor: row.IdProveedor,
-                          NombreProducto: row.NombreProducto,
-                        });
-                      }}
-                    >
-                      <EditIcon />
-                    </IconButton>
-
-                    <IconButton
-                      color="error"
-                      aria-label="delete"
-                      onClick={() => {
-                        setToDelete(row.IdProducto);
-                        setDeleteDialog(true);
-                      }}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </StyledTableCell>
-
-                  <StyledTableCell component="th" scope="row">
-                    {" "}
-                    {row.NombreProducto}{" "}
-                  </StyledTableCell>
-
-                  <StyledTableCell align="right">{row.Stock}</StyledTableCell>
-
-                  <StyledTableCell align="right">{row.Detalle}</StyledTableCell>
-
-                  <StyledTableCell align="right">
-                    {" "}
-                    ${row.PrecioVenta}
-                  </StyledTableCell>
-
-                  <StyledTableCell align="right">
-                    {" "}
-                    ${row.PrecioCompra}
-                  </StyledTableCell>
-                </StyledTableRow>
-              ))}
-            </TableBody>
-          </Table>
-
-          {/*Boton del modal*/}
-          <Button onClick={handleOpen}>Agregar Producto</Button>
-          <Modal
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
+      {/* Delete dialog */}
+      <Dialog
+        fullScreen={fullScreen}
+        maxWidth="sm"
+        open={deleteDialog}
+        onClose={() => setDeleteDialog(false)}
+      >
+        <DialogTitle>{"Eliminar"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>{"Confirmar"}</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            size="large"
+            color="error"
+            onClick={() => {
+              setDeleteDialog(false);
+              setToDelete(null);
+            }}
           >
-            <Box sx={style}>
-              <Typography
-                id="modal-modal-title"
-                variant="h6"
-                component="h2"
-              ></Typography>
+            {"Cancelar"}
+          </Button>
+          <Button size="large" onClick={() => deleteItem()}>
+            {"Borrar"}
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-                  <Grid
-                    container
-                    spacing={3}
-                    className="modalContent"
-                    sx={modalContentStyle}
+      {/* New or Update dialog */}
+      <Dialog
+        fullScreen={fullScreen}
+        maxWidth="sm"
+        open={dialog}
+        onClose={() => {
+          setDialog(false);
+          setFormData({
+            Detalle: "",
+            IdProveedor: 0,
+            Stock: 0,
+            PrecioVenta: 0,
+            PrecioCompra: 0,
+            NombreProducto: "",
+          });
+          if (isNew) setIsNew(false);
+        }}
+      >
+        <DialogTitle>
+          {isNew ? "Agregar actualizacion" : "Producto"} 
+        </DialogTitle>
+        <DialogContent>
+        <Grid container rowSpacing={3}>
+          {/*Nombre Producto*/}
+          <Grid item xs={12} sm={8}>
+            <TextField
+              label="Nombre del producto"
+              variant="outlined"
+              fullWidth
+              value={formData.NombreProducto}
+              onChange={(e) =>
+                setFormData({
+                  IdProducto: formData.IdProducto,
+                  NombreProducto: e.target.value,
+                  PrecioCompra: formData.PrecioCompra,
+                  PrecioVenta: formData.PrecioVenta,
+                  Detalle: formData.Detalle,
+                  Stock: formData.Stock,
+                  IdProveedor: formData.IdProveedor,
+                })
+              }
+            />
+          </Grid>
+
+          {/*Precios */}
+          <Grid item xs={12} sm={8}>
+            <TextField
+              label="Precio Compra"
+              fullWidth
+              value={formData.PrecioCompra}
+              onChange={(e) =>
+                setFormData({
+                  IdProducto: formData.IdProducto,
+                  NombreProducto: formData.NombreProducto,
+                  PrecioCompra: +e.target.value,
+                  PrecioVenta: formData.PrecioVenta,
+                  Detalle: formData.Detalle,
+                  Stock: formData.Stock,
+                  IdProveedor: formData.IdProveedor,
+                })
+              }
+            />
+          </Grid>
+          <Grid item xs={12} sm={8}>
+            <TextField
+              label="Precio Venta"
+              fullWidth
+              value={formData.PrecioVenta}
+              onChange={(e) =>
+                setFormData({
+                  IdProducto: formData.IdProducto,
+                  NombreProducto: formData.NombreProducto,
+                  PrecioCompra: formData.PrecioCompra,
+                  PrecioVenta: +e.target.value,
+                  Detalle: formData.Detalle,
+                  Stock: formData.Stock,
+                  IdProveedor: formData.IdProveedor,
+                })
+              }
+            />
+          </Grid>
+
+          {/*Stock */}
+          <Grid item xs={12} sm={8}>
+            <TextField
+              label="Cantidad adquirida"
+              fullWidth
+              value={formData.Stock}
+              onChange={(e) =>
+                setFormData({
+                  IdProducto: formData.IdProducto,
+                  NombreProducto: formData.NombreProducto,
+                  PrecioCompra: formData.PrecioCompra,
+                  PrecioVenta: formData.PrecioVenta,
+                  Detalle: formData.Detalle,
+                  Stock: +e.target.value,
+                  IdProveedor: formData.IdProveedor,
+                })
+              }
+            />
+          </Grid>
+
+          {/*Detalle */}
+          <Grid item xs={12} sm={12}>
+            <TextField
+              label="Detalle"
+              variant="outlined"
+              fullWidth
+              multiline
+              rows={4}
+              value={formData.Detalle}
+              onChange={(e) =>
+                setFormData({
+                  IdProducto: formData.IdProducto,
+                  NombreProducto: formData.NombreProducto,
+                  PrecioCompra: formData.PrecioCompra,
+                  PrecioVenta: formData.PrecioVenta,
+                  Detalle: e.target.value,
+                  Stock: formData.Stock,
+                  IdProveedor: formData.IdProveedor,
+                })
+              }
+            />
+          </Grid>
+
+          {/*Proveedores */}
+          <Grid item xs={12} sm={12}>
+            <TextField
+              select
+              label="Seleccionar provedor"
+              variant="outlined"
+              fullWidth
+              value={formData.IdProveedor}
+              onChange={(e) =>
+                setFormData({
+                  IdProducto: formData.IdProducto,
+                  NombreProducto: formData.NombreProducto,
+                  PrecioCompra: formData.PrecioCompra,
+                  PrecioVenta: formData.PrecioVenta,
+                  Detalle: formData.Detalle,
+                  Stock: formData.Stock,
+                  IdProveedor: +e.target.value,
+                })
+              }
+            >
+              {proveedorList.map((proveedor) => (
+                <MenuItem key={proveedor.id} value={proveedor.id}>
+                  {proveedor.name}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+          </Grid>
+        </DialogContent>
+
+        {/*Button */}
+        <DialogActions>
+          <Button
+            size="large"
+            color="error"
+            onClick={() => {
+              setDialog(false);
+              setFormData({
+                Detalle: "",
+                IdProveedor: 0,
+                Stock: 0,
+                PrecioVenta: 0,
+                PrecioCompra: 0,
+                NombreProducto: "",
+              });
+              if (isNew) setIsNew(false);
+            }}
+          >
+            {"Cancelar"}
+          </Button>
+
+          <LoadingButton
+            loading={loading}
+            disabled={
+              formData.IdProveedor == null ||
+              formData.PrecioCompra == null ||
+              formData.Detalle == "" ||
+              formData.Stock == null ||
+              formData.PrecioVenta == null ||
+              formData.NombreProducto == null
+            }
+            size="large"
+            onClick={(e: any) => validate(e)}
+          >
+            {isNew ? "Agregar" : ""}
+          </LoadingButton>
+        </DialogActions>
+      </Dialog>
+
+      {/*Table */}
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 700 }} aria-label="customized table">
+          <TableHead>
+            <TableRow>
+              <StyledTableCell width={115} align="center">
+                Opciones
+              </StyledTableCell>
+              <StyledTableCell>Nombre</StyledTableCell>
+              <StyledTableCell align="right">Stock</StyledTableCell>
+              <StyledTableCell align="right">Detalle</StyledTableCell>
+              <StyledTableCell align="right">Precio de compra</StyledTableCell>
+              <StyledTableCell align="right">Precio de venta</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {productoList.map((row) => (
+              <StyledTableRow key={row.NombreProducto}>
+                <StyledTableCell component="th" scope="row">
+                  <IconButton
+                    aria-label="edit"
+                    onClick={() => {
+                      setDialog(true);
+                      setIsNew(false);
+                      setFormData({
+                        IdProducto: row.IdProducto,
+                        Detalle: row.Detalle,
+                        PrecioVenta: row.PrecioVenta,
+                        PrecioCompra: row.PrecioCompra,
+                        Stock: row.Stock,
+                        IdProveedor: row.IdProveedor,
+                        NombreProducto: row.NombreProducto,
+                      });
+                    }}
                   >
+                    <EditIcon />
+                  </IconButton>
 
-                    {/*Nombre Producto*/}
-                    <Grid item xs={12} sm={8}>
-                      <TextField
-                        label="Nombre del producto"
-                        variant="outlined"
-                        fullWidth
-                        value={formData.NombreProducto}
-                        onChange={(e) =>
-                          setFormData({
-                            IdProducto: formData.IdProducto,
-                            NombreProducto: e.target.value,
-                            PrecioCompra: formData.PrecioCompra,
-                            PrecioVenta: formData.PrecioVenta,
-                            Detalle: formData.Detalle,
-                            Stock: formData.Stock,
-                            IdProveedor: formData.IdProveedor,
-                          })
-                        }
-                      />
-                    </Grid>
+                  <IconButton
+                    color="error"
+                    aria-label="delete"
+                    onClick={() => {
+                      setToDelete(row.IdProducto);
+                      setDeleteDialog(true);
+                    }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </StyledTableCell>
 
-                         {/*Precios */}
-                    <Grid item xs={12} sm={8}>
-                      <TextField
-                        label="Precio Compra"
-                        fullWidth
-                        value={formData.PrecioCompra}
-                        onChange={(e) =>
-                          setFormData({
-                            IdProducto: formData.IdProducto,
-                            NombreProducto: formData.NombreProducto,
-                            PrecioCompra: +e.target.value,
-                            PrecioVenta: formData.PrecioVenta,
-                            Detalle: formData.Detalle,
-                            Stock: formData.Stock,
-                            IdProveedor: formData.IdProveedor,
-                          })
-                        }
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={8}>
-                      <TextField
-                        label="Precio Venta"
-                        fullWidth
-                        value={formData.PrecioVenta}
-                        onChange={(e) =>
-                          setFormData({
-                            IdProducto: formData.IdProducto,
-                            NombreProducto: formData.NombreProducto,
-                            PrecioCompra: formData.PrecioCompra,
-                            PrecioVenta: +e.target.value,
-                            Detalle: formData.Detalle,
-                            Stock: formData.Stock,
-                            IdProveedor: formData.IdProveedor,
-                          })
-                        }
-                      />
-                    </Grid>
+                <StyledTableCell component="th" scope="row">
+                  {" "}
+                  {row.NombreProducto}{" "}
+                </StyledTableCell>
 
-                         {/*Stock */}
-                    <Grid item xs={12} sm={8}>
-                      <TextField
-                        label="Cantidad adquirida"
-                        fullWidth
-                        value={formData.Stock}
-                        onChange={(e) =>
-                          setFormData({
-                            IdProducto: formData.IdProducto,
-                            NombreProducto: formData.NombreProducto,
-                            PrecioCompra: formData.PrecioCompra,
-                            PrecioVenta: formData.PrecioVenta,
-                            Detalle: formData.Detalle,
-                            Stock: +e.target.value,
-                            IdProveedor: formData.IdProveedor,
-                          })
-                        }
-                      />
-                    </Grid>
+                <StyledTableCell align="right">{row.Stock}</StyledTableCell>
 
-                          {/*Detalle */}
-                    <Grid item xs={12} sm={12}>
-                      <TextField
-                        label="Detalle"
-                        variant="outlined"
-                        fullWidth
-                        multiline
-                        rows={4}
-                        value={formData.Detalle}
-                        onChange={(e) =>
-                          setFormData({
-                            IdProducto: formData.IdProducto,
-                            NombreProducto: formData.NombreProducto,
-                            PrecioCompra: formData.PrecioCompra,
-                            PrecioVenta: formData.PrecioVenta,
-                            Detalle: e.target.value,
-                            Stock: formData.Stock,
-                            IdProveedor: formData.IdProveedor,
-                          })
-                        }
-                      />
-                    </Grid>
+                <StyledTableCell align="right">{row.Detalle}</StyledTableCell>
 
-                        {/*Proveedores */}
-                    <Grid item xs={12} sm={12}>
-                      <TextField
-                        select
-                        label="Seleccionar provedor"
-                        variant="outlined"
-                        fullWidth
-                        value={formData.IdProveedor}
-                        onChange={(e) =>
-                          setFormData({
-                            IdProducto: formData.IdProducto,
-                            NombreProducto: formData.NombreProducto,
-                            PrecioCompra: formData.PrecioCompra,
-                            PrecioVenta: formData.PrecioVenta,
-                            Detalle: formData.Detalle,
-                            Stock: formData.Stock,
-                            IdProveedor: +e.target.value,
-                          })
-                        }
-                      >
-                        {proveedorList.map((proveedor) => (
-                          <MenuItem key={proveedor.id} value={proveedor.id}>
-                            {proveedor.name}
-                          </MenuItem>
-                        ))}
-                      </TextField>
-                    </Grid>
+                <StyledTableCell align="right">
+                  {" "}
+                  ${row.PrecioVenta}
+                </StyledTableCell>
 
-                    <Grid item container xs={12} justifyContent="space-between">
-                      
-                      {/*Button */}
-                      <DialogActions>
-                        <Button
-                          size="large"
-                          color="error"
-                          onClick={() => {
-                            setDialog(false);
-                            setFormData({
-                              Detalle: "",
-                              IdProveedor: 0,
-                              Stock: 0,
-                              PrecioVenta: 0,
-                              PrecioCompra: 0,
-                              NombreProducto: "",
-                            });
-                            if (isNew) setIsNew(false);
-                          }}
-                        >
-                          {"Cancelar"}
-                        </Button>
-
-                        <LoadingButton
-                          loading={loading}
-                          disabled={
-                            formData.IdProveedor == null ||
-                            formData.PrecioCompra == null ||
-                            formData.Detalle == "" ||
-                            formData.Stock == null ||
-                            formData.PrecioVenta == null ||
-                            formData.NombreProducto == null
-                          }
-                          size="large"
-                          onClick={(e: any) => validate(e)}
-                        >
-                          {isNew ? "Agregar" : null}
-                        </LoadingButton>
-                      </DialogActions>
-
-                    </Grid>
-                  </Grid>
-                </Box>
-              </Typography>
-            </Box>
-          </Modal>
-        </TableContainer>
-      </Fragment>
+                <StyledTableCell align="right">
+                  {" "}
+                  ${row.PrecioCompra}
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </div>
   );
 }
