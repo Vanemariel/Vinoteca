@@ -55,16 +55,16 @@ export type Producto = {
  * @property {string} HorarioDesde
  * @property {string} HorarioHasta
  * @property {number} Telefono
- * @property {number} IdProveedor
+ * @property {number} IdProducto
  */
 export type Proveedor = {
-    IdProveedor: number;
+    IdProveedor?: number | null;
     Nombre: string;
     Descripcion: string;
-    HorarioDesde: string;
-    HorarioHasta: string;
-    Telefono: number;
-    Idproducto: number;
+    HorarioDesde: string | null;
+    HorarioHasta: string | null;
+    Telefono: number | null;
+    IdProducto: number | null;
   };
 
   /** compra type used in the CRUD operations.
