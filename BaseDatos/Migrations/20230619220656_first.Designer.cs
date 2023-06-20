@@ -12,7 +12,7 @@ using Vinoteca.BaseDatos;
 namespace BaseDatos.Migrations
 {
     [DbContext(typeof(BDContext))]
-    [Migration("20230614104502_first")]
+    [Migration("20230619220656_first")]
     partial class first
     {
         /// <inheritdoc />
@@ -33,17 +33,18 @@ namespace BaseDatos.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCaja"));
 
-                    b.Property<decimal>("Cierre")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<float>("Cierre")
+                        .HasColumnType("real");
 
-                    b.Property<DateTime>("Fecha")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("Fecha")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("IdUsuario")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Inicio")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<float>("Inicio")
+                        .HasColumnType("real");
 
                     b.HasKey("IdCaja");
 
@@ -68,8 +69,8 @@ namespace BaseDatos.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Telefono")
-                        .HasColumnType("int");
+                    b.Property<long>("Telefono")
+                        .HasColumnType("bigint");
 
                     b.HasKey("IdCliente");
 
@@ -84,12 +85,12 @@ namespace BaseDatos.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCompra"));
 
-                    b.Property<DateTime>("FechaCompra")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FormaPago")
+                    b.Property<string>("FechaCompra")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("FormaPago")
+                        .HasColumnType("bit");
 
                     b.Property<int>("IdProveedor")
                         .HasColumnType("int");
@@ -100,8 +101,8 @@ namespace BaseDatos.Migrations
                     b.Property<int>("NumeroDeFactura")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Total")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<float>("Total")
+                        .HasColumnType("real");
 
                     b.HasKey("IdCompra");
 
@@ -126,11 +127,11 @@ namespace BaseDatos.Migrations
                     b.Property<int?>("IdCompra")
                         .HasColumnType("int");
 
-                    b.Property<int>("Importe")
-                        .HasColumnType("int");
+                    b.Property<float>("Importe")
+                        .HasColumnType("real");
 
-                    b.Property<int>("Saldo")
-                        .HasColumnType("int");
+                    b.Property<float>("Saldo")
+                        .HasColumnType("real");
 
                     b.HasKey("IdDetalleCaja");
 
@@ -158,8 +159,8 @@ namespace BaseDatos.Migrations
                     b.Property<int>("IdProducto")
                         .HasColumnType("int");
 
-                    b.Property<int>("PrecioCompra")
-                        .HasColumnType("int");
+                    b.Property<float>("PrecioCompra")
+                        .HasColumnType("real");
 
                     b.HasKey("IdDetalleCompra");
 
@@ -187,8 +188,8 @@ namespace BaseDatos.Migrations
                     b.Property<int>("IdVenta")
                         .HasColumnType("int");
 
-                    b.Property<int>("PrecioVenta")
-                        .HasColumnType("int");
+                    b.Property<float>("PrecioVenta")
+                        .HasColumnType("real");
 
                     b.HasKey("IdDetalleVenta");
 
@@ -218,11 +219,11 @@ namespace BaseDatos.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PrecioCompra")
-                        .HasColumnType("int");
+                    b.Property<float>("PrecioCompra")
+                        .HasColumnType("real");
 
-                    b.Property<int>("PrecioVenta")
-                        .HasColumnType("int");
+                    b.Property<float>("PrecioVenta")
+                        .HasColumnType("real");
 
                     b.Property<int>("Stock")
                         .HasColumnType("int");
@@ -246,18 +247,20 @@ namespace BaseDatos.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("HorarioDesde")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("HorarioDesde")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("HorarioHasta")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("HorarioHasta")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Telefono")
-                        .HasColumnType("int");
+                    b.Property<long>("Telefono")
+                        .HasColumnType("bigint");
 
                     b.HasKey("IdProveedor");
 
@@ -272,12 +275,12 @@ namespace BaseDatos.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdVenta"));
 
-                    b.Property<DateTime>("FechaVenta")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FormaPago")
+                    b.Property<string>("FechaVenta")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("FormaPago")
+                        .HasColumnType("bit");
 
                     b.Property<int>("IdCliente")
                         .HasColumnType("int");
@@ -285,8 +288,8 @@ namespace BaseDatos.Migrations
                     b.Property<int>("IdUsuario")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Total")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<float>("Total")
+                        .HasColumnType("real");
 
                     b.HasKey("IdVenta");
 

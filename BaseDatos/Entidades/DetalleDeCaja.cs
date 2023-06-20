@@ -12,8 +12,8 @@ namespace BaseDatos.Entidades
     {
         [Key]
         public int IdDetalleCaja { get; set; }
-        public int Importe { get; set; }
-        public int Saldo { get; set; }
+        public float Importe { get; set; }
+        public float Saldo { get; set; }
 
         [ForeignKey("Caja")]
         public int IdCaja { get; set; }

@@ -13,7 +13,7 @@ namespace BaseDatos.Entidades
     {
         [Key]
         public int IdDetalleVenta { get; set; }
-        public int PrecioVenta { get; set; }
+        public float PrecioVenta { get; set; }
         public int CantidadVenta { get; set; }
 
         public int IdVenta { get; set; }

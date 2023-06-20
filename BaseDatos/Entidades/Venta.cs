@@ -14,9 +14,9 @@ namespace BaseDatos.Entidades
     {
         [Key]
         public int IdVenta { get; set; }
-        public DateTime FechaVenta { get; set; }
-        public string FormaPago { get; set; }
-        public decimal Total { get; set; }
+        public string FechaVenta { get; set; }
+        public bool FormaPago { get; set; }
+        public float Total { get; set; }
 
         public int IdUsuario { get; set; }
         [ForeignKey("IdUsuario")]

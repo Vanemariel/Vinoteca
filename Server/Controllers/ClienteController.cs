@@ -1,15 +1,16 @@
 ﻿using BaseDatos.Entidades;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Omnichannel.Contracts;
+using Vinoteca.Server.Contracts;
 using System;
 using System.Diagnostics.Metrics;
 using Vinoteca.BaseDatos;
 using Vinoteca.BaseDatos.Entidades;
+using Shared.DTO;
 
-namespace Vinoteca1.Server.Controllers
+namespace Vinoteca.Server.Controllers
 {
-    ////////////HDPPPPPPPPPPPPPPASDASDASDASDASD jajaja jejeje jijiji
+   
     [ApiController]
     [Route("Api/[controller]")]
     public class ClienteController : ControllerBase
@@ -66,14 +67,18 @@ namespace Vinoteca1.Server.Controllers
 
         #region HTTP POST
         [HttpPost(ApiRoutes.Cliente.New)]
-        public async Task<ActionResult<int>> New(Cliente cliente)
+        public async Task<ActionResult<bool>> New(ClienteDto clientedto)
         {
             try
             {
-
-                _context.TablaClientes.Add(cliente);
+                _context.TablaClientes.Add(new Cliente
+                {
+                    Nombre = clientedto.Nombre,
+                    Direccion= clientedto.Direccion,
+                    Telefono= clientedto.Telefono
+                });
                 await _context.SaveChangesAsync();
-                return cliente.IdCliente;
+                return true;
             }
             catch (Exception e)
             {

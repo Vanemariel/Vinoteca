@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -19,7 +18,7 @@ namespace BaseDatos.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Direccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Telefono = table.Column<int>(type: "int", nullable: false)
+                    Telefono = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -34,9 +33,9 @@ namespace BaseDatos.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    HorarioDesde = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    HorarioHasta = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Telefono = table.Column<int>(type: "int", nullable: false)
+                    HorarioDesde = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    HorarioHasta = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Telefono = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -66,8 +65,8 @@ namespace BaseDatos.Migrations
                     NombreProducto = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Stock = table.Column<int>(type: "int", nullable: false),
                     Detalle = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PrecioVenta = table.Column<int>(type: "int", nullable: false),
-                    PrecioCompra = table.Column<int>(type: "int", nullable: false),
+                    PrecioVenta = table.Column<float>(type: "real", nullable: false),
+                    PrecioCompra = table.Column<float>(type: "real", nullable: false),
                     IdProveedor = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -87,9 +86,9 @@ namespace BaseDatos.Migrations
                 {
                     IdCaja = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Inicio = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Cierre = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Fecha = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Inicio = table.Column<float>(type: "real", nullable: false),
+                    Cierre = table.Column<float>(type: "real", nullable: false),
                     IdUsuario = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -109,9 +108,9 @@ namespace BaseDatos.Migrations
                 {
                     IdCompra = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FechaCompra = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FormaPago = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    FechaCompra = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FormaPago = table.Column<bool>(type: "bit", nullable: false),
+                    Total = table.Column<float>(type: "real", nullable: false),
                     NumeroDeFactura = table.Column<int>(type: "int", nullable: false),
                     IdUsuario = table.Column<int>(type: "int", nullable: false),
                     IdProveedor = table.Column<int>(type: "int", nullable: false)
@@ -139,9 +138,9 @@ namespace BaseDatos.Migrations
                 {
                     IdVenta = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FechaVenta = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FormaPago = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    FechaVenta = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FormaPago = table.Column<bool>(type: "bit", nullable: false),
+                    Total = table.Column<float>(type: "real", nullable: false),
                     IdUsuario = table.Column<int>(type: "int", nullable: false),
                     IdCliente = table.Column<int>(type: "int", nullable: false)
                 },
@@ -168,8 +167,8 @@ namespace BaseDatos.Migrations
                 {
                     IdDetalleCaja = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Importe = table.Column<int>(type: "int", nullable: false),
-                    Saldo = table.Column<int>(type: "int", nullable: false),
+                    Importe = table.Column<float>(type: "real", nullable: false),
+                    Saldo = table.Column<float>(type: "real", nullable: false),
                     IdCaja = table.Column<int>(type: "int", nullable: false),
                     IdCompra = table.Column<int>(type: "int", nullable: true)
                 },
@@ -196,7 +195,7 @@ namespace BaseDatos.Migrations
                 {
                     IdDetalleCompra = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PrecioCompra = table.Column<int>(type: "int", nullable: false),
+                    PrecioCompra = table.Column<float>(type: "real", nullable: false),
                     CantidadCompra = table.Column<int>(type: "int", nullable: false),
                     IdCompra = table.Column<int>(type: "int", nullable: false),
                     IdProducto = table.Column<int>(type: "int", nullable: false)
@@ -224,7 +223,7 @@ namespace BaseDatos.Migrations
                 {
                     IdDetalleVenta = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PrecioVenta = table.Column<int>(type: "int", nullable: false),
+                    PrecioVenta = table.Column<float>(type: "real", nullable: false),
                     CantidadVenta = table.Column<int>(type: "int", nullable: false),
                     IdVenta = table.Column<int>(type: "int", nullable: false),
                     IdProducto = table.Column<int>(type: "int", nullable: false)

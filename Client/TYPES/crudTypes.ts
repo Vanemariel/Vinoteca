@@ -1,106 +1,106 @@
 /** usuario type used in the CRUD operations.
  * @type {object}
- * @property {number} idusuario
- * @property {string} nombre
- * @property {number} apellido
- * @property {number} idcompra
+ * @property {number} IdUsuario
+ * @property {string} Nombre
+ * @property {number} Apellido
+ * @property {number} IdCompra
  */
 export type Usuario = {
-    idusuario: number;
-    nombre: string;
-    apellido: string;
-    idcompra: number
+    IdUsuario: number;
+    Nombre: string;
+    Apellido: string;
+    IdCompra: number
   };
 
   /** cliente type used in the CRUD operations.
  * @type {object}
- * @property {number} idcliente
- * @property {string} nombre
- * @property {string} direccion
- * @property {number} telefono
+ * @property {number} IdCliente
+ * @property {string} Nombre
+ * @property {string} Direccion
+ * @property {number} Telefono
  */
 export type Cliente = {
-    idcliente: number;
-    nombre: string;
-    direccion: string;
-    telefono: number;
+    IdCliente: number;
+    Nombre: string;
+    Direccion: string;
+    Telefono: number;
   }
   
    /** producto type used in the CRUD operations.
  * @type {object}
- * @property {number} idproducto
- * @property {string} nombreproducto
- * @property {number} stock
- * @property {string} detalle
- * @property {number} precioventa
- * @property {number} preciocompra
- * @property {number} idproveedor
+ * @property {number} IdProducto
+ * @property {string} NombreProducto
+ * @property {number} Stock
+ * @property {string} Detalle
+ * @property {number} PrecioVenta
+ * @property {number} PrecioCompra
+ * @property {number} IdProveedor
  
  */
 export type Producto = {
-    idproducto?: number;
-    nombreproducto: string;
-    stock: number;
-    detalle: string;
-    precioventa: number;
-    preciocompra: number;
-    idproveedor: number;
+    IdProducto?: number;
+    NombreProducto: string;
+    Stock: number;
+    Detalle: string;
+    PrecioVenta: number;
+    PrecioCompra: number;
+    IdProveedor: number;
   };
 
    /** proveedor type used in the CRUD operations.
  * @type {object}
- * @property {number} idproveedor
- * @property {string} nombre
- * @property {string} descripcion
- * @property {string} horariodesde
- * @property {string} horariohasta
- * @property {number} telefono
- * @property {number} idproveedor
+ * @property {number} IdProveedor
+ * @property {string} Nombre
+ * @property {string} Descripcion
+ * @property {string} HorarioDesde
+ * @property {string} HorarioHasta
+ * @property {number} Telefono
+ * @property {number} IdProveedor
  */
 export type Proveedor = {
-    idproveedor: number;
-    nombre: string;
-    descripcion: string;
-    horariodesde: string;
-    horariohasta: string;
-    telefono: number;
-    idproducto: number;
+    IdProveedor: number;
+    Nombre: string;
+    Descripcion: string;
+    HorarioDesde: string;
+    HorarioHasta: string;
+    Telefono: number;
+    Idproducto: number;
   };
 
   /** compra type used in the CRUD operations.
  * @type {object}
- * @property {number} idcompra
- * @property {Date} fecha
- * @property {bolean} formapago
- * @property {number} total
- * @property {number} numerodefactura
- * @property {number} idusuario
- * @property {number} idproveedor
+ * @property {number} IdCompra
+ * @property {Date} Fecha
+ * @property {bolean} Formapago
+ * @property {number} Total
+ * @property {number} NumerodeFactura
+ * @property {number} IdUsuario
+ * @property {number} IdProveedor
  */
 export type Compra = {
-    idcompra: number;
-    fecha: Date;
-    formapago: boolean;
-    total: number;
-    numerodefactora: number;
-    idusuario: number;
-    idproveedor: number;
+    IdCompra: number;
+    Fecha: Date;
+    FormaPago: boolean;
+    Total: number;
+    NumerodeFactora: number;
+    IdUsuario: number;
+    IdProveedor: number;
   };
 
    /** venta type used in the CRUD operations.
  * @type {object}
- * @property {number} idventa
- * @property {Date} fechaventa
- * @property {string} formapago
- * @property {number} total
- * @property {string} idusuario
- * @property {string} idcliente
+ * @property {number} IdVenta
+ * @property {Date} FechaVenta
+ * @property {string} FormaPago
+ * @property {number} Total
+ * @property {string} IdUsuario
+ * @property {string} IdCliente
  */
 export type Venta = {
-    idventa: number;
-    fechaventa: Date;
-    formapago: string;
-    total: number;
-    idusuario: string;
-    idcliente: number;
+    IdVenta: number;
+    FechaVenta: Date;
+    FormaPago: string;
+    Total: number;
+    IdUsuario: string;
+    IdCliente: number;
   };

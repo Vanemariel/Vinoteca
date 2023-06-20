@@ -4,14 +4,11 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Vinoteca.BaseDatos;
 
-namespace BaseDatos.Entidades
+namespace Shared.DTO
 {
-    public class Cliente
+    public class ClienteDto
     {
-        [Key]
-        public int IdCliente { get; set; } /* Primary Key */
         public string Nombre { get; set; }
         public string Direccion { get; set; }
         public long Telefono { get; set; }

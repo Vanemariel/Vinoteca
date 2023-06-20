@@ -43,6 +43,8 @@ app.UseCors(options =>
 });
 #endregion Uso de los Cors
 
+
+
 #region Conexion al Swagger
 app.UseSwagger();
 app.UseSwaggerUI(c =>

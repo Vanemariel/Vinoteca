@@ -4,12 +4,14 @@ using System.Security.Cryptography;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Omnichannel.Contracts;
+using Vinoteca.Server.Contracts;
 using Vinoteca.BaseDatos;
 using Vinoteca.BaseDatos.Entidades;
 using Vinoteca.Shared.DTO.Auth;
+using Shared.DTO;
+using BaseDatos.Entidades;
 
-namespace Vinoteca1.Server.Controllers
+namespace Vinoteca.Server.Controllers
 {
     [ApiController]
     [Route("Api/[controller]")]
@@ -65,14 +67,18 @@ namespace Vinoteca1.Server.Controllers
         }
 
         [HttpPost(ApiRoutes.Producto.New)]
-        public async Task<ActionResult<int>> New(Usuario usuario)
+        public async Task<ActionResult<bool>> New(UsuarioDto usuariodto)
         {
             try
             {
-
-                _context.TablaUsuarios.Add(usuario);
+                _context.TablaUsuarios.Add(new Usuario
+                {
+                    Apellido = usuariodto.Apellido,
+                    Nombre= usuariodto.Nombre,
+                    Compras= new List<Compra>() //inicio una lista de comras vacia
+                });
                 await _context.SaveChangesAsync();
-                return usuario.IdUsuario;
+                return true;
             }
             catch (Exception e)
             {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Omnichannel.Contracts
+namespace Vinoteca.Server.Contracts
 {
     public static class ApiRoutes
     {
@@ -13,11 +13,11 @@ namespace Omnichannel.Contracts
            
         public static class Producto
         {
-            public const string New = Base + "/proveedor";
-            public const string GetAll = Base + "/proveedor";            
-            public const string GetById = Base + "/proveedor/{id}";
-            public const string Delete = Base + "/proveedor/{id}";
-            public const string Update = Base + "/proveedor";
+            public const string New = Base + "/producto";
+            public const string GetAll = Base + "/producto";            
+            public const string GetById = Base + "/producto/{id}";
+            public const string Delete = Base + "/producto/{id}";
+            public const string Update = Base + "/producto";
            
         }
         public static class Proveedor

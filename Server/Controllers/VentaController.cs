@@ -1,13 +1,13 @@
 ﻿using BaseDatos.Entidades;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Omnichannel.Contracts;
+using Vinoteca.Server.Contracts;
 using System;
 using System.Diagnostics.Metrics;
 using Vinoteca.BaseDatos;
 using Vinoteca.BaseDatos.Entidades;
 
-namespace Vinoteca1.Server.Controllers
+namespace Vinoteca.Server.Controllers
 {
     [ApiController]
     [Route("Api/[controller]")]

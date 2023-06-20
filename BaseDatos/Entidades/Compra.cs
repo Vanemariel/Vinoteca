@@ -14,9 +14,9 @@ namespace BaseDatos.Entidades
     {
         [Key]
         public int IdCompra { get; set; }
-        public DateTime FechaCompra { get; set; }
-        public string FormaPago { get; set; }
-        public decimal Total { get; set; }
+        public string FechaCompra { get; set; }
+        public bool FormaPago { get; set; }
+        public float Total { get; set; }
         public int NumeroDeFactura { get; set; }
 
         public int IdUsuario { get; set; }

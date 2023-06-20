@@ -14,9 +14,9 @@ namespace BaseDatos.Entidades
     {
         [Key]
         public int IdCaja { get; set; }  /* Primary Key */
-        public DateTime Fecha { get; set; }
-        public decimal Inicio { get; set; }
-        public decimal Cierre { get; set; }
+        public string Fecha { get; set; }
+        public float Inicio { get; set; }
+        public float Cierre { get; set; }
 
         [ForeignKey("Usuario")]
         public int IdUsuario { get; set; }

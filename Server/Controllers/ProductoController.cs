@@ -1,13 +1,14 @@
 ﻿using BaseDatos.Entidades;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Omnichannel.Contracts;
+using Vinoteca.Server.Contracts;
 using System;
 using System.Diagnostics.Metrics;
 using Vinoteca.BaseDatos;
 using Vinoteca.BaseDatos.Entidades;
+using Shared.DTO;
 
-namespace Vinoteca1.Server.Controllers
+namespace Vinoteca.Server.Controllers
 {
     [ApiController]
     [Route("Api/[controller]")]
@@ -65,14 +66,23 @@ namespace Vinoteca1.Server.Controllers
 
         #region HTTP POST
         [HttpPost(ApiRoutes.Producto.New)]
-        public async Task<ActionResult<int>> New(Producto producto)
+        public async Task<ActionResult<bool>> New(ProductoDto productodto)
         {
             try
             {
 
-                _context.TablaProductos.Add(producto);
+                _context.TablaProductos.Add(new Producto
+                {
+                    NombreProducto= productodto.NombreProducto,
+                    Detalle= productodto.Detalle,
+                    PrecioCompra= productodto.PrecioCompra,
+                    PrecioVenta= productodto.PrecioVenta,
+                    Stock= productodto.Stock,
+                    IdProveedor= productodto.IdProveedor,
+                    DetallesCompra= new List<DetalleDeCompra>()
+                });
                 await _context.SaveChangesAsync();
-                return producto.IdProducto;
+                return true;
             }
             catch (Exception e)
             {
