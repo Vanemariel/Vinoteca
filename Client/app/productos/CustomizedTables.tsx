@@ -1,9 +1,7 @@
 "use client";
 
-import * as React from "react";
-import { useEffect, useState, Fragment } from "react";
+import { useEffect, useState } from "react";
 import * as action from "../../Utilities/action";
-
 import { styled, useTheme } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -15,32 +13,10 @@ import Paper from "@mui/material/Paper";
 import { Button, Grid } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-
-import Box from "@mui/material/Box";
-import Modal from "@mui/material/Modal";
 import { LoadingButton } from "@mui/lab";
-import {
-  Toolbar,
-  Typography,
-  InputBase,
-  IconButton,
-  Dialog,
-  DialogContentText,
-  DialogActions,
-  DialogContent,
-  TextField,
-  DialogTitle,
-  useMediaQuery,
-} from "@mui/material";
-import {
-  Checkbox,
-  Autocomplete,
-  InputAdornment,
-  MenuItem,
-  RadioGroup,
-  Radio,
-  OutlinedInput,
-} from "@mui/material";
+import { Toolbar, Typography, InputBase, IconButton, Dialog, DialogContentText, DialogActions, DialogContent, 
+TextField, DialogTitle, useMediaQuery } from "@mui/material";
+import { MenuItem } from "@mui/material";
 import { Producto } from "../../TYPES/crudTypes";
 import { useStore } from "../../stores/crud";
 
@@ -76,7 +52,7 @@ export default function CustomizedTables() {
     boxShadow: 24,
     p: 4,
   };
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [name, setName] = useState("");

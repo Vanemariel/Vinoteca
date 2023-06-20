@@ -57,6 +57,7 @@ function ResponsiveAppBar() {
     setAnchorElUser(null);
   };
 
+  
   const isHomePage = window.location.pathname === "/";
 
   return (

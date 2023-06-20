@@ -1,18 +1,17 @@
 import axios from "axios";
 import create from 'zustand';
 
-type State = {
-    getList: (action: string) => Promise<any>;
-    getObject: (action: string, id: number) => Promise<any>;
-    newObject: (action: string, obj: any) => Promise<any>;
-    updateObject: (action: string, obj: any) => Promise<any>;
-    deleteObject: (action: string, id: number) => Promise<any>;
+interface State {
+    getList: (action: string) => any;
+    getObject: (action: string, id: number) => any;
+    newObject: (action: string, obj: any) => any;
+    updateObject: (action: string, obj: any) => any;
+    deleteObject: (action: string, id: number) => any;
   };
 export const useStore = create<State>((set) => ({
     getList: async (action: string) => {
       let response;
-      await axios
-        .get(action)
+      await axios.get(action)
         .then((res) => {
           response = res;
         })
