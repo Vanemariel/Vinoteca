@@ -17,7 +17,7 @@ import { LoadingButton } from "@mui/lab";
 import { Toolbar, Typography, InputBase, IconButton, Dialog, DialogContentText, DialogActions, DialogContent, 
 TextField, DialogTitle, useMediaQuery } from "@mui/material";
 import { MenuItem } from "@mui/material";
-import { Producto } from "../../TYPES/crudTypes";
+import { Producto, Proveedor } from "../../TYPES/crudTypes";
 import { useStore } from "../../stores/crud";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -74,6 +74,7 @@ export default function CustomizedTables() {
     handleClose(); // Cierra el modal
   };
   const [productoList, setProductoList] = useState([] as Producto[]);
+  const [proveedorList, setProveedorList] = useState([] as Proveedor[]);
   const [loaded, setLoaded] = useState(false);
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -85,7 +86,7 @@ export default function CustomizedTables() {
     { title: "The Godfather", year: 1972 },
     { title: "The Godfather: Part II", year: 1974 },
   ];
-  const [proveedorList, setProveedorList] = useState<
+  const [proveedoresList, setProveedoresList] = useState<
     Array<{ id: number; name: string }>
   >([]);
   const theme = useTheme();
@@ -444,7 +445,7 @@ export default function CustomizedTables() {
                 })
               }
             >
-              {proveedorList.map((proveedor) => (
+              {proveedoresList.map((proveedor) => (
                 <MenuItem key={proveedor.id} value={proveedor.id}>
                   {proveedor.name}
                 </MenuItem>
