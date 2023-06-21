@@ -114,13 +114,13 @@ export default function CustomizedTables() {
   >([]);
 
   const [formData, setFormData] = useState({
-    IdProveedor: null as any,
-    IdProducto: null as any,
-    Nombre: "",
-    Descripcion: "",
-    Telefono: null as any,
-    HorarioDesde: null as any,
-    HorarioHasta: null as any,
+    idProveedor: null as any,
+    idProducto: null as any,
+    nombre: "",
+    descripcion: "",
+    telefono: null as any,
+    horarioDesde: null as any,
+    horarioHasta: null as any,
   } as Proveedor);
 
   useEffect(() => {
@@ -156,17 +156,17 @@ export default function CustomizedTables() {
   const validate = async (e: Event) => {
     e.preventDefault();
     if (
-      formData.Nombre != "" &&
-      formData.Telefono != null &&
-      formData.HorarioDesde != null &&
-      formData.HorarioHasta != null &&
-      formData.Descripcion != ""
+      formData.nombre != "" &&
+      formData.telefono != null &&
+      formData.horarioDesde != null &&
+      formData.horarioHasta != null &&
+      formData.descripcion != ""
     ) {
       setLoading(true);
       let body = formData;
       let response = null;
       if (isNew) {
-        delete body.IdProveedor;
+        delete body.idProveedor;
         response = await newObject(action.PROVEEDORES_CONTROLLER, body);
       } else {
         response = await updateObject(action.PROVEEDORES_CONTROLLER, body);
@@ -176,13 +176,13 @@ export default function CustomizedTables() {
       setDialog(false);
 
       setFormData({
-        IdProveedor: null as any,
-        Nombre: "",
-        Telefono: null as any,
-        HorarioDesde: null as any,
-        HorarioHasta: null as any,
-        Descripcion: "",
-        IdProducto:  null as any,
+        idProveedor: null as any,
+        nombre: "",
+        telefono: null as any,
+        horarioDesde: null as any,
+        horarioHasta: null as any,
+        descripcion: "",
+        idProducto:  null as any,
       });
       setLoading(false);
 
@@ -213,7 +213,7 @@ export default function CustomizedTables() {
           message: "Eliminado" + " " + "con excito",
         });
         setProveedorList(
-          proveedorList.filter((proveedores) => proveedores.IdProveedor !== toDelete)
+          proveedorList.filter((proveedores) => proveedores.idProveedor !== toDelete)
         );
       })
       .catch((err: any) => {
@@ -323,13 +323,13 @@ export default function CustomizedTables() {
         onClose={() => {
           setDialog(false);
           setFormData({
-            Descripcion: "",
-            IdProveedor: null,
-            IdProducto: null,
-            Telefono: null,
-            HorarioDesde: null,
-            HorarioHasta: null,
-            Nombre: "",
+            descripcion: "",
+            idProveedor: null,
+            idProducto: null,
+            telefono: null,
+            horarioDesde: null,
+            horarioHasta: null,
+            nombre: "",
           });
           if (isNew) setIsNew(false);
         }}
@@ -346,16 +346,16 @@ export default function CustomizedTables() {
               label="Nombre del producto"
               variant="outlined"
               fullWidth
-              value={formData.Nombre}
+              value={formData.nombre}
               onChange={(e) =>
                 setFormData({
-                  IdProducto: formData.IdProducto,
-                  Nombre: e.target.value,
-                  HorarioDesde: formData.HorarioDesde,
-                  HorarioHasta: formData.HorarioHasta,
-                  Descripcion: formData.Descripcion,
-                  Telefono: formData.Telefono,
-                  IdProveedor: formData.IdProveedor,
+                  idProducto: formData.idProducto,
+                  nombre: e.target.value,
+                  horarioDesde: formData.horarioDesde,
+                  horarioHasta: formData.horarioHasta,
+                  descripcion: formData.descripcion,
+                  telefono: formData.telefono,
+                  idProveedor: formData.idProveedor,
                 })
               }
             />
@@ -367,16 +367,16 @@ export default function CustomizedTables() {
             <TextField
               label="Cantidad adquirida"
               fullWidth
-              value={formData.Telefono}
+              value={formData.telefono}
               onChange={(e) =>
                 setFormData({
-                  IdProducto: formData.IdProducto,
-                  Nombre: formData.Nombre,
-                  HorarioHasta: formData.HorarioHasta,
-                  HorarioDesde: formData.HorarioDesde,
-                  Descripcion: formData.Descripcion,
-                  Telefono: +e.target.value,
-                  IdProveedor: formData.IdProveedor,
+                  idProducto: formData.idProducto,
+                  nombre: formData.nombre,
+                  horarioHasta: formData.horarioHasta,
+                  horarioDesde: formData.horarioDesde,
+                  descripcion: formData.descripcion,
+                  telefono: +e.target.value,
+                  idProveedor: formData.idProveedor,
                 })
               }
             />
@@ -390,16 +390,16 @@ export default function CustomizedTables() {
               fullWidth
               multiline
               rows={4}
-              value={formData.Descripcion}
+              value={formData.descripcion}
               onChange={(e) =>
                 setFormData({
-                  IdProducto: formData.IdProducto,
-                  Nombre: formData.Nombre,
-                  HorarioHasta: formData.HorarioHasta,
-                  HorarioDesde: formData.HorarioDesde,
-                  Descripcion: e.target.value,
-                  Telefono: formData.Telefono,
-                  IdProveedor: formData.IdProveedor,
+                  idProducto: formData.idProducto,
+                  nombre: formData.nombre,
+                  horarioHasta: formData.horarioHasta,
+                  horarioDesde: formData.horarioDesde,
+                  descripcion: e.target.value,
+                  telefono: formData.telefono,
+                  idProveedor: formData.idProveedor,
                 })
               }
             />
@@ -412,16 +412,16 @@ export default function CustomizedTables() {
               label="Seleccionar provedor"
               variant="outlined"
               fullWidth
-              value={formData.IdProveedor}
+              value={formData.idProveedor}
               onChange={(e) =>
                 setFormData({
-                  IdProducto: formData.IdProducto,
-                  Nombre: formData.Nombre,
-                  HorarioHasta: formData.HorarioHasta,
-                  HorarioDesde: formData.HorarioDesde,
-                  Descripcion: formData.Descripcion,
-                  Telefono: formData.Telefono,
-                  IdProveedor: +e.target.value,
+                  idProducto: formData.idProducto,
+                  nombre: formData.nombre,
+                  horarioHasta: formData.horarioHasta,
+                  horarioDesde: formData.horarioDesde,
+                  descripcion: formData.descripcion,
+                  telefono: formData.telefono,
+                  idProveedor: +e.target.value,
                 })
               }
             >
@@ -441,17 +441,17 @@ export default function CustomizedTables() {
                 </InputLabel>
             <TextField
               id='from-time'
-              value={formData.HorarioDesde}
+              value={formData.horarioDesde}
               type='time'     
               onChange={(e) =>
                 setFormData({
-                  IdProducto: formData.IdProducto,
-                  Nombre: formData.Nombre,
-                  HorarioHasta: formData.HorarioHasta,
-                  HorarioDesde:  e.target.value,
-                  Descripcion: formData.Descripcion,
-                  Telefono: formData.Telefono,
-                  IdProveedor: formData.IdProveedor,
+                  idProducto: formData.idProducto,
+                  nombre: formData.nombre,
+                  horarioHasta: formData.horarioHasta,
+                  horarioDesde:  e.target.value,
+                  descripcion: formData.descripcion,
+                  telefono: formData.telefono,
+                  idProveedor: formData.idProveedor,
                 })
               }
             />
@@ -466,17 +466,17 @@ export default function CustomizedTables() {
                 </InputLabel>
             <TextField
               id='from-time'
-              value={formData.HorarioHasta}
+              value={formData.horarioHasta}
               type='time'     
               onChange={(e) =>
                 setFormData({
-                  IdProducto: formData.IdProducto,
-                  Nombre: formData.Nombre,
-                  HorarioHasta: e.target.value,
-                  HorarioDesde: formData.HorarioDesde,
-                  Descripcion: formData.Descripcion,
-                  Telefono: formData.Telefono,
-                  IdProveedor: formData.IdProveedor,
+                  idProducto: formData.idProducto,
+                  nombre: formData.nombre,
+                  horarioHasta: e.target.value,
+                  horarioDesde: formData.horarioDesde,
+                  descripcion: formData.descripcion,
+                  telefono: formData.telefono,
+                  idProveedor: formData.idProveedor,
                 })
               }
             />
@@ -495,13 +495,13 @@ export default function CustomizedTables() {
             onClick={() => {
               setDialog(false);
               setFormData({
-                Descripcion: "",
-                IdProveedor: null,
-                Telefono: null,
-                HorarioDesde: "",
-                HorarioHasta: "",
-                Nombre: "",
-                IdProducto: null,
+                descripcion: "",
+                idProveedor: null,
+                telefono: null,
+                horarioDesde: "",
+                horarioHasta: "",
+                nombre: "",
+                idProducto: null,
               });
               if (isNew) setIsNew(false);
             }}
@@ -512,12 +512,12 @@ export default function CustomizedTables() {
           <LoadingButton
             loading={loading}
             disabled={
-              formData.IdProveedor == null &&
-              formData.HorarioHasta == null &&
-              formData.Descripcion == "" &&
-              formData.Telefono == null &&
-              formData.HorarioDesde == null &&
-              formData.Nombre == null
+              formData.idProveedor == null &&
+              formData.horarioHasta == null &&
+              formData.descripcion == "" &&
+              formData.telefono == null &&
+              formData.horarioDesde == null &&
+              formData.nombre == null
             }
             size="large"
             onClick={(e: any) => validate(e)}
@@ -538,34 +538,34 @@ export default function CustomizedTables() {
 
               <StyledTableCell>Nombre</StyledTableCell>
 
-              <StyledTableCell align="right">Descripcion</StyledTableCell>
+              <StyledTableCell>Descripcion</StyledTableCell>
 
-              <StyledTableCell align="right">Horario desde</StyledTableCell>
+              <StyledTableCell>Horario desde</StyledTableCell>
 
-              <StyledTableCell align="right">Horario hasta</StyledTableCell>
+              <StyledTableCell>Horario hasta</StyledTableCell>
 
-              <StyledTableCell align="right">
+              <StyledTableCell>
                 Telefono
               </StyledTableCell>
             </TableRow>
           </TableHead>
 
           <TableBody>
-            {proveedorList.map((row) => (
-              <StyledTableRow key={row.Nombre}>
+            {proveedorList?.map((row) => (
+              <StyledTableRow key={row.idProveedor}>
                 <StyledTableCell component="th" scope="row">
                   <IconButton aria-label="edit"
                     onClick={() => {
                       setDialog(true);
                       setIsNew(false);
                       setFormData({
-                        IdProducto: row.IdProducto,
-                        Descripcion: row.Descripcion,
-                        HorarioHasta: row.HorarioHasta,
-                        HorarioDesde: row.HorarioDesde,
-                        Telefono: row.Telefono,
-                        IdProveedor: row.IdProveedor,
-                        Nombre: row.Nombre,
+                        idProducto: row.idProducto,
+                        descripcion: row.descripcion,
+                        horarioHasta: row.horarioHasta,
+                        horarioDesde: row.horarioDesde,
+                        telefono: row.telefono,
+                        idProveedor: row.idProveedor,
+                        nombre: row.nombre,
                       });
                     }}
                   >
@@ -574,32 +574,32 @@ export default function CustomizedTables() {
                   <IconButton color="error"
                     aria-label="delete"
                     onClick={() => {
-                      setToDelete(row.IdProveedor);
+                      setToDelete(row.idProveedor);
                       setDeleteDialog(true);
                     }}
                   >
-                    <DeleteIcon />{" "}
+                    <DeleteIcon />
                   </IconButton>
                 </StyledTableCell>
 
                 <StyledTableCell component="th" scope="row">
-                  {" "}
-                  {row.Nombre}{" "}
+                  {row.nombre}
                 </StyledTableCell>
-                <StyledTableCell align="right">
-                  {row.Descripcion}
+
+                <StyledTableCell>
+                  {row.descripcion}
                 </StyledTableCell>
-                <StyledTableCell align="right">
-                  {" "}
-                  {row.Telefono}
+
+                <StyledTableCell>  
+                  {row.telefono}
                 </StyledTableCell>
-                <StyledTableCell align="right">
-                  {" "}
-                  {row.HorarioDesde}
+
+                <StyledTableCell>
+                  {row.horarioDesde}
                 </StyledTableCell>
-                <StyledTableCell align="right">
-                  {" "}
-                  {row.HorarioHasta}
+
+                <StyledTableCell>
+                  {row.horarioHasta}
                 </StyledTableCell>
               </StyledTableRow>
             ))}
