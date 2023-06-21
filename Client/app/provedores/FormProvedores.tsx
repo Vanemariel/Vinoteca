@@ -32,7 +32,7 @@ import {
   InputLabel
 } from "@mui/material";
 import {MenuItem} from "@mui/material";
-import { Proveedor } from "../../TYPES/crudTypes";
+import { Producto, Proveedor } from "../../TYPES/crudTypes";
 import { useStore } from "../../stores/crud";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -109,6 +109,7 @@ export default function CustomizedTables() {
   const [dialog, setDialog] = useState(false);
   const [isNew, setIsNew] = useState(false);
   const [toDelete, setToDelete] = useState(null as any);
+  const [productoList, setProductoList] = useState([] as Producto[]);
   const [proveedoresList, setProveedoresList] = useState<
     Array<{ id: number; name: string }>
   >([]);
@@ -126,7 +127,7 @@ export default function CustomizedTables() {
   useEffect(() => {
     getList(action.PROVEEDORES_CONTROLLER)
       .then((res: any) => {
-        setProveedorList(res.data);
+        setProveedoresList(res.data);
         setLoaded(true);
       })
       .catch((err: any) => {
@@ -140,7 +141,7 @@ export default function CustomizedTables() {
 
     getList(action.PRODUCTO_CONTROLLER)
       .then((res: any) => {
-        setProveedorList(res.data);
+        setProductoList(res.data);
         setLoaded(true);
       })
       .catch((err: any) => {
@@ -156,10 +157,10 @@ export default function CustomizedTables() {
   const validate = async (e: Event) => {
     e.preventDefault();
     if (
-      formData.nombre != "" &&
-      formData.telefono != null &&
-      formData.horarioDesde != null &&
-      formData.horarioHasta != null &&
+      formData.nombre != "" ||
+      formData.telefono != null ||
+      formData.horarioDesde != null ||
+      formData.horarioHasta != null ||
       formData.descripcion != ""
     ) {
       setLoading(true);
@@ -335,7 +336,7 @@ export default function CustomizedTables() {
         }}
       >
         <DialogTitle>
-          {isNew ? "Agregar actualizacion" : "Producto"} 
+          {isNew ? "Agregar actualizacion" : "Proveedor"} 
         </DialogTitle>
         <DialogContent>
         <Grid container rowSpacing={3}>
@@ -343,7 +344,7 @@ export default function CustomizedTables() {
           {/*Nombre*/}
           <Grid item xs={12} sm={8}>
             <TextField
-              label="Nombre del producto"
+              label="Nombre del proveedor"
               variant="outlined"
               fullWidth
               value={formData.nombre}
