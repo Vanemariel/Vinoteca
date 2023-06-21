@@ -503,9 +503,13 @@ export default function CustomizedTables() {
                 Acciones
               </StyledTableCell>
               <StyledTableCell>Nombre</StyledTableCell>
+
               <StyledTableCell>Stock</StyledTableCell>
+
               <StyledTableCell>Detalle</StyledTableCell>
+
               <StyledTableCell>Precio de compra</StyledTableCell>
+              
               <StyledTableCell>Precio de venta</StyledTableCell>
             </TableRow>
           </TableHead>

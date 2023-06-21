@@ -513,17 +513,17 @@ export default function CustomizedTables() {
           <LoadingButton
             loading={loading}
             disabled={
-              formData.idProveedor == null &&
-              formData.horarioHasta == null &&
-              formData.descripcion == "" &&
-              formData.telefono == null &&
-              formData.horarioDesde == null &&
+              formData.idProveedor == null ||
+              formData.horarioHasta == null ||
+              formData.descripcion == "" ||
+              formData.telefono == null ||
+              formData.horarioDesde == null ||
               formData.nombre == null
             }
             size="large"
             onClick={(e: any) => validate(e)}
           >
-            {isNew ? "Agregar" : ""}
+            {"Agregar"}
           </LoadingButton>
         </DialogActions>
       </Dialog>
@@ -545,9 +545,7 @@ export default function CustomizedTables() {
 
               <StyledTableCell>Horario hasta</StyledTableCell>
 
-              <StyledTableCell>
-                Telefono
-              </StyledTableCell>
+              <StyledTableCell>Telefono</StyledTableCell>
             </TableRow>
           </TableHead>
 
