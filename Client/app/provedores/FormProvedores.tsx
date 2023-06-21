@@ -29,6 +29,7 @@ import {
   TextField,
   DialogTitle,
   useMediaQuery,
+  InputLabel
 } from "@mui/material";
 import {MenuItem} from "@mui/material";
 import { Proveedor } from "../../TYPES/crudTypes";
@@ -431,15 +432,17 @@ export default function CustomizedTables() {
               ))}
             </TextField>
           </Grid>
-          </Grid>
-        </DialogContent>
 
-        {/*Horario Desde */}
-        <Grid item xs={12} sm={8}>
+          {/*Horario Desde */}
+        <Grid item xs={6}>
+              <form style={{ display: 'flex', flexDirection: 'column' }}>
+                <InputLabel htmlFor='from-time'>
+                  {"Hora Desde"}
+                </InputLabel>
             <TextField
-              label="Hora"
-              fullWidth
+              id='from-time'
               value={formData.HorarioDesde}
+              type='time'     
               onChange={(e) =>
                 setFormData({
                   IdProducto: formData.IdProducto,
@@ -452,14 +455,19 @@ export default function CustomizedTables() {
                 })
               }
             />
+            </form>
           </Grid>
 
           {/*HoraioHasta*/}
-          <Grid item xs={12} sm={8}>
+          <Grid item xs={6}>
+              <form style={{display: 'flex', flexDirection: 'column'   }}>
+                <InputLabel htmlFor='from-time'>
+                  {"Hora Hasta"}
+                </InputLabel>
             <TextField
-              label="Horas"
-              fullWidth
+              id='from-time'
               value={formData.HorarioHasta}
+              type='time'     
               onChange={(e) =>
                 setFormData({
                   IdProducto: formData.IdProducto,
@@ -472,7 +480,12 @@ export default function CustomizedTables() {
                 })
               }
             />
+            </form>
           </Grid>
+          </Grid>
+        </DialogContent>
+
+        
 
         {/*Button */}
         <DialogActions>
