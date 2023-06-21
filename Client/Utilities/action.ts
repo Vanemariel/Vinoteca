@@ -18,7 +18,7 @@ export const PRODUCTO_CONTROLLER = base + "Api/Producto/" + api + "producto";
  * @constant {string}
  */
 
-export const PROVEEDORES_CONTROLLER = base + "Api/Proveedores/" + api + "proveedor";
+export const PROVEEDORES_CONTROLLER = base + "Api/Proveedor/" + api + "proveedor";
 /**
  * General use endpoints.
  * @constant {string}

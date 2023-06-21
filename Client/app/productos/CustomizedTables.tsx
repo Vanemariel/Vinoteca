@@ -98,13 +98,13 @@ export default function CustomizedTables() {
   const [isNew, setIsNew] = useState(false);
   const [toDelete, setToDelete] = useState(null as any);
   const [formData, setFormData] = useState({
-    IdProducto: null as any,
-    NombreProducto: "",
-    Stock: null as any,
-    PrecioVenta: null as any,
-    PrecioCompra: null as any,
-    Detalle: "",
-    IdProveedor: null as any,
+    idProducto: null as any,
+    nombreProducto: "",
+    stock: null as any,
+    precioVenta: null as any,
+    precioCompra: null as any,
+    detalle: "",
+    idProveedor: null as any,
   } as Producto);
 
   useEffect(() => {
@@ -140,17 +140,17 @@ export default function CustomizedTables() {
   const validate = async (e: Event) => {
     e.preventDefault();
     if (
-      formData.NombreProducto != "" &&
-      formData.Stock != null &&
-      formData.PrecioVenta != null &&
-      formData.PrecioCompra != null &&
-      formData.Detalle != ""
+      formData.nombreProducto != "" ||
+      formData.stock != null ||
+      formData.precioVenta != null ||
+      formData.precioCompra != null ||
+      formData.detalle != ""
     ) {
       setLoading(true);
       let body = formData;
       let response = null;
       if (isNew) {
-        delete body.IdProducto;
+        delete body.idProducto;
         response = await newObject(action.PRODUCTO_CONTROLLER, body);
       } else {
         response = await updateObject(action.PRODUCTO_CONTROLLER, body);
@@ -160,13 +160,13 @@ export default function CustomizedTables() {
       setDialog(false);
 
       setFormData({
-        IdProducto: null as any,
-        NombreProducto: "",
-        Stock: null as any,
-        PrecioVenta: null as any,
-        PrecioCompra: null as any,
-        Detalle: "",
-        IdProveedor: 0,
+        idProducto: null as any,
+        nombreProducto: "",
+        stock: null as any,
+        precioVenta: null as any,
+        precioCompra: null as any,
+        detalle: "",
+        idProveedor: 0,
       });
       setLoading(false);
 
@@ -196,8 +196,7 @@ export default function CustomizedTables() {
           severity: "success",
           message: "Eliminado" + " " + "con excito",
         });
-        setProductoList(
-          productoList.filter((producto) => producto.IdProducto !== toDelete)
+        setProductoList(productoList.filter((producto) => producto.idProducto !== toDelete)
         );
       })
       .catch((err: any) => {
@@ -307,12 +306,12 @@ export default function CustomizedTables() {
         onClose={() => {
           setDialog(false);
           setFormData({
-            Detalle: "",
-            IdProveedor: 0,
-            Stock: 0,
-            PrecioVenta: 0,
-            PrecioCompra: 0,
-            NombreProducto: "",
+            detalle: "",
+            idProveedor: 0,
+            stock: 0,
+            precioVenta: 0,
+            precioCompra: 0,
+            nombreProducto: "",
           });
           if (isNew) setIsNew(false);
         }}
@@ -322,22 +321,23 @@ export default function CustomizedTables() {
         </DialogTitle>
         <DialogContent>
         <Grid container rowSpacing={3}>
+
           {/*Nombre Producto*/}
           <Grid item xs={12} sm={8}>
             <TextField
               label="Nombre del producto"
               variant="outlined"
               fullWidth
-              value={formData.NombreProducto}
+              value={formData.nombreProducto}
               onChange={(e) =>
                 setFormData({
-                  IdProducto: formData.IdProducto,
-                  NombreProducto: e.target.value,
-                  PrecioCompra: formData.PrecioCompra,
-                  PrecioVenta: formData.PrecioVenta,
-                  Detalle: formData.Detalle,
-                  Stock: formData.Stock,
-                  IdProveedor: formData.IdProveedor,
+                  idProducto: formData.idProducto,
+                  nombreProducto: e.target.value,
+                  precioCompra: formData.precioCompra,
+                  precioVenta: formData.precioVenta,
+                  detalle: formData.detalle,
+                  stock: formData.stock,
+                  idProveedor: formData.idProveedor,
                 })
               }
             />
@@ -348,16 +348,16 @@ export default function CustomizedTables() {
             <TextField
               label="Precio Compra"
               fullWidth
-              value={formData.PrecioCompra}
+              value={formData.precioCompra}
               onChange={(e) =>
                 setFormData({
-                  IdProducto: formData.IdProducto,
-                  NombreProducto: formData.NombreProducto,
-                  PrecioCompra: +e.target.value,
-                  PrecioVenta: formData.PrecioVenta,
-                  Detalle: formData.Detalle,
-                  Stock: formData.Stock,
-                  IdProveedor: formData.IdProveedor,
+                  idProducto: formData.idProducto,
+                  nombreProducto: formData.nombreProducto,
+                  precioCompra: +e.target.value,
+                  precioVenta: formData.precioVenta,
+                  detalle: formData.detalle,
+                  stock: formData.stock,
+                  idProveedor: formData.idProveedor,
                 })
               }
             />
@@ -366,16 +366,16 @@ export default function CustomizedTables() {
             <TextField
               label="Precio Venta"
               fullWidth
-              value={formData.PrecioVenta}
+              value={formData.precioVenta}
               onChange={(e) =>
                 setFormData({
-                  IdProducto: formData.IdProducto,
-                  NombreProducto: formData.NombreProducto,
-                  PrecioCompra: formData.PrecioCompra,
-                  PrecioVenta: +e.target.value,
-                  Detalle: formData.Detalle,
-                  Stock: formData.Stock,
-                  IdProveedor: formData.IdProveedor,
+                  idProducto: formData.idProducto,
+                  nombreProducto: formData.nombreProducto,
+                  precioCompra: formData.precioCompra,
+                  precioVenta: +e.target.value,
+                  detalle: formData.detalle,
+                  stock: formData.stock,
+                  idProveedor: formData.idProveedor,
                 })
               }
             />
@@ -386,16 +386,16 @@ export default function CustomizedTables() {
             <TextField
               label="Cantidad adquirida"
               fullWidth
-              value={formData.Stock}
+              value={formData.stock}
               onChange={(e) =>
                 setFormData({
-                  IdProducto: formData.IdProducto,
-                  NombreProducto: formData.NombreProducto,
-                  PrecioCompra: formData.PrecioCompra,
-                  PrecioVenta: formData.PrecioVenta,
-                  Detalle: formData.Detalle,
-                  Stock: +e.target.value,
-                  IdProveedor: formData.IdProveedor,
+                  idProducto: formData.idProducto,
+                  nombreProducto: formData.nombreProducto,
+                  precioCompra: formData.precioCompra,
+                  precioVenta: formData.precioVenta,
+                  detalle: formData.detalle,
+                  stock: +e.target.value,
+                  idProveedor: formData.idProveedor,
                 })
               }
             />
@@ -409,16 +409,16 @@ export default function CustomizedTables() {
               fullWidth
               multiline
               rows={4}
-              value={formData.Detalle}
+              value={formData.detalle}
               onChange={(e) =>
                 setFormData({
-                  IdProducto: formData.IdProducto,
-                  NombreProducto: formData.NombreProducto,
-                  PrecioCompra: formData.PrecioCompra,
-                  PrecioVenta: formData.PrecioVenta,
-                  Detalle: e.target.value,
-                  Stock: formData.Stock,
-                  IdProveedor: formData.IdProveedor,
+                  idProducto: formData.idProducto,
+                  nombreProducto: formData.nombreProducto,
+                  precioCompra: formData.precioCompra,
+                  precioVenta: formData.precioVenta,
+                  detalle: e.target.value,
+                  stock: formData.stock,
+                  idProveedor: formData.idProveedor,
                 })
               }
             />
@@ -431,16 +431,16 @@ export default function CustomizedTables() {
               label="Seleccionar provedor"
               variant="outlined"
               fullWidth
-              value={formData.IdProveedor}
+              value={formData.idProveedor}
               onChange={(e) =>
                 setFormData({
-                  IdProducto: formData.IdProducto,
-                  NombreProducto: formData.NombreProducto,
-                  PrecioCompra: formData.PrecioCompra,
-                  PrecioVenta: formData.PrecioVenta,
-                  Detalle: formData.Detalle,
-                  Stock: formData.Stock,
-                  IdProveedor: +e.target.value,
+                  idProducto: formData.idProducto,
+                  nombreProducto: formData.nombreProducto,
+                  precioCompra: formData.precioCompra,
+                  precioVenta: formData.precioVenta,
+                  detalle: formData.detalle,
+                  stock: formData.stock,
+                  idProveedor: +e.target.value,
                 })
               }
             >
@@ -462,12 +462,12 @@ export default function CustomizedTables() {
             onClick={() => {
               setDialog(false);
               setFormData({
-                Detalle: "",
-                IdProveedor: null,
-                Stock: null,
-                PrecioVenta: null,
-                PrecioCompra: null,
-                NombreProducto: "",
+                detalle: "",
+                idProveedor: null,
+                stock: null,
+                precioVenta: null,
+                precioCompra: null,
+                nombreProducto: "",
               });
               if (isNew) setIsNew(false);
             }}
@@ -478,17 +478,17 @@ export default function CustomizedTables() {
           <LoadingButton
             loading={loading}
             disabled={
-              formData.IdProveedor == null &&
-              formData.PrecioCompra == null &&
-              formData.Detalle == "" &&
-              formData.Stock == null &&
-              formData.PrecioVenta == null &&
-              formData.NombreProducto == null
+              formData.idProveedor == null ||
+              formData.precioCompra == null ||
+              formData.detalle == "" ||
+              formData.stock == null ||
+              formData.precioVenta == null ||
+              formData.nombreProducto == null
             }
             size="large"
             onClick={(e: any) => validate(e)}
           >
-            {isNew ? "Agregar" : ""}
+            {"Agregar"}
           </LoadingButton>
         </DialogActions>
       </Dialog>
@@ -499,7 +499,7 @@ export default function CustomizedTables() {
           <TableHead>
             <TableRow>
               <StyledTableCell width={115} align="center">
-                Opciones
+                Acciones
               </StyledTableCell>
               <StyledTableCell>Nombre</StyledTableCell>
               <StyledTableCell>Stock</StyledTableCell>
@@ -510,8 +510,8 @@ export default function CustomizedTables() {
           </TableHead>
           
           <TableBody>
-            {productoList.map((row) => (
-              <StyledTableRow key={row.NombreProducto}>
+            {productoList?.map((row) => (
+              <StyledTableRow key={row.idProducto}>
                 <StyledTableCell component="th" scope="row">
                   <IconButton
                     aria-label="edit"
@@ -519,13 +519,13 @@ export default function CustomizedTables() {
                       setDialog(true);
                       setIsNew(false);
                       setFormData({
-                        IdProducto: row.IdProducto,
-                        Detalle: row.Detalle,
-                        PrecioVenta: row.PrecioVenta,
-                        PrecioCompra: row.PrecioCompra,
-                        Stock: row.Stock,
-                        IdProveedor: row.IdProveedor,
-                        NombreProducto: row.NombreProducto,
+                        idProducto: row.idProducto,
+                        detalle: row.detalle,
+                        precioVenta: row.precioVenta,
+                        precioCompra: row.precioCompra,
+                        stock: row.stock,
+                        idProveedor: row.idProveedor,
+                        nombreProducto: row.nombreProducto,
                       });
                     }}
                   >
@@ -536,7 +536,7 @@ export default function CustomizedTables() {
                     color="error"
                     aria-label="delete"
                     onClick={() => {
-                      setToDelete(row.IdProducto);
+                      setToDelete(row.idProducto);
                       setDeleteDialog(true);
                     }}
                   >
@@ -545,22 +545,23 @@ export default function CustomizedTables() {
                 </StyledTableCell>
 
                 <StyledTableCell component="th" scope="row">
-                  {" "}
-                  {row.NombreProducto}{" "}
+                  {row.nombreProducto}
                 </StyledTableCell>
 
-                <StyledTableCell align="right">{row.Stock}</StyledTableCell>
-
-                <StyledTableCell align="right">{row.Detalle}</StyledTableCell>
-
-                <StyledTableCell align="right">
-                  {" "}
-                  ${row.PrecioVenta}
+                <StyledTableCell>
+                  {row.stock}
                 </StyledTableCell>
 
-                <StyledTableCell align="right">
-                  {" "}
-                  ${row.PrecioCompra}
+                <StyledTableCell>
+                  {row.detalle}
+                </StyledTableCell>
+
+                <StyledTableCell>                
+                  ${row.precioVenta}
+                </StyledTableCell>
+
+                <StyledTableCell>
+                  ${row.precioCompra}
                 </StyledTableCell>
               </StyledTableRow>
             ))}

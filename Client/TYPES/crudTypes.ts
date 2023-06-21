@@ -1,70 +1,70 @@
 /** usuario type used in the CRUD operations.
  * @type {object}
- * @property {number} IdUsuario
- * @property {string} Nombre
- * @property {number} Apellido
- * @property {number} IdCompra
+ * @property {number} idUsuario
+ * @property {string} nombre
+ * @property {number} apellido
+ * @property {number} idCompra
  */
 export type Usuario = {
-    IdUsuario: number;
-    Nombre: string;
-    Apellido: string;
-    IdCompra: number
+    idUsuario: number;
+    nombre: string;
+    apellido: string;
+    idCompra: number
   };
 
   /** cliente type used in the CRUD operations.
  * @type {object}
- * @property {number} IdCliente
- * @property {string} Nombre
- * @property {string} Direccion
- * @property {number} Telefono
+ * @property {number} idCliente
+ * @property {string} nombre
+ * @property {string} direccion
+ * @property {number} telefono
  */
 export type Cliente = {
-    IdCliente: number;
-    Nombre: string;
-    Direccion: string;
-    Telefono: number;
+    idCliente: number;
+    nombre: string;
+    direccion: string;
+    telefono: number;
   }
   
    /** producto type used in the CRUD operations.
  * @type {object}
- * @property {number} IdProducto
- * @property {string} NombreProducto
- * @property {number} Stock
- * @property {string} Detalle
- * @property {number} PrecioVenta
- * @property {number} PrecioCompra
- * @property {number} IdProveedor
+ * @property {number} idProducto
+ * @property {string} nombreProducto
+ * @property {number} stock
+ * @property {string} detalle
+ * @property {number} precioVenta
+ * @property {number} precioCompra
+ * @property {number} idProveedor
  
  */
 export type Producto = {
-    IdProducto?: number | null;
-    NombreProducto: string;
-    Stock: number | null;
-    Detalle: string;
-    PrecioVenta: number | null;
-    PrecioCompra: number | null;
-    IdProveedor: number | null;
+    idProducto?: number | null;
+    nombreProducto: string;
+    stock: number | null;
+    detalle: string;
+    precioVenta: number | null;
+    precioCompra: number | null;
+    idProveedor: number | null;
   };
 
    /** proveedor type used in the CRUD operations.
  * @type {object}
- * @property {number} IdProveedor
- * @property {string} Nombre
- * @property {string} Descripcion
- * @property {string} HorarioDesde
- * @property {string} HorarioHasta
- * @property {number} Telefono
- * @property {number} IdProducto
+ * @property {number} idProveedor
+ * @property {string} nombre
+ * @property {string} descripcion
+ * @property {string} horarioDesde
+ * @property {string} horarioHasta
+ * @property {number} telefono
+ * @property {number} idProducto
  */
 export type Proveedor = {
-    IdProveedor?: number | null;
-    Nombre: string;
-    Descripcion: string;
-    HorarioDesde: string | null;
-    HorarioHasta: string | null;
-    Telefono: number | null;
-    IdProducto: number | null;
+    idProveedor?: number | null;
+    nombre: string;
+    descripcion: string;
+    horarioDesde: string | null;
+    horarioHasta: string | null;
+    telefono: number | null;
+    idProducto: number | null;
   };
 
   /** compra type used in the CRUD operations.
