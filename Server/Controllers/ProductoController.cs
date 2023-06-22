@@ -96,14 +96,15 @@ namespace Vinoteca.Server.Controllers
 
         #region HTTP PUT
         [HttpPut(ApiRoutes.Producto.Update)]
-        public ActionResult Update(int id, [FromBody] Producto producto)
+       // public ActionResult Update(int id, [FromBody] Producto producto)
+        public ActionResult Update(ProductoDto producto)
         {
-            if (id != producto.IdProducto)
-            {
-                return BadRequest("Datos incorrectos");
-            }
+            //if (id != producto.IdProducto)
+            //{
+            //    return BadRequest("Datos incorrectos");
+            //}
 
-            var productox = _context.TablaProductos.Where(e => e.IdProducto == id).FirstOrDefault();
+            var productox = _context.TablaProductos.Where(e => e.IdProducto == producto.IdProducto).FirstOrDefault();
             if (productox == null)
             {
                 return NotFound("No existe el Producto para modificar");

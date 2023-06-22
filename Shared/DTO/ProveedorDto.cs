@@ -10,6 +10,7 @@ namespace Shared.DTO
 {
     public class ProveedorDto
     {
+        public int IdProveedor { get; set; }
         public string Nombre { get; set; }
         public string Descripcion { get; set; }
         public string HorarioDesde { get; set; }

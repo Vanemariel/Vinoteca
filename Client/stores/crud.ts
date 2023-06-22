@@ -66,7 +66,7 @@ export const useStore = create<State>((set) => ({
     deleteObject: async (action: string, id: number) => {
       let response;
       await axios
-        .delete(action + id)
+        .delete(`${action}/${id}`) 
         .then((res) => {
           response = res;
         })

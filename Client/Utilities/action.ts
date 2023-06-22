@@ -18,13 +18,13 @@ export const PRODUCTO_CONTROLLER = base + "Api/Producto/" + api + "producto";
  * @constant {string}
  */
 
-export const PROVEEDORES_CONTROLLER = base + "Api/Proveedor/" + api + "proveedor";
+export const PROVEEDOR_CONTROLLER = base + "Api/Proveedor/" + api + "proveedor";
 /**
  * General use endpoints.
  * @constant {string}
  */
 
-export const VENTA_CONTRLLER = base + "Api/Venta/" + api + "venta";
+export const VENTA_CONTROLLER = base + "Api/Venta/" + api + "venta";
 /**
  * General use endpoints.
  * @constant {string}

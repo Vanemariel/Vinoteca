@@ -10,12 +10,22 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Button, Grid } from "@mui/material";
+import { Button, Grid, Select, SelectChangeEvent } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { LoadingButton } from "@mui/lab";
-import { Toolbar, Typography, InputBase, IconButton, Dialog, DialogContentText, DialogActions, DialogContent, 
-TextField, DialogTitle, useMediaQuery } from "@mui/material";
+import FormControl from '@mui/material/FormControl';
+import {
+  Toolbar,
+  Typography,
+  InputBase,
+  IconButton,
+  Dialog,
+  DialogContentText,
+  DialogActions,
+  DialogContent,
+  TextField, DialogTitle, useMediaQuery} from "@mui/material";
+import InputLabel from '@mui/material/InputLabel';
 import { MenuItem } from "@mui/material";
 import { Producto, Proveedor } from "../../TYPES/crudTypes";
 import { useStore } from "../../stores/crud";
@@ -87,7 +97,7 @@ export default function CustomizedTables() {
     { title: "The Godfather: Part II", year: 1974 },
   ];
   const [proveedoresList, setProveedoresList] = useState<
-    Array<{ id: number; name: string }>
+    Array<{ id: number; nombre: string }>
   >([]);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -123,9 +133,9 @@ export default function CustomizedTables() {
         setLoaded(true);
       });
 
-    getList(action.PROVEEDORES_CONTROLLER)
+    getList(action.PROVEEDOR_CONTROLLER)
       .then((res: any) => {
-        setProveedorList(res.data);
+        setProveedoresList(res.data);
         setLoaded(true);
       })
       .catch((err: any) => {
@@ -197,7 +207,8 @@ export default function CustomizedTables() {
           severity: "success",
           message: "Eliminado" + " " + "con excito",
         });
-        setProductoList(productoList.filter((producto) => producto.idProducto !== toDelete)
+        setProductoList(
+          productoList.filter((producto) => producto.idProducto !== toDelete)
         );
       })
       .catch((err: any) => {
@@ -208,6 +219,17 @@ export default function CustomizedTables() {
         });
       });
   };
+
+  const [proveedor, setProveedor] = useState<number>();
+
+  const handleChange = (event: any) => {
+    setFormData({
+      ...formData,
+       idProveedor: +event.target.value,
+     })
+    setProveedor(event.target.value as number);
+  };
+
 
   return (
     <div>
@@ -318,116 +340,115 @@ export default function CustomizedTables() {
         }}
       >
         <DialogTitle>
-          {isNew ? "Agregar actualizacion" : "Producto"} 
+          {isNew ? "Agregar actualizacion" : "Producto"}
         </DialogTitle>
         <DialogContent>
-        <Grid container rowSpacing={3}>
+          <Grid container rowSpacing={3}>
+            {/*Nombre Producto*/}
+            <Grid item xs={12} sm={8}>
+              <TextField
+                label="Nombre del producto"
+                variant="outlined"
+                fullWidth
+                value={formData.nombreProducto}
+                onChange={(e) =>
+                  setFormData({
+                    idProducto: formData.idProducto,
+                    nombreProducto: e.target.value,
+                    precioCompra: formData.precioCompra,
+                    precioVenta: formData.precioVenta,
+                    detalle: formData.detalle,
+                    stock: formData.stock,
+                    idProveedor: formData.idProveedor,
+                  })
+                }
+              />
+            </Grid>
 
-          {/*Nombre Producto*/}
-          <Grid item xs={12} sm={8}>
-            <TextField
-              label="Nombre del producto"
-              variant="outlined"
-              fullWidth
-              value={formData.nombreProducto}
-              onChange={(e) =>
-                setFormData({
-                  idProducto: formData.idProducto,
-                  nombreProducto: e.target.value,
-                  precioCompra: formData.precioCompra,
-                  precioVenta: formData.precioVenta,
-                  detalle: formData.detalle,
-                  stock: formData.stock,
-                  idProveedor: formData.idProveedor,
-                })
-              }
-            />
-          </Grid>
+            {/*Precios */}
+            <Grid item xs={12} sm={8}>
+              <TextField
+                label="Precio Compra"
+                fullWidth
+                value={formData.precioCompra}
+                onChange={(e) =>
+                  setFormData({
+                    idProducto: formData.idProducto,
+                    nombreProducto: formData.nombreProducto,
+                    precioCompra: +e.target.value,
+                    precioVenta: formData.precioVenta,
+                    detalle: formData.detalle,
+                    stock: formData.stock,
+                    idProveedor: formData.idProveedor,
+                  })
+                }
+              />
+            </Grid>
+            <Grid item xs={12} sm={8}>
+              <TextField
+                label="Precio Venta"
+                fullWidth
+                value={formData.precioVenta}
+                onChange={(e) =>
+                  setFormData({
+                    idProducto: formData.idProducto,
+                    nombreProducto: formData.nombreProducto,
+                    precioCompra: formData.precioCompra,
+                    precioVenta: +e.target.value,
+                    detalle: formData.detalle,
+                    stock: formData.stock,
+                    idProveedor: formData.idProveedor,
+                  })
+                }
+              />
+            </Grid>
 
-          {/*Precios */}
-          <Grid item xs={12} sm={8}>
-            <TextField
-              label="Precio Compra"
-              fullWidth
-              value={formData.precioCompra}
-              onChange={(e) =>
-                setFormData({
-                  idProducto: formData.idProducto,
-                  nombreProducto: formData.nombreProducto,
-                  precioCompra: +e.target.value,
-                  precioVenta: formData.precioVenta,
-                  detalle: formData.detalle,
-                  stock: formData.stock,
-                  idProveedor: formData.idProveedor,
-                })
-              }
-            />
-          </Grid>
-          <Grid item xs={12} sm={8}>
-            <TextField
-              label="Precio Venta"
-              fullWidth
-              value={formData.precioVenta}
-              onChange={(e) =>
-                setFormData({
-                  idProducto: formData.idProducto,
-                  nombreProducto: formData.nombreProducto,
-                  precioCompra: formData.precioCompra,
-                  precioVenta: +e.target.value,
-                  detalle: formData.detalle,
-                  stock: formData.stock,
-                  idProveedor: formData.idProveedor,
-                })
-              }
-            />
-          </Grid>
+            {/*Stock */}
+            <Grid item xs={12} sm={8}>
+              <TextField
+                label="Cantidad adquirida"
+                fullWidth
+                value={formData.stock}
+                onChange={(e) =>
+                  setFormData({
+                    idProducto: formData.idProducto,
+                    nombreProducto: formData.nombreProducto,
+                    precioCompra: formData.precioCompra,
+                    precioVenta: formData.precioVenta,
+                    detalle: formData.detalle,
+                    stock: +e.target.value,
+                    idProveedor: formData.idProveedor,
+                  })
+                }
+              />
+            </Grid>
 
-          {/*Stock */}
-          <Grid item xs={12} sm={8}>
-            <TextField
-              label="Cantidad adquirida"
-              fullWidth
-              value={formData.stock}
-              onChange={(e) =>
-                setFormData({
-                  idProducto: formData.idProducto,
-                  nombreProducto: formData.nombreProducto,
-                  precioCompra: formData.precioCompra,
-                  precioVenta: formData.precioVenta,
-                  detalle: formData.detalle,
-                  stock: +e.target.value,
-                  idProveedor: formData.idProveedor,
-                })
-              }
-            />
-          </Grid>
+            {/*Detalle */}
+            <Grid item xs={12} sm={12}>
+              <TextField
+                label="Detalle"
+                variant="outlined"
+                fullWidth
+                multiline
+                rows={4}
+                value={formData.detalle}
+                onChange={(e) =>
+                  setFormData({
+                    idProducto: formData.idProducto,
+                    nombreProducto: formData.nombreProducto,
+                    precioCompra: formData.precioCompra,
+                    precioVenta: formData.precioVenta,
+                    detalle: e.target.value,
+                    stock: formData.stock,
+                    idProveedor: formData.idProveedor,
+                  })
+                }
+              />
+            </Grid>
 
-          {/*Detalle */}
-          <Grid item xs={12} sm={12}>
-            <TextField
-              label="Detalle"
-              variant="outlined"
-              fullWidth
-              multiline
-              rows={4}
-              value={formData.detalle}
-              onChange={(e) =>
-                setFormData({
-                  idProducto: formData.idProducto,
-                  nombreProducto: formData.nombreProducto,
-                  precioCompra: formData.precioCompra,
-                  precioVenta: formData.precioVenta,
-                  detalle: e.target.value,
-                  stock: formData.stock,
-                  idProveedor: formData.idProveedor,
-                })
-              }
-            />
-          </Grid>
-
-          {/*Proveedores */}
-          <Grid item xs={12} sm={12}>
-            <TextField
+            {/*Proveedores */}
+            <Grid item xs={12} sm={12}>
+              {/* <TextField
               select
               label="Seleccionar provedor"
               variant="outlined"
@@ -435,23 +456,35 @@ export default function CustomizedTables() {
               value={formData.idProveedor}
               onChange={(e) =>
                 setFormData({
-                  idProducto: formData.idProducto,
-                  nombreProducto: formData.nombreProducto,
-                  precioCompra: formData.precioCompra,
-                  precioVenta: formData.precioVenta,
-                  detalle: formData.detalle,
-                  stock: formData.stock,
+                 ...formData,
                   idProveedor: +e.target.value,
                 })
               }
             >
               {proveedoresList.map((proveedor) => (
                 <MenuItem key={proveedor.id} value={proveedor.id}>
-                  {proveedor.name}
+                  {proveedor.nombre}
                 </MenuItem>
               ))}
-            </TextField>
-          </Grid>
+            </TextField> */}
+            <FormControl sx={{ m: 1, width: 300, mt: 3 }}>
+              <InputLabel id="demo-simple-select-label">Selecciona el proveedor</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={proveedor}
+                label="Selecciona el proveedor"
+                onChange={handleChange}
+              >
+                {proveedoresList.map((proveedor) => (
+                <MenuItem key={proveedor.id} value={proveedor.id}>
+                  {proveedor.nombre}
+                </MenuItem>
+              ))}
+              </Select>
+            </FormControl>
+              
+            </Grid>
           </Grid>
         </DialogContent>
 
@@ -509,11 +542,11 @@ export default function CustomizedTables() {
               <StyledTableCell>Detalle</StyledTableCell>
 
               <StyledTableCell>Precio de compra</StyledTableCell>
-              
+
               <StyledTableCell>Precio de venta</StyledTableCell>
             </TableRow>
           </TableHead>
-          
+
           <TableBody>
             {productoList?.map((row) => (
               <StyledTableRow key={row.idProducto}>
@@ -553,21 +586,13 @@ export default function CustomizedTables() {
                   {row.nombreProducto}
                 </StyledTableCell>
 
-                <StyledTableCell>
-                  {row.stock}
-                </StyledTableCell>
+                <StyledTableCell>{row.stock}</StyledTableCell>
 
-                <StyledTableCell>
-                  {row.detalle}
-                </StyledTableCell>
+                <StyledTableCell>{row.detalle}</StyledTableCell>
 
-                <StyledTableCell>                
-                  ${row.precioVenta}
-                </StyledTableCell>
+                <StyledTableCell>${row.precioVenta}</StyledTableCell>
 
-                <StyledTableCell>
-                  ${row.precioCompra}
-                </StyledTableCell>
+                <StyledTableCell>${row.precioCompra}</StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>

@@ -17,20 +17,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import { LoadingButton } from "@mui/lab";
-import {
-  Toolbar,
-  Typography,
-  InputBase,
-  IconButton,
-  Dialog,
-  DialogContentText,
-  DialogActions,
-  DialogContent,
-  TextField,
-  DialogTitle,
-  useMediaQuery,
-  InputLabel
-} from "@mui/material";
+import { Toolbar, Typography, InputBase, IconButton, Dialog, DialogContentText, DialogActions,DialogContent,TextField, DialogTitle, useMediaQuery, InputLabel } from "@mui/material";
 import {MenuItem} from "@mui/material";
 import { Producto, Proveedor } from "../../TYPES/crudTypes";
 import { useStore } from "../../stores/crud";
@@ -89,6 +76,7 @@ export default function CustomizedTables() {
     handleClose(); // Cierra el modal
   };
   const [proveedorList, setProveedorList] = useState([] as Proveedor[]);
+  const [productoList, setProductoList] = useState([] as Producto[]);
   const [loaded, setLoaded] = useState(false);
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -109,7 +97,7 @@ export default function CustomizedTables() {
   const [dialog, setDialog] = useState(false);
   const [isNew, setIsNew] = useState(false);
   const [toDelete, setToDelete] = useState(null as any);
-  const [productoList, setProductoList] = useState([] as Producto[]);
+  
   const [proveedoresList, setProveedoresList] = useState<
     Array<{ id: number; name: string }>
   >([]);
@@ -125,9 +113,9 @@ export default function CustomizedTables() {
   } as Proveedor);
 
   useEffect(() => {
-    getList(action.PROVEEDORES_CONTROLLER)
+    getList(action.PROVEEDOR_CONTROLLER)
       .then((res: any) => {
-        setProveedoresList(res.data);
+        setProveedorList(res.data);
         setLoaded(true);
       })
       .catch((err: any) => {
@@ -168,9 +156,9 @@ export default function CustomizedTables() {
       let response = null;
       if (isNew) {
         delete body.idProveedor;
-        response = await newObject(action.PROVEEDORES_CONTROLLER, body);
+        response = await newObject(action.PROVEEDOR_CONTROLLER, body);
       } else {
-        response = await updateObject(action.PROVEEDORES_CONTROLLER, body);
+        response = await updateObject(action.PROVEEDOR_CONTROLLER, body);
       }
       setLoading(false);
 
@@ -187,7 +175,7 @@ export default function CustomizedTables() {
       });
       setLoading(false);
 
-      getList(action.PROVEEDORES_CONTROLLER)
+      getList(action.PROVEEDOR_CONTROLLER)
         .then((res: any) => {
           setProveedorList(res.data);
           setLoaded(true);
@@ -205,7 +193,7 @@ export default function CustomizedTables() {
   };
 
   const deleteItem = () => {
-    deleteObject(action.PROVEEDORES_CONTROLLER, toDelete as unknown as number)
+    deleteObject(action.PROVEEDOR_CONTROLLER, toDelete as unknown as number)
       .then((res: any) => {
         setDeleteDialog(false);
         setSnackbar({
@@ -213,8 +201,7 @@ export default function CustomizedTables() {
           severity: "success",
           message: "Eliminado" + " " + "con excito",
         });
-        setProveedorList(
-          proveedorList.filter((proveedores) => proveedores.idProveedor !== toDelete)
+        setProveedorList(proveedorList.filter((proveedores) => proveedores.idProveedor !== toDelete)
         );
       })
       .catch((err: any) => {
@@ -406,33 +393,6 @@ export default function CustomizedTables() {
             />
           </Grid>
 
-          {/*Proveedores */}
-          <Grid item xs={12} sm={12}>
-            <TextField
-              select
-              label="Seleccionar provedor"
-              variant="outlined"
-              fullWidth
-              value={formData.idProveedor}
-              onChange={(e) =>
-                setFormData({
-                  idProducto: formData.idProducto,
-                  nombre: formData.nombre,
-                  horarioHasta: formData.horarioHasta,
-                  horarioDesde: formData.horarioDesde,
-                  descripcion: formData.descripcion,
-                  telefono: formData.telefono,
-                  idProveedor: +e.target.value,
-                })
-              }
-            >
-              {proveedoresList.map((proveedor) => (
-                <MenuItem key={proveedor.id} value={proveedor.id}>
-                  {proveedor.name}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Grid>
 
           {/*Horario Desde */}
         <Grid item xs={6}>
