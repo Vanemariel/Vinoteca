@@ -93,14 +93,9 @@ namespace Vinoteca.Server.Controllers
 
         #region HTTP PUT
         [HttpPut(ApiRoutes.Proveedor.Update)]
-        public ActionResult Update(int id, [FromBody] Proveedor proveedor)
+        public ActionResult Update(int id, [FromBody] ProveedorDto proveedor)
         {
-            if (id != proveedor.IdProveedor)
-            {
-                return BadRequest("Datos incorrectos");
-            }
-
-            var provedoresx = _context.TablaProveedores.Where(e => e.IdProveedor == id).FirstOrDefault();
+            var provedoresx = _context.TablaProveedores.Where(e => e.IdProveedor == proveedor.IdProveedor).FirstOrDefault();
             if (provedoresx == null)
             {
                 return NotFound("No existe el Proveedor para modificar");

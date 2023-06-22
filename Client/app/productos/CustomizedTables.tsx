@@ -109,13 +109,13 @@ export default function CustomizedTables() {
   const [isNew, setIsNew] = useState(false);
   const [toDelete, setToDelete] = useState(null as any);
   const [formData, setFormData] = useState({
-    idProducto: null as any,
+    idProducto: 0,
     nombreProducto: "",
-    stock: null as any,
-    precioVenta: null as any,
-    precioCompra: null as any,
+    stock: null ,
+    precioVenta: null ,
+    precioCompra: null,
     detalle: "",
-    idProveedor: null as any,
+    idProveedor: null,
   } as Producto);
 
   useEffect(() => {
@@ -448,17 +448,17 @@ export default function CustomizedTables() {
 
             {/*Proveedores */}
             <Grid item xs={12} sm={12}>
-              {/* <TextField
-              select
+              <Select
               label="Seleccionar provedor"
               variant="outlined"
               fullWidth
               value={formData.idProveedor}
-              onChange={(e) =>
+              onChange={(e: any) =>{
                 setFormData({
                  ...formData,
-                  idProveedor: +e.target.value,
+                  idProveedor: e.target.value,
                 })
+                console.log(formData)}
               }
             >
               {proveedoresList.map((proveedor) => (
@@ -466,24 +466,7 @@ export default function CustomizedTables() {
                   {proveedor.nombre}
                 </MenuItem>
               ))}
-            </TextField> */}
-            <FormControl sx={{ m: 1, width: 300, mt: 3 }}>
-              <InputLabel id="demo-simple-select-label">Selecciona el proveedor</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={proveedor}
-                label="Selecciona el proveedor"
-                onChange={handleChange}
-              >
-                {proveedoresList.map((proveedor) => (
-                <MenuItem key={proveedor.id} value={proveedor.id}>
-                  {proveedor.nombre}
-                </MenuItem>
-              ))}
-              </Select>
-            </FormControl>
-              
+            </Select>
             </Grid>
           </Grid>
         </DialogContent>
