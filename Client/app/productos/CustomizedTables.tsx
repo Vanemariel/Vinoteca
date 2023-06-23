@@ -344,6 +344,7 @@ export default function CustomizedTables() {
         </DialogTitle>
         <DialogContent>
           <Grid container rowSpacing={3}>
+            
             {/*Nombre Producto*/}
             <Grid item xs={12} sm={8}>
               <TextField

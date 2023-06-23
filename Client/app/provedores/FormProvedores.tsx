@@ -103,13 +103,13 @@ export default function CustomizedTables() {
   >([]);
 
   const [formData, setFormData] = useState({
-    idProveedor: null as any,
-    idProducto: null as any,
+    idProveedor: 0,
+    idProducto: null,
     nombre: "",
     descripcion: "",
-    telefono: null as any,
-    horarioDesde: null as any,
-    horarioHasta: null as any,
+    telefono: null,
+    horarioDesde: null,
+    horarioHasta: null,
   } as Proveedor);
 
   useEffect(() => {
@@ -201,7 +201,8 @@ export default function CustomizedTables() {
           severity: "success",
           message: "Eliminado" + " " + "con excito",
         });
-        setProveedorList(proveedorList.filter((proveedores) => proveedores.idProveedor !== toDelete)
+        setProveedorList(
+          proveedorList.filter((proveedores) => proveedores.idProveedor !== toDelete)
         );
       })
       .catch((err: any) => {
@@ -477,7 +478,7 @@ export default function CustomizedTables() {
               formData.horarioHasta == null ||
               formData.descripcion == "" ||
               formData.telefono == null ||
-              formData.horarioDesde == null ||
+              formData.horarioDesde == null &&
               formData.nombre == null
             }
             size="large"
