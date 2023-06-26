@@ -580,6 +580,7 @@ export default function CustomizedTables() {
               </StyledTableRow>
             ))}
           </TableBody>
+          
         </Table>
       </TableContainer>
     </div>

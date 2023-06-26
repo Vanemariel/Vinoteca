@@ -17,8 +17,26 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import { LoadingButton } from "@mui/lab";
-import { Toolbar, Typography, InputBase, IconButton, Dialog, DialogContentText, DialogActions,DialogContent,TextField, DialogTitle, useMediaQuery, InputLabel } from "@mui/material";
-import {MenuItem} from "@mui/material";
+import {
+  Toolbar,
+  Typography,
+  Snackbar,
+  Alert,
+  AlertColor,
+  InputBase,
+  IconButton,
+  Dialog,
+  DialogContentText,
+  DialogActions,
+  DialogContent,
+  TextField,
+  DialogTitle,
+  useMediaQuery,
+  InputLabel,
+  TableFooter,
+  TablePagination,
+} from "@mui/material";
+import { MenuItem } from "@mui/material";
 import { Producto, Proveedor } from "../../TYPES/crudTypes";
 import { useStore } from "../../stores/crud";
 
@@ -43,6 +61,41 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function CustomizedTables() {
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const [deleteDialog, setDeleteDialog] = useState(false);
+  const { deleteObject, getList, newObject, updateObject } = useStore();
+  const [loading, setLoading] = useState(false);
+  const [dialog, setDialog] = useState(false);
+  const [isNew, setIsNew] = useState(false);
+  const [toDelete, setToDelete] = useState(null as any);
+  const [productoList, setProductoList] = useState([] as Producto[]);
+  const [loaded, setLoaded] = useState(false);
+  const [open, setOpen] = React.useState(false);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const handleChangePage = (
+    event: any| null,
+    newPage: number
+  ) => {
+    setPage(newPage);
+  };
+  const handleChangeRowsPerPage = (
+    event: any
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+  const [proveedorList, setProveedorList] = useState([] as Proveedor[]); //para los datos del back
+  const [proveedorSearchList, setProveedorSearchList] = useState(
+    [] as Proveedor[]
+  ); //para el buscador
+  
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    severity: "success",
+    message: "",
+  });
   const style = {
     position: "absolute" as "absolute",
     top: "50%",
@@ -54,54 +107,12 @@ export default function CustomizedTables() {
     boxShadow: 24,
     p: 4,
   };
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState("0");
-  const [quantity, setQuantity] = useState("0");
-  const [description, setDescription] = useState("");
-  const [provider, setProvider] = useState("");
-  const modalContentStyle = {
-    maxHeight: "400px", // Establece la altura máxima deseada para el contenido del modal
-    overflowY: "auto", // Agrega una barra de desplazamiento vertical cuando el contenido excede la altura máxima
+  const filteredProveedorList = (textSearch: string) => {
+    const ProveedorFilter = proveedorList.filter((proveedor) => {
+      return proveedor.nombre.toLowerCase().includes(textSearch.toLowerCase());
+    });
+    setProveedorSearchList(ProveedorFilter);
   };
-  const [okClicked, setOkClicked] = useState(false);
-  const [cancelClicked, setCancelClicked] = useState(false);
-  const handleOkClick = () => {
-    setOkClicked(true);
-  };
-  const handleCancelClick = () => {
-    setCancelClicked(true);
-    handleClose(); // Cierra el modal
-  };
-  const [proveedorList, setProveedorList] = useState([] as Proveedor[]);
-  const [productoList, setProductoList] = useState([] as Producto[]);
-  const [loaded, setLoaded] = useState(false);
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    severity: "success",
-    message: "",
-  });
-  const top100Films = [
-    { title: "The Shawshank Redemption", year: 1994 },
-    { title: "The Godfather", year: 1972 },
-    { title: "The Godfather: Part II", year: 1974 },
-  ];
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-  const [deleteDialog, setDeleteDialog] = useState(false);
-  const [search, setSearch] = useState("");
-  const { deleteObject, getList, newObject, updateObject } = useStore();
-  const [loading, setLoading] = useState(false);
-  const [dialog, setDialog] = useState(false);
-  const [isNew, setIsNew] = useState(false);
-  const [toDelete, setToDelete] = useState(null as any);
-  
-  const [proveedoresList, setProveedoresList] = useState<
-    Array<{ id: number; name: string }>
-  >([]);
-
   const [formData, setFormData] = useState({
     idProveedor: 0,
     idProducto: null,
@@ -116,6 +127,7 @@ export default function CustomizedTables() {
     getList(action.PROVEEDOR_CONTROLLER)
       .then((res: any) => {
         setProveedorList(res.data);
+        setProveedorSearchList(res.data);
         setLoaded(true);
       })
       .catch((err: any) => {
@@ -171,7 +183,7 @@ export default function CustomizedTables() {
         horarioDesde: null as any,
         horarioHasta: null as any,
         descripcion: "",
-        idProducto:  null as any,
+        idProducto: null as any,
       });
       setLoading(false);
 
@@ -202,7 +214,9 @@ export default function CustomizedTables() {
           message: "Eliminado" + " " + "con excito",
         });
         setProveedorList(
-          proveedorList.filter((proveedores) => proveedores.idProveedor !== toDelete)
+          proveedorList.filter(
+            (proveedores) => proveedores.idProveedor !== toDelete
+          )
         );
       })
       .catch((err: any) => {
@@ -216,68 +230,72 @@ export default function CustomizedTables() {
 
   return (
     <div>
-     {/* Header */}
-     <Toolbar
-     sx={{
-       width: "100%",
-       display: "flex",
-       flexFlow: "row",
-       alignItems: "center",
-     }}
-   >
-     <Typography
-       variant="h6"
-       style={{
-         borderRadius: "100px",
-         padding: "5px 10px",
-         paddingLeft: "15px",
-         paddingBottom: "10px",
-         marginRight: "auto",
-       }}
-     >
-       {"Proveedor"}
-     </Typography>
-     <InputBase
-       sx={{
-         mr: 2,
-       }}
-       style={{
-         backgroundColor: "#F1F3F4",
-         borderRadius: "100px",
-         padding: "0.5px",
-         width: "40%",
-       }}
-       placeholder={"Buscar"}
-       startAdornment={
-         <Typography
-           style={{
-             borderRadius: "100px",
-             padding: "5px 10px",
-             paddingLeft: "15px",
-             paddingBottom: "10px",
-           }}
-         ></Typography>
-       }
-       onChange={(event) => setSearch(event.target.value)}
-     />
-     <Grid item xs={3}></Grid>
-     <Button
-       sx={{
-         mr: 5,
-       }}
-       variant="contained"
-       id="containedButton"
-       onClick={() => {
-         setDialog(true);
-         setIsNew(true);
-       }}
-     >
-       {"Agregar nuevo"}
-     </Button>
-   </Toolbar>
-    
-    {/* Delete dialog */}
-    <Dialog
+      {/* Header */}
+      <Toolbar
+        sx={{
+          width: "100%",
+          display: "flex",
+          flexFlow: "row",
+          alignItems: "center",
+        }}
+      >
+        <Typography
+          variant="h6"
+          style={{
+            borderRadius: "100px",
+            padding: "5px 10px",
+            paddingLeft: "15px",
+            paddingBottom: "10px",
+            marginRight: "auto",
+          }}
+        >
+          {"Proveedor"}
+        </Typography>
+
+        {/*Buscador*/}
+        <InputBase
+          sx={{
+            mr: 2,
+          }}
+          style={{
+            backgroundColor: "#F1F3F4",
+            borderRadius: "100px",
+            padding: "0.5px",
+            width: "40%",
+          }}
+          placeholder={"Buscar"}
+          startAdornment={
+            <Typography
+              style={{
+                borderRadius: "100px",
+                padding: "5px 10px",
+                paddingLeft: "15px",
+                paddingBottom: "10px",
+              }}
+            ></Typography>
+          }
+          //onChange={(event) => setSearch(event.target.value)}
+          onChange={(event) => filteredProveedorList(event.target.value)}
+        />
+
+        <Grid item xs={3}></Grid>
+        <Button
+          sx={{
+            mr: 5,
+          }}
+          variant="contained"
+          id="containedButton"
+          onClick={() => {
+            setDialog(true);
+            setIsNew(true);
+          }}
+        >
+          {"Agregar nuevo"}
+        </Button>
+      </Toolbar>
+
+      {/* Delete dialog */}
+      <Dialog
         fullScreen={fullScreen}
         maxWidth="sm"
         open={deleteDialog}
@@ -302,10 +320,10 @@ export default function CustomizedTables() {
             {"Borrar"}
           </Button>
         </DialogActions>
-      </Dialog>   
+      </Dialog>
 
-       {/* New or Update dialog */}
-       <Dialog
+      {/* New or Update dialog */}
+      <Dialog
         fullScreen={fullScreen}
         maxWidth="sm"
         open={dialog}
@@ -324,130 +342,121 @@ export default function CustomizedTables() {
         }}
       >
         <DialogTitle>
-          {isNew ? "Agregar actualizacion" : "Proveedor"} 
+          {isNew ? "Agregar actualizacion" : "Proveedor"}
         </DialogTitle>
         <DialogContent>
-        <Grid container rowSpacing={3}>
+          <Grid container rowSpacing={3}>
+            {/*Nombre*/}
+            <Grid item xs={12} sm={8}>
+              <TextField
+                label="Nombre del proveedor"
+                variant="outlined"
+                fullWidth
+                value={formData.nombre}
+                onChange={(e) =>
+                  setFormData({
+                    idProducto: formData.idProducto,
+                    nombre: e.target.value,
+                    horarioDesde: formData.horarioDesde,
+                    horarioHasta: formData.horarioHasta,
+                    descripcion: formData.descripcion,
+                    telefono: formData.telefono,
+                    idProveedor: formData.idProveedor,
+                  })
+                }
+              />
+            </Grid>
 
-          {/*Nombre*/}
-          <Grid item xs={12} sm={8}>
-            <TextField
-              label="Nombre del proveedor"
-              variant="outlined"
-              fullWidth
-              value={formData.nombre}
-              onChange={(e) =>
-                setFormData({
-                  idProducto: formData.idProducto,
-                  nombre: e.target.value,
-                  horarioDesde: formData.horarioDesde,
-                  horarioHasta: formData.horarioHasta,
-                  descripcion: formData.descripcion,
-                  telefono: formData.telefono,
-                  idProveedor: formData.idProveedor,
-                })
-              }
-            />
-          </Grid>
+            {/*Stock */}
+            <Grid item xs={12} sm={8}>
+              <TextField
+                label="Cantidad adquirida"
+                fullWidth
+                value={formData.telefono}
+                onChange={(e) =>
+                  setFormData({
+                    idProducto: formData.idProducto,
+                    nombre: formData.nombre,
+                    horarioHasta: formData.horarioHasta,
+                    horarioDesde: formData.horarioDesde,
+                    descripcion: formData.descripcion,
+                    telefono: +e.target.value,
+                    idProveedor: formData.idProveedor,
+                  })
+                }
+              />
+            </Grid>
 
-          
-          {/*Stock */}
-          <Grid item xs={12} sm={8}>
-            <TextField
-              label="Cantidad adquirida"
-              fullWidth
-              value={formData.telefono}
-              onChange={(e) =>
-                setFormData({
-                  idProducto: formData.idProducto,
-                  nombre: formData.nombre,
-                  horarioHasta: formData.horarioHasta,
-                  horarioDesde: formData.horarioDesde,
-                  descripcion: formData.descripcion,
-                  telefono: +e.target.value,
-                  idProveedor: formData.idProveedor,
-                })
-              }
-            />
-          </Grid>
+            {/*Descripcion */}
+            <Grid item xs={12} sm={12}>
+              <TextField
+                label="Detalle"
+                variant="outlined"
+                fullWidth
+                multiline
+                rows={4}
+                value={formData.descripcion}
+                onChange={(e) =>
+                  setFormData({
+                    idProducto: formData.idProducto,
+                    nombre: formData.nombre,
+                    horarioHasta: formData.horarioHasta,
+                    horarioDesde: formData.horarioDesde,
+                    descripcion: e.target.value,
+                    telefono: formData.telefono,
+                    idProveedor: formData.idProveedor,
+                  })
+                }
+              />
+            </Grid>
 
-          {/*Descripcion */}
-          <Grid item xs={12} sm={12}>
-            <TextField
-              label="Detalle"
-              variant="outlined"
-              fullWidth
-              multiline
-              rows={4}
-              value={formData.descripcion}
-              onChange={(e) =>
-                setFormData({
-                  idProducto: formData.idProducto,
-                  nombre: formData.nombre,
-                  horarioHasta: formData.horarioHasta,
-                  horarioDesde: formData.horarioDesde,
-                  descripcion: e.target.value,
-                  telefono: formData.telefono,
-                  idProveedor: formData.idProveedor,
-                })
-              }
-            />
-          </Grid>
+            {/*Horario Desde */}
+            <Grid item xs={6}>
+              <form style={{ display: "flex", flexDirection: "column" }}>
+                <InputLabel htmlFor="from-time">{"Hora Desde"}</InputLabel>
+                <TextField
+                  id="from-time"
+                  value={formData.horarioDesde}
+                  type="time"
+                  onChange={(e) =>
+                    setFormData({
+                      idProducto: formData.idProducto,
+                      nombre: formData.nombre,
+                      horarioHasta: formData.horarioHasta,
+                      horarioDesde: e.target.value,
+                      descripcion: formData.descripcion,
+                      telefono: formData.telefono,
+                      idProveedor: formData.idProveedor,
+                    })
+                  }
+                />
+              </form>
+            </Grid>
 
-
-          {/*Horario Desde */}
-        <Grid item xs={6}>
-              <form style={{ display: 'flex', flexDirection: 'column' }}>
-                <InputLabel htmlFor='from-time'>
-                  {"Hora Desde"}
-                </InputLabel>
-            <TextField
-              id='from-time'
-              value={formData.horarioDesde}
-              type='time'     
-              onChange={(e) =>
-                setFormData({
-                  idProducto: formData.idProducto,
-                  nombre: formData.nombre,
-                  horarioHasta: formData.horarioHasta,
-                  horarioDesde:  e.target.value,
-                  descripcion: formData.descripcion,
-                  telefono: formData.telefono,
-                  idProveedor: formData.idProveedor,
-                })
-              }
-            />
-            </form>
-          </Grid>
-
-          {/*HoraioHasta*/}
-          <Grid item xs={6}>
-              <form style={{display: 'flex', flexDirection: 'column'   }}>
-                <InputLabel htmlFor='from-time'>
-                  {"Hora Hasta"}
-                </InputLabel>
-            <TextField
-              id='from-time'
-              value={formData.horarioHasta}
-              type='time'     
-              onChange={(e) =>
-                setFormData({
-                  idProducto: formData.idProducto,
-                  nombre: formData.nombre,
-                  horarioHasta: e.target.value,
-                  horarioDesde: formData.horarioDesde,
-                  descripcion: formData.descripcion,
-                  telefono: formData.telefono,
-                  idProveedor: formData.idProveedor,
-                })
-              }
-            />
-            </form>
-          </Grid>
+            {/*HoraioHasta*/}
+            <Grid item xs={6}>
+              <form style={{ display: "flex", flexDirection: "column" }}>
+                <InputLabel htmlFor="from-time">{"Hora Hasta"}</InputLabel>
+                <TextField
+                  id="from-time"
+                  value={formData.horarioHasta}
+                  type="time"
+                  onChange={(e) =>
+                    setFormData({
+                      idProducto: formData.idProducto,
+                      nombre: formData.nombre,
+                      horarioHasta: e.target.value,
+                      horarioDesde: formData.horarioDesde,
+                      descripcion: formData.descripcion,
+                      telefono: formData.telefono,
+                      idProveedor: formData.idProveedor,
+                    })
+                  }
+                />
+              </form>
+            </Grid>
           </Grid>
         </DialogContent>
-
-        
 
         {/*Button */}
         <DialogActions>
@@ -478,8 +487,7 @@ export default function CustomizedTables() {
               formData.horarioHasta == null ||
               formData.descripcion == "" ||
               formData.telefono == null ||
-              formData.horarioDesde == null &&
-              formData.nombre == null
+              (formData.horarioDesde == null && formData.nombre == null)
             }
             size="large"
             onClick={(e: any) => validate(e)}
@@ -489,7 +497,7 @@ export default function CustomizedTables() {
         </DialogActions>
       </Dialog>
 
-       {/*Table */}
+      {/*Table */}
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
@@ -499,22 +507,19 @@ export default function CustomizedTables() {
               </StyledTableCell>
 
               <StyledTableCell>Nombre</StyledTableCell>
-
               <StyledTableCell>Descripcion</StyledTableCell>
-
               <StyledTableCell>Horario desde</StyledTableCell>
-
               <StyledTableCell>Horario hasta</StyledTableCell>
-
               <StyledTableCell>Telefono</StyledTableCell>
             </TableRow>
           </TableHead>
 
           <TableBody>
-            {proveedorList?.map((row) => (
+            {proveedorSearchList?.map((row) => (
               <StyledTableRow key={row.idProveedor}>
                 <StyledTableCell component="th" scope="row">
-                  <IconButton aria-label="edit"
+                  <IconButton
+                    aria-label="edit"
                     onClick={() => {
                       setDialog(true);
                       setIsNew(false);
@@ -531,7 +536,8 @@ export default function CustomizedTables() {
                   >
                     <EditIcon />
                   </IconButton>
-                  <IconButton color="error"
+                  <IconButton
+                    color="error"
                     aria-label="delete"
                     onClick={() => {
                       setToDelete(row.idProveedor);
@@ -541,31 +547,63 @@ export default function CustomizedTables() {
                     <DeleteIcon />
                   </IconButton>
                 </StyledTableCell>
-
                 <StyledTableCell component="th" scope="row">
                   {row.nombre}
                 </StyledTableCell>
-
-                <StyledTableCell>
-                  {row.descripcion}
-                </StyledTableCell>
-
-                <StyledTableCell>  
-                  {row.telefono}
-                </StyledTableCell>
-
-                <StyledTableCell>
-                  {row.horarioDesde}
-                </StyledTableCell>
-
-                <StyledTableCell>
-                  {row.horarioHasta}
-                </StyledTableCell>
+                <StyledTableCell>{row.descripcion}</StyledTableCell>
+                <StyledTableCell>{row.telefono}</StyledTableCell>
+                <StyledTableCell>{row.horarioDesde}</StyledTableCell>
+                <StyledTableCell>{row.horarioHasta}</StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>
-        </Table>     
+          <TableFooter>
+                <StyledTableRow>
+                  <TablePagination
+                    rowsPerPageOptions={[5]}
+                    colSpan={9}
+                    count={proveedorList.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    SelectProps={{
+                      inputProps: {
+                        'aria-label': 'rows per page',
+                      },
+                      native: true,
+                    }}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                  />
+                </StyledTableRow>
+              </TableFooter>
+        </Table>
       </TableContainer>
-      </div>
+
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={() =>
+          setSnackbar({
+            open: false,
+            severity: snackbar.severity,
+            message: snackbar.message,
+          })
+        }
+      >
+        <Alert
+          onClose={() =>
+            setSnackbar({
+              open: false,
+              severity: snackbar.severity,
+              message: snackbar.message,
+            })
+          }
+          severity={snackbar.severity as AlertColor}
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+    </div>
   );
 }
