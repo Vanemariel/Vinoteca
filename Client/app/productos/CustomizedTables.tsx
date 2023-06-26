@@ -10,7 +10,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Button, Grid, Select, SelectChangeEvent } from "@mui/material";
+import { Button, Grid, Select, Snackbar, Alert, AlertColor } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { LoadingButton } from "@mui/lab";
@@ -24,8 +24,9 @@ import {
   DialogContentText,
   DialogActions,
   DialogContent,
+  TableFooter,
+  TablePagination,
   TextField, DialogTitle, useMediaQuery} from "@mui/material";
-import InputLabel from '@mui/material/InputLabel';
 import { MenuItem } from "@mui/material";
 import { Producto, Proveedor } from "../../TYPES/crudTypes";
 import { useStore } from "../../stores/crud";
@@ -63,42 +64,14 @@ export default function CustomizedTables() {
     p: 4,
   };
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [name, setName] = useState("");
   const [price, setPrice] = useState("0");
   const [quantity, setQuantity] = useState("0");
   const [description, setDescription] = useState("");
   const [provider, setProvider] = useState("");
-  const modalContentStyle = {
-    maxHeight: "400px", // Establece la altura máxima deseada para el contenido del modal
-    overflowY: "auto", // Agrega una barra de desplazamiento vertical cuando el contenido excede la altura máxima
-  };
   const [okClicked, setOkClicked] = useState(false);
   const [cancelClicked, setCancelClicked] = useState(false);
-  const handleOkClick = () => {
-    setOkClicked(true);
-  };
-  const handleCancelClick = () => {
-    setCancelClicked(true);
-    handleClose(); // Cierra el modal
-  };
-  const [productoList, setProductoList] = useState([] as Producto[]);
-  const [proveedorList, setProveedorList] = useState([] as Proveedor[]);
-  const [loaded, setLoaded] = useState(false);
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    severity: "success",
-    message: "",
-  });
-  const top100Films = [
-    { title: "The Shawshank Redemption", year: 1994 },
-    { title: "The Godfather", year: 1972 },
-    { title: "The Godfather: Part II", year: 1974 },
-  ];
-  const [proveedoresList, setProveedoresList] = useState<
-    Array<{ id: number; nombre: string }>
-  >([]);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const [deleteDialog, setDeleteDialog] = useState(false);
@@ -108,6 +81,37 @@ export default function CustomizedTables() {
   const [dialog, setDialog] = useState(false);
   const [isNew, setIsNew] = useState(false);
   const [toDelete, setToDelete] = useState(null as any);
+  const [productoList, setProductoList] = useState([] as Producto[]);
+  const [proveedorList, setProveedorList] = useState([] as Proveedor[]);
+  const [loaded, setLoaded] = useState(false);
+  const [proveedor, setProveedor] = useState<number>();
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const handleChangePage = (
+    event: any| null,
+    newPage: number
+  ) => {
+    setPage(newPage);
+  };
+  const handleChangeRowsPerPage = (
+    event: any
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    severity: "success",
+    message: "",
+  });
+  const handleCancelClick = () => {
+    setCancelClicked(true);
+    handleClose(); // Cierra el modal
+  };
+  const [proveedoresList, setProveedoresList] = useState<
+    Array<{ id: number; nombre: string }>
+  >([]);
+  
   const [formData, setFormData] = useState({
     idProducto: 0,
     nombreProducto: "",
@@ -122,6 +126,7 @@ export default function CustomizedTables() {
     getList(action.PRODUCTO_CONTROLLER)
       .then((res: any) => {
         setProductoList(res.data);
+        setProductoSearchList(res.data);
         setLoaded(true);
       })
       .catch((err: any) => {
@@ -219,15 +224,21 @@ export default function CustomizedTables() {
         });
       });
   };
-
-  const [proveedor, setProveedor] = useState<number>();
-
   const handleChange = (event: any) => {
     setFormData({
       ...formData,
        idProveedor: +event.target.value,
      })
     setProveedor(event.target.value as number);
+  };
+  const [productoSearchList, setProductoSearchList] = useState(
+    [] as Producto[]
+  ); //para el buscador
+  const filteredProductoList = (textSearch: string) => {
+    const ProductoFilter = productoList.filter((producto) => {
+      return producto.nombreProducto.toLowerCase().includes(textSearch.toLowerCase());
+    });
+    setProductoSearchList(ProductoFilter);
   };
 
 
@@ -254,6 +265,8 @@ export default function CustomizedTables() {
         >
           {"Productos"}
         </Typography>
+
+        {/*Buscador*/}
         <InputBase
           sx={{
             mr: 2,
@@ -275,7 +288,7 @@ export default function CustomizedTables() {
               }}
             ></Typography>
           }
-          onChange={(event) => setSearch(event.target.value)}
+          onChange={(event) => filteredProductoList(event.target.value)}
         />
         <Grid item xs={3}></Grid>
         <Button
@@ -532,7 +545,7 @@ export default function CustomizedTables() {
           </TableHead>
 
           <TableBody>
-            {productoList?.map((row) => (
+            {productoSearchList?.map((row) => (
               <StyledTableRow key={row.idProducto}>
                 <StyledTableCell component="th" scope="row">
                   <IconButton
@@ -580,9 +593,53 @@ export default function CustomizedTables() {
               </StyledTableRow>
             ))}
           </TableBody>
-          
+         <TableFooter>
+                <StyledTableRow>
+                  <TablePagination
+                    rowsPerPageOptions={[5]}
+                    colSpan={9}
+                    count={proveedorList.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    SelectProps={{
+                      inputProps: {
+                        'aria-label': 'rows per page',
+                      },
+                      native: true,
+                    }}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                  />
+                </StyledTableRow>
+              </TableFooter> 
         </Table>
       </TableContainer>
+
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={() =>
+          setSnackbar({
+            open: false,
+            severity: snackbar.severity,
+            message: snackbar.message,
+          })
+        }
+      >
+        <Alert
+          onClose={() =>
+            setSnackbar({
+              open: false,
+              severity: snackbar.severity,
+              message: snackbar.message,
+            })
+          }
+          severity={snackbar.severity as AlertColor}
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }
