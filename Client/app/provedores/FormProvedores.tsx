@@ -36,7 +36,6 @@ import {
   TableFooter,
   TablePagination,
 } from "@mui/material";
-import { MenuItem } from "@mui/material";
 import { Producto, Proveedor } from "../../TYPES/crudTypes";
 import { useStore } from "../../stores/crud";
 
@@ -274,7 +273,6 @@ export default function CustomizedTables() {
               }}
             ></Typography>
           }
-          //onChange={(event) => setSearch(event.target.value)}
           onChange={(event) => filteredProveedorList(event.target.value)}
         />
 
