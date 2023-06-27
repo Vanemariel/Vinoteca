@@ -10,11 +10,18 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Button, Grid, Select, Snackbar, Alert, AlertColor } from "@mui/material";
+import {
+  Button,
+  Grid,
+  Select,
+  Snackbar,
+  Alert,
+  AlertColor,
+} from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { LoadingButton } from "@mui/lab";
-import FormControl from '@mui/material/FormControl';
+import FormControl from "@mui/material/FormControl";
 import {
   Toolbar,
   Typography,
@@ -26,7 +33,10 @@ import {
   DialogContent,
   TableFooter,
   TablePagination,
-  TextField, DialogTitle, useMediaQuery} from "@mui/material";
+  TextField,
+  DialogTitle,
+  useMediaQuery,
+} from "@mui/material";
 import { MenuItem } from "@mui/material";
 import { Producto, Proveedor } from "../../TYPES/crudTypes";
 import { useStore } from "../../stores/crud";
@@ -87,15 +97,10 @@ export default function CustomizedTables() {
   const [proveedor, setProveedor] = useState<number>();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const handleChangePage = (
-    event: any| null,
-    newPage: number
-  ) => {
+  const handleChangePage = (event: any | null, newPage: number) => {
     setPage(newPage);
   };
-  const handleChangeRowsPerPage = (
-    event: any
-  ) => {
+  const handleChangeRowsPerPage = (event: any) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
@@ -111,12 +116,12 @@ export default function CustomizedTables() {
   const [proveedoresList, setProveedoresList] = useState<
     Array<{ id: number; nombre: string }>
   >([]);
-  
+
   const [formData, setFormData] = useState({
     idProducto: 0,
     nombreProducto: "",
-    stock: null ,
-    precioVenta: null ,
+    stock: null,
+    precioVenta: null,
     precioCompra: null,
     detalle: "",
     idProveedor: null,
@@ -227,8 +232,8 @@ export default function CustomizedTables() {
   const handleChange = (event: any) => {
     setFormData({
       ...formData,
-       idProveedor: +event.target.value,
-     })
+      idProveedor: +event.target.value,
+    });
     setProveedor(event.target.value as number);
   };
   const [productoSearchList, setProductoSearchList] = useState(
@@ -236,11 +241,12 @@ export default function CustomizedTables() {
   ); //para el buscador
   const filteredProductoList = (textSearch: string) => {
     const ProductoFilter = productoList.filter((producto) => {
-      return producto.nombreProducto.toLowerCase().includes(textSearch.toLowerCase());
+      return producto.nombreProducto
+        .toLowerCase()
+        .includes(textSearch.toLowerCase());
     });
     setProductoSearchList(ProductoFilter);
   };
-
 
   return (
     <div>
@@ -357,7 +363,6 @@ export default function CustomizedTables() {
         </DialogTitle>
         <DialogContent>
           <Grid container rowSpacing={3}>
-            
             {/*Nombre Producto*/}
             <Grid item xs={12} sm={8}>
               <TextField
@@ -463,24 +468,24 @@ export default function CustomizedTables() {
             {/*Proveedores */}
             <Grid item xs={12} sm={12}>
               <Select
-              label="Seleccionar provedor"
-              variant="outlined"
-              fullWidth
-              value={formData.idProveedor}
-              onChange={(e: any) =>{
-                setFormData({
-                 ...formData,
-                  idProveedor: e.target.value,
-                })
-                console.log(formData)}
-              }
-            >
-              {proveedoresList.map((proveedor) => (
-                <MenuItem key={proveedor.id} value={proveedor.id}>
-                  {proveedor.nombre}
-                </MenuItem>
-              ))}
-            </Select>
+                label="Seleccionar provedor"
+                variant="outlined"
+                fullWidth
+                value={formData.idProveedor}
+                onChange={(e: any) => {
+                  setFormData({
+                    ...formData,
+                    idProveedor: e.target.value,
+                  });
+                  console.log(formData);
+                }}
+              >
+                {proveedoresList.map((proveedor) => (
+                  <MenuItem key={proveedor.id} value={proveedor.id}>
+                    {proveedor.nombre}
+                  </MenuItem>
+                ))}
+              </Select>
             </Grid>
           </Grid>
         </DialogContent>
@@ -545,7 +550,12 @@ export default function CustomizedTables() {
           </TableHead>
 
           <TableBody>
-            {productoSearchList?.map((row) => (
+            {(rowsPerPage > 0
+              ? productoSearchList.slice(
+                  page * rowsPerPage,
+                  page * rowsPerPage + rowsPerPage)
+              : productoSearchList
+            ).map((row) => (
               <StyledTableRow key={row.idProducto}>
                 <StyledTableCell component="th" scope="row">
                   <IconButton
@@ -578,40 +588,35 @@ export default function CustomizedTables() {
                     <DeleteIcon />
                   </IconButton>
                 </StyledTableCell>
-
                 <StyledTableCell component="th" scope="row">
                   {row.nombreProducto}
                 </StyledTableCell>
-
                 <StyledTableCell>{row.stock}</StyledTableCell>
-
                 <StyledTableCell>{row.detalle}</StyledTableCell>
-
                 <StyledTableCell>${row.precioVenta}</StyledTableCell>
-
                 <StyledTableCell>${row.precioCompra}</StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>
-         <TableFooter>
-                <StyledTableRow>
-                  <TablePagination
-                    rowsPerPageOptions={[5]}
-                    colSpan={9}
-                    count={proveedorList.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    SelectProps={{
-                      inputProps: {
-                        'aria-label': 'rows per page',
-                      },
-                      native: true,
-                    }}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                  />
-                </StyledTableRow>
-              </TableFooter> 
+          <TableFooter>
+            <StyledTableRow>
+              <TablePagination
+                rowsPerPageOptions={[5]}
+                colSpan={9}
+                count={proveedorList.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                SelectProps={{
+                  inputProps: {
+                    "aria-label": "rows per page",
+                  },
+                  native: true,
+                }}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </StyledTableRow>
+          </TableFooter>
         </Table>
       </TableContainer>
 
