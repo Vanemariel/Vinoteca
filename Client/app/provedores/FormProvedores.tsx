@@ -513,67 +513,69 @@ export default function CustomizedTables() {
           </TableHead>
 
           <TableBody>
-            {proveedorSearchList?.map((row) => (
-              <StyledTableRow key={row.idProveedor}>
-                <StyledTableCell component="th" scope="row">
-                  <IconButton
-                    aria-label="edit"
-                    onClick={() => {
-                      setDialog(true);
-                      setIsNew(false);
-                      setFormData({
-                        idProducto: row.idProducto,
-                        descripcion: row.descripcion,
-                        horarioHasta: row.horarioHasta,
-                        horarioDesde: row.horarioDesde,
-                        telefono: row.telefono,
-                        idProveedor: row.idProveedor,
-                        nombre: row.nombre,
-                      });
-                    }}
-                  >
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton
-                    color="error"
-                    aria-label="delete"
-                    onClick={() => {
-                      setToDelete(row.idProveedor);
-                      setDeleteDialog(true);
-                    }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </StyledTableCell>
-                <StyledTableCell component="th" scope="row">
-                  {row.nombre}
-                </StyledTableCell>
-                <StyledTableCell>{row.descripcion}</StyledTableCell>
-                <StyledTableCell>{row.telefono}</StyledTableCell>
-                <StyledTableCell>{row.horarioDesde}</StyledTableCell>
-                <StyledTableCell>{row.horarioHasta}</StyledTableCell>
-              </StyledTableRow>
-            ))}
-          </TableBody>
-          <TableFooter>
-                <StyledTableRow>
-                  <TablePagination
-                    rowsPerPageOptions={[5]}
-                    colSpan={9}
-                    count={proveedorList.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    SelectProps={{
-                      inputProps: {
-                        'aria-label': 'rows per page',
-                      },
-                      native: true,
-                    }}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                  />
-                </StyledTableRow>
-              </TableFooter>
+  {(rowsPerPage > 0
+    ? proveedorSearchList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+    : proveedorSearchList
+  ).map((row) => (
+    <StyledTableRow key={row.idProveedor}>
+      <StyledTableCell component="th" scope="row">
+        <IconButton
+          aria-label="edit"
+          onClick={() => {
+            setDialog(true);
+            setIsNew(false);
+            setFormData({
+              idProducto: row.idProducto,
+              descripcion: row.descripcion,
+              horarioHasta: row.horarioHasta,
+              horarioDesde: row.horarioDesde,
+              telefono: row.telefono,
+              idProveedor: row.idProveedor,
+              nombre: row.nombre,
+            });
+          }}
+        >
+          <EditIcon />
+        </IconButton>
+        <IconButton
+          color="error"
+          aria-label="delete"
+          onClick={() => {
+            setToDelete(row.idProveedor);
+            setDeleteDialog(true);
+          }}
+        >
+          <DeleteIcon />
+        </IconButton>
+      </StyledTableCell>
+      <StyledTableCell component="th" scope="row">
+        {row.nombre}
+      </StyledTableCell>
+      <StyledTableCell>{row.descripcion}</StyledTableCell>
+      <StyledTableCell>{row.telefono}</StyledTableCell>
+      <StyledTableCell>{row.horarioDesde}</StyledTableCell>
+      <StyledTableCell>{row.horarioHasta}</StyledTableCell>
+    </StyledTableRow>
+  ))}
+</TableBody>
+<TableFooter>
+  <StyledTableRow>
+    <TablePagination
+      rowsPerPageOptions={[5, 10, 25]}
+      colSpan={9}
+      count={proveedorSearchList.length}
+      rowsPerPage={rowsPerPage}
+      page={page}
+      SelectProps={{
+        inputProps: { 'aria-label': 'rows per page' },
+        native: true,
+      }}
+      onPageChange={handleChangePage}
+      onRowsPerPageChange={handleChangeRowsPerPage}
+    />
+  </StyledTableRow>
+</TableFooter>
+
         </Table>
       </TableContainer>
 
