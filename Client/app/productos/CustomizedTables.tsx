@@ -114,9 +114,8 @@ export default function CustomizedTables() {
     handleClose(); // Cierra el modal
   };
   const [proveedoresList, setProveedoresList] = useState<
-    Array<{ id: number; nombre: string }>
+    Array<{ idProveedor: number; nombre: string }> 
   >([]);
-
   const [formData, setFormData] = useState({
     idProducto: 0,
     nombreProducto: "",
@@ -124,7 +123,7 @@ export default function CustomizedTables() {
     precioVenta: null,
     precioCompra: null,
     detalle: "",
-    idProveedor: null,
+    idProveedor: 0,
   } as Producto);
 
   useEffect(() => {
@@ -145,6 +144,7 @@ export default function CustomizedTables() {
 
     getList(action.PROVEEDOR_CONTROLLER)
       .then((res: any) => {
+        console.log(res.data)
         setProveedoresList(res.data);
         setLoaded(true);
       })
@@ -187,7 +187,7 @@ export default function CustomizedTables() {
         precioVenta: null as any,
         precioCompra: null as any,
         detalle: "",
-        idProveedor: 0,
+        idProveedor: null,
       });
       setLoading(false);
 
@@ -481,7 +481,7 @@ export default function CustomizedTables() {
                 }}
               >
                 {proveedoresList.map((proveedor) => (
-                  <MenuItem key={proveedor.id} value={proveedor.id}>
+                  <MenuItem key={proveedor.idProveedor} value={proveedor.idProveedor}>
                     {proveedor.nombre}
                   </MenuItem>
                 ))}
@@ -514,7 +514,6 @@ export default function CustomizedTables() {
           <LoadingButton
             loading={loading}
             disabled={
-              formData.idProveedor == null ||
               formData.precioCompra == null ||
               formData.detalle == "" ||
               formData.stock == null ||
@@ -538,13 +537,9 @@ export default function CustomizedTables() {
                 Acciones
               </StyledTableCell>
               <StyledTableCell>Nombre</StyledTableCell>
-
               <StyledTableCell>Stock</StyledTableCell>
-
               <StyledTableCell>Detalle</StyledTableCell>
-
               <StyledTableCell>Precio de compra</StyledTableCell>
-
               <StyledTableCell>Precio de venta</StyledTableCell>
             </TableRow>
           </TableHead>
