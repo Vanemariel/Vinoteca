@@ -69,22 +69,22 @@ export type Proveedor = {
 
   /** compra type used in the CRUD operations.
  * @type {object}
- * @property {number} IdCompra
- * @property {Date} Fecha
- * @property {bolean} Formapago
- * @property {number} Total
- * @property {number} NumerodeFactura
- * @property {number} IdUsuario
- * @property {number} IdProveedor
+ * @property {number} idCompra
+ * @property {string} fecha
+ * @property {bolean} formapago
+ * @property {number} total
+ * @property {number} numerodeFactura
+ * @property {number} idUsuario
+ * @property {number} idProveedor
  */
 export type Compra = {
-    IdCompra: number;
-    Fecha: Date;
-    FormaPago: boolean;
-    Total: number;
-    NumerodeFactora: number;
-    IdUsuario: number;
-    IdProveedor: number;
+    idCompra?: number;
+    fecha: string;
+    formaPago: boolean;
+    total: number;
+    numerodeFactura: number;
+    idUsuario: number;
+    idProveedor?: number;
   };
 
    /** venta type used in the CRUD operations.
@@ -104,3 +104,5 @@ export type Venta = {
     IdUsuario: string;
     IdCliente: number;
   };
+
+  

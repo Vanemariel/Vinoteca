@@ -22,21 +22,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { LoadingButton } from "@mui/lab";
 import FormControl from "@mui/material/FormControl";
-import {
-  Toolbar,
-  Typography,
-  InputBase,
-  IconButton,
-  Dialog,
-  DialogContentText,
-  DialogActions,
-  DialogContent,
-  TableFooter,
-  TablePagination,
-  TextField,
-  DialogTitle,
-  useMediaQuery,
-} from "@mui/material";
+import { Toolbar, Typography, InputBase, IconButton, Dialog,DialogContentText, DialogActions, DialogContent, TableFooter, TablePagination,TextField, DialogTitle, useMediaQuery } from "@mui/material";
 import { MenuItem } from "@mui/material";
 import { Producto, Proveedor } from "../../TYPES/crudTypes";
 import { useStore } from "../../stores/crud";
@@ -156,7 +142,7 @@ export default function CustomizedTables() {
         });
         setLoaded(true);
       });
-  }, [getList]);
+  }, [getList, dialog]);
 
   const validate = async (e: Event) => {
     e.preventDefault();
@@ -598,7 +584,7 @@ export default function CustomizedTables() {
               <TablePagination
                 rowsPerPageOptions={[5]}
                 colSpan={9}
-                count={proveedorList.length}
+                count={productoSearchList.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 SelectProps={{

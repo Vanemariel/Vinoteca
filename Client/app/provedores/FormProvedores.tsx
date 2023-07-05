@@ -151,7 +151,7 @@ export default function CustomizedTables() {
         });
         setLoaded(true);
       });
-  }, [getList]);
+  }, [getList, dialog]);
 
   const validate = async (e: Event) => {
     e.preventDefault();

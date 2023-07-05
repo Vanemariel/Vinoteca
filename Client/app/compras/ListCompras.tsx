@@ -22,19 +22,12 @@ import {
   IconButton,
   MenuItem,
   CssBaseline,
-  Checkbox
+  Checkbox,
 } from "@mui/material";
 import { FormEvent } from "react";
+import { Compra, Proveedor } from "../../TYPES/crudTypes";
 
 export default function ListComoras() {
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  }));
-
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
       backgroundColor: theme.palette.common.black,
@@ -68,18 +61,20 @@ export default function ListComoras() {
     preciounitario: number,
     proveedor: string,
     fecha: string,
-    formadepago: string,
+    formadepago: string
   ) => {
     return {
       producto,
       cantidad,
-      preciounitario, 
+      preciounitario,
       proveedor,
       fecha,
     };
   };
 
-  const rows = [createData("Fernet", 1, 2000, "Branca", "11/11/2023", "efectivo")];
+  const rows = [
+    createData("Fernet", 1, 2000, "Branca", "11/11/2023", "efectivo"),
+  ];
 
   const style = {
     position: "absolute" as "absolute",
@@ -118,26 +113,33 @@ export default function ListComoras() {
   };
 
   const [okClicked, setOkClicked] = useState(false);
-const [cancelClicked, setCancelClicked] = useState(false);
-const handleOkClick = () => {
-  setOkClicked(true);
-};
+  const [cancelClicked, setCancelClicked] = useState(false);
+  const handleOkClick = () => {
+    setOkClicked(true);
+  };
+  const handleCancelClick = () => {
+    setCancelClicked(true);
+    handleClose(); // Cierra el modal
+  };
 
-const handleCancelClick = () => {
-  setCancelClicked(true);
-  handleClose(); // Cierra el modal
-};
-
+  const [formData, setData] = useState({
+    idCompra: 0,
+    idUsuario: 0,
+    idProveedor: 0,
+    fecha: "",
+    formaPago: false,
+    total: 0,
+    numerodeFactura: 0,
+  } as Compra);
 
   return (
     <div>
       {/**Box encabezado */}
       <Box
         sx={{
-         marginTop: 8,
+          marginTop: 8,
           width: "100%", // Ancho ajustado al 100%
           maxWidth: 1500, // Máximo ancho permitido
-         
         }}
       >
         <Grid container>
@@ -161,7 +163,7 @@ const handleCancelClick = () => {
               }}
             >
               <Typography component="h1" variant="h5">
-               "Registra tus compras"
+                "Registra tus compras"
               </Typography>
               <Box
                 component="form"
@@ -174,6 +176,7 @@ const handleCancelClick = () => {
                   rowSpacing={1}
                   columnSpacing={{ xs: 1, sm: 2, md: 3 }}
                 >
+                  {/*Nombre Proveedor*/}
                   <Grid item xs={4}>
                     <TextField
                       margin="normal"
@@ -248,11 +251,9 @@ const handleCancelClick = () => {
           </Grid>
         </Grid>
       </Box>
-      
 
       {/*Table*/}
       <TableContainer component={Paper} sx={{ marginTop: "50px" }}>
-        
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
@@ -264,7 +265,6 @@ const handleCancelClick = () => {
               <StyledTableCell align="right">Precio Unitario</StyledTableCell>
               <StyledTableCell align="right">Proveedor</StyledTableCell>
               <StyledTableCell align="right">Fecha</StyledTableCell>
-             
             </TableRow>
           </TableHead>
           <TableBody>
@@ -286,95 +286,91 @@ const handleCancelClick = () => {
                   {" "}
                   ${row.preciounitario}
                 </StyledTableCell>
-                <StyledTableCell align="right"> {row.proveedor}</StyledTableCell>
+                <StyledTableCell align="right">
+                  {" "}
+                  {row.proveedor}
+                </StyledTableCell>
                 <StyledTableCell align="right"> {row.fecha}</StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>
         </Table>
-      </TableContainer>     
+      </TableContainer>
 
-     {/*Detalle de compra*/}
-            <Box
-             component={Paper}
-              sx={{
-                my: 8,
+      {/*Detalle de compra*/}
+      <Box
+        component={Paper}
+        sx={{
+          my: 8,
           mx: "auto",
           width: "80%", // Ancho ajustado
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           textAlign: "center",
-              }}
-            >
-              <Typography component="h1" variant="h5">
-                Detalle de compra
-              </Typography>
-              <Box
-                component="form"
-                noValidate
-                onSubmit={handleSubmit}
-                sx={{ mt: 1 }}
-              >
-                <Grid
-                  container
-                  rowSpacing={1}
-                  columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-                >
-
-                    <TextField
-                      margin="normal"
-                      required
-                      fullWidth
-                      label="Total "
-                      name="Total"
-                      autoComplete="total"
-                      autoFocus
-                    />
-               
-                  
-                  <Button onClick={handleOpen} style={{ marginTop: "-6px"}}>Terminar Compra</Button>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+        }}
       >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Seleccione el metodo de pago
-          </Typography>
-          <label htmlFor="checkbox1">Efectivo</label>
-              <Checkbox
-                {...label}
-                id="checkbox1"
-                defaultChecked
-                sx={{ mr: 2 }}
-              />
-              <label htmlFor="checkbox2">Transferencia</label>
-              <Checkbox {...label} id="checkbox2" sx={{ mr: 2 }} />
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-           Numero de vta
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-           ¿Seguro desea finalizar la compra?
-          </Typography>
-          <Button onClick={handleOkClick} disabled={okClicked}>
-  Ok
-</Button>
-<Button onClick={handleCancelClick} disabled={cancelClicked}>
-  Cancelar
-</Button>
-        </Box>
-      </Modal>
-                </Grid>
-                <Grid container>
-                  <Grid item xs></Grid>
-                  <Grid item></Grid>
-                </Grid>
+        <Typography component="h1" variant="h5">
+          Detalle de compra
+        </Typography>
+        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+          <Grid
+            container
+            rowSpacing={1}
+            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+          >
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              label="Total "
+              name="Total"
+              autoComplete="total"
+              autoFocus
+            />
+            <Button onClick={handleOpen} style={{ marginTop: "-6px" }}>
+              Terminar Compra
+            </Button>
+            <Modal
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            >
+              <Box sx={style}>
+                <Typography id="modal-modal-title" variant="h6" component="h2">
+                  Seleccione el metodo de pago
+                </Typography>
+                <label htmlFor="checkbox1">Efectivo</label>
+                <Checkbox
+                  {...label}
+                  id="checkbox1"
+                  defaultChecked
+                  sx={{ mr: 2 }}
+                />
+                <label htmlFor="checkbox2">Transferencia</label>
+                <Checkbox {...label} id="checkbox2" sx={{ mr: 2 }} />
+                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                  Numero de vta
+                </Typography>
+                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                  ¿Seguro desea finalizar la compra?
+                </Typography>
+                <Button onClick={handleOkClick} disabled={okClicked}>
+                  Ok
+                </Button>
+                <Button onClick={handleCancelClick} disabled={cancelClicked}>
+                  Cancelar
+                </Button>
               </Box>
-            </Box>
+            </Modal>
+          </Grid>
+          <Grid container>
+            <Grid item xs></Grid>
+            <Grid item></Grid>
+          </Grid>
+        </Box>
+      </Box>
     </div>
   );
 }
-
