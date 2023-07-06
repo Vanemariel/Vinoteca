@@ -8,6 +8,7 @@ namespace Shared.DTO
 {
     public class DetalleDeVentaDto
     {
+        //EVERY DETAILS WORKS 
         public float PrecioVenta { get; set; }
         public int CantidadVenta { get; set; }
         public int IdVenta { get; set; }
