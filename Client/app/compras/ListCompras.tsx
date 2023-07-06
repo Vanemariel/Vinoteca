@@ -16,14 +16,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import {
-  Box,
-  TextField,
-  IconButton,
-  MenuItem,
-  CssBaseline,
-  Checkbox,
-} from "@mui/material";
+import { Box, TextField, IconButton, MenuItem, CssBaseline, Checkbox } from "@mui/material";
 import { FormEvent } from "react";
 import { Compra, Proveedor } from "../../TYPES/crudTypes";
 
@@ -267,29 +260,22 @@ export default function ListComoras() {
               <StyledTableCell align="right">Fecha</StyledTableCell>
             </TableRow>
           </TableHead>
+          
           <TableBody>
             {rows.map((row) => (
               <StyledTableRow key={row.producto}>
                 <StyledTableCell component="th" scope="row">
                   <IconButton color="primary">
-                    {" "}
-                    <EditIcon />{" "}
+                    <EditIcon />
                   </IconButton>
                   <IconButton color="error">
-                    {" "}
-                    <DeleteIcon />{" "}
+                    <DeleteIcon />
                   </IconButton>
                 </StyledTableCell>
                 <StyledTableCell align="right"> {row.producto}</StyledTableCell>
                 <StyledTableCell align="right"> {row.cantidad}</StyledTableCell>
-                <StyledTableCell align="right">
-                  {" "}
-                  ${row.preciounitario}
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  {" "}
-                  {row.proveedor}
-                </StyledTableCell>
+                <StyledTableCell align="right">${row.preciounitario}</StyledTableCell>
+                <StyledTableCell align="right">{row.proveedor}</StyledTableCell>
                 <StyledTableCell align="right"> {row.fecha}</StyledTableCell>
               </StyledTableRow>
             ))}

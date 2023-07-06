@@ -16,7 +16,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import { Box, InputAdornment, TextField, IconButton, MenuItem, CssBaseline, Checkbox } from "@mui/material";
+import { Box, TextField, IconButton, MenuItem, CssBaseline, Checkbox } from "@mui/material";
 import { FormEvent } from "react";
 
 export default function ListVentas() {
