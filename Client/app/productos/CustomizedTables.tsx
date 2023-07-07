@@ -21,7 +21,6 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { LoadingButton } from "@mui/lab";
-import FormControl from "@mui/material/FormControl";
 import { Toolbar, Typography, InputBase, IconButton, Dialog,DialogContentText, DialogActions, DialogContent, TableFooter, TablePagination,TextField, DialogTitle, useMediaQuery } from "@mui/material";
 import { MenuItem } from "@mui/material";
 import { Producto, Proveedor } from "../../TYPES/crudTypes";
@@ -61,17 +60,10 @@ export default function CustomizedTables() {
   };
   const [open, setOpen] = useState(false);
   const handleClose = () => setOpen(false);
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState("0");
-  const [quantity, setQuantity] = useState("0");
-  const [description, setDescription] = useState("");
-  const [provider, setProvider] = useState("");
-  const [okClicked, setOkClicked] = useState(false);
   const [cancelClicked, setCancelClicked] = useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const [deleteDialog, setDeleteDialog] = useState(false);
-  const [search, setSearch] = useState("");
   const { deleteObject, getList, newObject, updateObject } = useStore();
   const [loading, setLoading] = useState(false);
   const [dialog, setDialog] = useState(false);
@@ -347,8 +339,10 @@ export default function CustomizedTables() {
         <DialogTitle>
           {isNew ? "Agregar actualizacion" : "Producto"}
         </DialogTitle>
+
         <DialogContent>
           <Grid container rowSpacing={3}>
+            
             {/*Nombre Producto*/}
             <Grid item xs={12} sm={8}>
               <TextField
