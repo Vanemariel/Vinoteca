@@ -368,7 +368,7 @@ export default function CustomizedTables() {
             {/*Stock */}
             <Grid item xs={12} sm={8}>
               <TextField
-                label="Cantidad adquirida"
+                label="Telefono"
                 fullWidth
                 value={formData.telefono}
                 onChange={(e) =>
@@ -481,10 +481,10 @@ export default function CustomizedTables() {
           <LoadingButton
             loading={loading}
             disabled={
-              formData.idProveedor == null ||
-              formData.horarioHasta == null ||
-              formData.descripcion == "" ||
-              formData.telefono == null ||
+              formData.idProveedor == null &&
+              formData.horarioHasta == null &&
+              formData.descripcion == "" &&
+              formData.telefono == null &&
               (formData.horarioDesde == null && formData.nombre == null)
             }
             size="large"

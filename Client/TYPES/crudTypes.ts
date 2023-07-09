@@ -6,7 +6,7 @@
  * @property {number} idCompra
  */
 export type Usuario = {
-    idUsuario: number;
+    idUsuario?: number;
     nombre: string;
     apellido: string;
     idCompra: number
@@ -20,7 +20,7 @@ export type Usuario = {
  * @property {number} telefono
  */
 export type Cliente = {
-    idCliente: number;
+    idCliente?: number;
     nombre: string;
     direccion: string;
     telefono: number;
@@ -78,35 +78,43 @@ export type Proveedor = {
  * @property {number} idProveedor
  * @property {number} cantidad
  * @property {number} precio
+ * @property {number} idProducto
  */
 export type Compra = {
-    idCompra?: number;
+    idCompra?: number | null;
     fecha: string;
     formaPago: boolean;
-    total: number;
+    total: number ;
     //numerodeFactura: number;
-    idUsuario: number;
-    idProveedor?: number;
-    cantidad: number;
-    precio: number;
+    idUsuario: number | null;
+    idProveedor?: number | null;
+    cantidad: number ;
+    precio: number ;
+    idProducto: number | null;
   };
 
    /** venta type used in the CRUD operations.
  * @type {object}
- * @property {number} IdVenta
- * @property {Date} FechaVenta
- * @property {string} FormaPago
- * @property {number} Total
- * @property {string} IdUsuario
- * @property {string} IdCliente
+ * @property {number} idVenta
+ * @property {Date} fechaVenta
+ * @property {boolean} formaPago
+ * @property {number} total
+ * @property {number} idUsuario
+ * @property {number} idCliente
+ * @property {number} cantidad
+ * @property {number} precio
  */
 export type Venta = {
-    IdVenta: number;
-    FechaVenta: Date;
-    FormaPago: string;
-    Total: number;
-    IdUsuario: string;
-    IdCliente: number;
+  idVenta?: number | null;
+  fechaVenta: string;
+  formaPago: boolean;
+  total: number ;
+  //numerodeFactura: number;
+  idUsuario?: number | null;
+  cantidad: number;
+  precio: number ;
+  idProducto?: number | null;
+  idCliente?: number | null;
   };
 
   

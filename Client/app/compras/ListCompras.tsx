@@ -18,24 +18,10 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import {
-  Box,
-  TextField,
-  Select,
-  InputBase,
-  TableFooter,
-  TablePagination,
-  IconButton,
-  MenuItem,
-  CssBaseline, DialogTitle, DialogActions, DialogContentText, DialogContent,
-  Checkbox,
-  Dialog
-} from "@mui/material";
+import { LoadingButton } from "@mui/lab";
+import { Box, TextField, Select, InputBase, TableFooter, TablePagination, IconButton, MenuItem,
+CssBaseline, Toolbar, DialogTitle, DialogActions, DialogContentText, DialogContent, Checkbox, Dialog } from "@mui/material";
 import { FormEvent } from "react";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import DayjsUtils from "@date-io/dayjs";
-import dayjs from "dayjs";
 import { Compra, Producto, Proveedor } from "../../TYPES/crudTypes";
 
 export default function ListComoras() {
@@ -70,33 +56,24 @@ export default function ListComoras() {
     boxShadow: 24,
     p: 4,
   };
-
-  const createTable = (proveedor: string, fecha: string) => {
-    return {
-      proveedor,
-      fecha,
-    };
-  };
-
+  
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [loading, setLoading] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const { deleteObject, getList, newObject, updateObject } = useStore();
   const [productoList, setProductoList] = useState([] as Producto[]);
   const [proveedorList, setProveedorList] = useState([] as Proveedor[]);
+  const [compraList, setCompraList] = useState([] as Compra[]);
   const [name, setName] = useState("");
   const [toDelete, setToDelete] = useState(null as any);
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [dialog, setDialog] = useState(false);
   const [isNew, setIsNew] = useState(false);
   const [dateFrom, setDateFrom] = useState(""); // Agregar esta línea
-  const [dateTo, setDateTo] = useState(""); // Agregar esta línea
-  const [price, setPrice] = useState("0");
-  const [quantity, setQuantity] = useState("0");
-  const [description, setDescription] = useState("");
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-  const [provider, setProvider] = useState("");
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -115,11 +92,38 @@ export default function ListComoras() {
     setCancelClicked(true);
     handleClose(); // Cierra el modal
   };
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const handleChangePage = (event: any | null, newPage: number) => {
+    setPage(newPage);};
+  const handleChangeRowsPerPage = (event: any) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);};
+  const [productoSearchList, setProductoSearchList] = useState(
+    [] as Producto[]); //para el buscador
+  const filteredProductoList = (textSearch: string) => {
+    const ProductoFilter = productoList.filter((producto) => {
+      return producto.nombreProducto
+        .toLowerCase()
+        .includes(textSearch.toLowerCase());
+    });
+    setProductoSearchList(ProductoFilter);};
+
+  const [proveedoresList, setProveedoresList] = useState<
+    Array<{ idProveedor: number; nombre: string }>>([]);
+  const [usuarioList, setUsuarioList] = useState<
+    Array<{ idUsuario: number; nombre: string }>>([]);
+
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    severity: "success",
+    message: "",});
 
   const [formData, setFormData] = useState({
     idCompra: 0,
     idUsuario: 0,
     idProveedor: 0,
+    idProducto: 0,
     fecha: "",
     formaPago: false,
     total: 0,
@@ -127,39 +131,53 @@ export default function ListComoras() {
     cantidad: 0,
     precio: 0,
   } as Compra);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  const handleChangePage = (event: any | null, newPage: number) => {
-    setPage(newPage);
-  };
-  const handleChangeRowsPerPage = (event: any) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-  const [productoSearchList, setProductoSearchList] = useState(
-    [] as Producto[]
-  ); //para el buscador
-  const filteredProductoList = (textSearch: string) => {
-    const ProductoFilter = productoList.filter((producto) => {
-      return producto.nombreProducto
-        .toLowerCase()
-        .includes(textSearch.toLowerCase());
-    });
-    setProductoSearchList(ProductoFilter);
-  };
 
-  const [proveedoresList, setProveedoresList] = useState<
-    Array<{ idProveedor: number; nombre: string }>
-  >([]);
-  const [usuarioList, setUsuarioList] = useState<
-    Array<{ idUsuario: number; nombre: string }>
-  >([]);
+  useEffect(() => {
+    getList(action.COMPRA_CONTROLLER)
+      .then((res: any) => {
+        setProductoList(res.data);
+        setProductoSearchList(res.data);
+        setLoaded(true);
+      })
+      .catch((err: any) => {
+        setSnackbar({
+          open: true,
+          severity: "error",
+          message: "ocurrio un error",
+        });
+        setLoaded(true);
+      });
 
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    severity: "success",
-    message: "",
-  });
+    getList(action.PRODUCTO_CONTROLLER)
+      .then((res: any) => {
+        setProductoList(res.data);
+        setProductoSearchList(res.data);
+        setLoaded(true);
+      })
+      .catch((err: any) => {
+        setSnackbar({
+          open: true,
+          severity: "error",
+          message: "ocurrio un error",
+        });
+        setLoaded(true);
+      });
+
+    getList(action.PROVEEDOR_CONTROLLER)
+      .then((res: any) => {
+        console.log(res.data)
+        setProveedoresList(res.data);
+        setLoaded(true);
+      })
+      .catch((err: any) => {
+        setSnackbar({
+          open: true,
+          severity: "error",
+          message: "ocurrio un error",
+        });
+        setLoaded(true);
+      });
+  }, [getList, dialog]);
 
   const deleteItem = () => {
     deleteObject(action.PRODUCTO_CONTROLLER, toDelete as unknown as number)
@@ -183,9 +201,63 @@ export default function ListComoras() {
       });
   };
 
+  const validate = async (e: Event) => {
+    e.preventDefault();
+    if (
+      formData.idUsuario != null ||
+      formData.idProveedor != null ||
+      formData.cantidad != null ||
+      formData.total != null ||
+      formData.fecha != null ||
+      formData.formaPago != null
+    ) {
+      setLoading(true);
+      let body = formData;
+      let response = null;
+      if (isNew) {
+        delete body.idCompra;
+        response = await newObject(action.COMPRA_CONTROLLER, body);
+      } else {
+        response = await updateObject(action.COMPRA_CONTROLLER, body);
+      }
+      setLoading(false);
+
+      setDialog(false);
+
+      setFormData({
+        idCompra: null as any,
+        idUsuario: null as any,
+        cantidad: null as any,
+        total: null as any,
+        formaPago: true,
+        idProveedor: null as any,
+        precio: null as any,
+        fecha: "",
+        idProducto: null as any,
+      });
+      setLoading(false);
+
+      getList(action.PRODUCTO_CONTROLLER)
+        .then((res: any) => {
+          setCompraList(res.data);
+          setLoaded(true);
+        })
+        .catch((err: any) => {
+          setSnackbar({
+            open: true,
+            severity: "success",
+            message: isNew
+              ? "creado" + " " + "con exito"
+              : "actualizado" + " " + "con exito",
+          });
+        });
+    }
+  };
+
   return (
     <div>
-      {/**Box encabezado */}
+      {/* Encabezado */}
+      <Toolbar>
       <Box
         sx={{
           marginTop: 8,
@@ -227,11 +299,9 @@ export default function ListComoras() {
                   rowSpacing={1}
                   columnSpacing={{ xs: 1, sm: 2, md: 3 }}
                 >
-                  {/* New or Update dialog */}
 
-
-                  {/*Nombre Proveedor*/}
-                  <Grid item xs={4}>
+            {/*Nombre Proveedor*/}
+            <Grid item xs={4}>
                     <Select
                       label="Seleccionar provedor"
                       variant="outlined"
@@ -296,25 +366,32 @@ export default function ListComoras() {
                       style={{ marginRight: "10px" }}
                     />
                   </Grid>
-                </Grid>
+        
+            
 
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{ mt: 3, mb: 2 }}
-                >
-                  AÑADIR
-                </Button>
-                <Grid container>
-                  <Grid item xs></Grid>
-                  <Grid item></Grid>
+        {/*Button */}
+        <DialogActions>
+          <LoadingButton
+            loading={loading}
+            disabled={
+              formData.cantidad == null ||
+              formData.formaPago == null ||
+              formData.total == null ||
+              formData.fecha == null
+            }
+            size="large"
+            onClick={(e: any) => validate(e)}
+          >
+            {"Añadir"}
+          </LoadingButton>
+        </DialogActions>
                 </Grid>
               </Box>
             </Box>
           </Grid>
         </Grid>
       </Box>
+      </Toolbar>
 
       {/* Delete dialog */}
       <Dialog
@@ -348,6 +425,8 @@ export default function ListComoras() {
       <InputBase
         sx={{
           mr: 2,
+          height: "40px",
+          margin: "20px",
         }}
         style={{
           backgroundColor: "#F1F3F4",
@@ -378,10 +457,12 @@ export default function ListComoras() {
                 Acciones
               </StyledTableCell>
               <StyledTableCell>Nombre</StyledTableCell>
+              <StyledTableCell>Nombre Proveedor</StyledTableCell>
               <StyledTableCell>Stock</StyledTableCell>
               <StyledTableCell>Detalle</StyledTableCell>
               <StyledTableCell>Precio de compra</StyledTableCell>
-              <StyledTableCell>Precio de venta</StyledTableCell>
+              <StyledTableCell>Cantidad</StyledTableCell>
+              <StyledTableCell>Total por Producto</StyledTableCell>
             </TableRow>
           </TableHead>
 

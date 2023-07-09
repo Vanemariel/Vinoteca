@@ -75,6 +75,10 @@ namespace Vinoteca.Server.Controllers
                     Total=ventadto.Total,
                     IdUsuario=ventadto.IdUsuario,
                     IdCliente=ventadto.IdCliente,
+                    IdProducto=ventadto.IdProducto,
+                    cantidad=ventadto.cantidad,
+                    precio=ventadto.precio,
+
                     DetalleDeVentas= new List<DetalleDeVenta>()
                 }) ;
                 await _context.SaveChangesAsync();

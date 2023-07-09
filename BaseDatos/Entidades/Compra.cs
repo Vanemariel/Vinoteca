@@ -21,6 +21,10 @@ namespace BaseDatos.Entidades
         public int cantidad {get; set;}
         public float precio { get; set; }
         public int IdUsuario { get; set; }
+        public int IdProducto { get; set; }
+
+        [ForeignKey("IdProducto")]
+        public Usuario Producto { get; set; }
 
         [ForeignKey("IdUsuario")]
         public Usuario Usuario { get; set; }
@@ -29,7 +33,6 @@ namespace BaseDatos.Entidades
 
         [ForeignKey("IdProveedor")]
         public Proveedor Proveedor { get; set; }
-
 
         [InverseProperty("Compra")]
         public List<DetalleDeCompra> DetalleDeCompras { get; set; }

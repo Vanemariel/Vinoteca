@@ -73,9 +73,12 @@ namespace Vinoteca.Server.Controllers
                     FechaCompra=compradto.FechaCompra,
                     FormaPago=compradto.FormaPago,
                     Total=compradto.Total,
-                    NumeroDeFactura=compradto.NumeroDeFactura,
+                    //NumeroDeFactura=compradto.NumeroDeFactura,
                     IdUsuario=compradto.IdUsuario,
                     IdProveedor=compradto.IdProveedor,
+                    IdProducto=compradto.IdProducto,
+                    cantidad=compradto.cantidad,
+                    precio=compradto.precio,
                     DetalleDeCompras = new List<DetalleDeCompra>()
                 }) ;
                 await _context.SaveChangesAsync();
@@ -107,7 +110,9 @@ namespace Vinoteca.Server.Controllers
             comprax.FechaCompra = compra.FechaCompra;
             comprax.FormaPago = compra.FormaPago;
             comprax.Total = compra.Total;
-            comprax.NumeroDeFactura= compra.NumeroDeFactura;
+            //comprax.NumeroDeFactura= compra.NumeroDeFactura;
+            comprax.cantidad = compra.cantidad;
+            comprax.precio = compra.precio;
 
             try
             {

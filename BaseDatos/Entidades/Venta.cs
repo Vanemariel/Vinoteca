@@ -17,6 +17,12 @@ namespace BaseDatos.Entidades
         public string FechaVenta { get; set; }
         public bool FormaPago { get; set; }
         public float Total { get; set; }
+        public int cantidad { get; set; }
+        public float precio { get; set; }
+
+        public int IdProducto { get; set; }
+        [ForeignKey("IdProducto")]
+        public Producto Producto { get; set; }
 
         public int IdUsuario { get; set; }
         [ForeignKey("IdUsuario")]
