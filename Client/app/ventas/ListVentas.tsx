@@ -14,16 +14,22 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Button, Grid, useMediaQuery } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Typography from "@mui/material/Typography";
-import { Box, TextField, Select, InputBase, TableFooter, TablePagination, IconButton, MenuItem,
+import { Box, TextField, Select, FormControlLabel,InputBase, TableFooter, TablePagination, IconButton, MenuItem,
 CssBaseline, Toolbar, DialogTitle,  DialogActions, DialogContentText, DialogContent, Checkbox, Dialog } from "@mui/material";
 import AddShoppingCartSharpIcon from '@mui/icons-material/AddShoppingCartSharp';
 import RemoveIcon from '@mui/icons-material/Remove';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { FormEvent } from "react";
 import { Producto, Venta } from "../../TYPES/crudTypes";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import DayjsUtils from "@date-io/dayjs";
+import dayjs from "dayjs";
+import { DatePicker } from '@mui/lab';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePickerProps } from '@mui/lab/DatePicker';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
 
 export default function ListComoras() {
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -122,8 +128,9 @@ export default function ListComoras() {
     idUsuario: null as any,
     idCliente: null as any,
     idProducto: null as any,
-    fechaVenta: "",
-    formaPago: false,
+    fechaVenta: null,
+    transferencia: false,
+    efectivo: true,
     total: null as any,
     //numerodeFactura: 0
     cantidad: 0,
@@ -193,7 +200,8 @@ export default function ListComoras() {
       formData.fechaVenta != null ||
       formData.cantidad != null ||
       formData.precio != null ||
-      formData.formaPago != null
+      formData.transferencia != null ||
+      formData.efectivo != null
     ) {
       setLoading(true);
       let body = formData;
@@ -213,9 +221,10 @@ export default function ListComoras() {
         idUsuario: null as any,
         cantidad: null as any,
         total: null as any,
-        formaPago: true,
+        efectivo: true,
+        transferencia: true,
         precio: null as any,
-        fechaVenta: "",
+        fechaVenta: null,
         idProducto: null as any,
       });
       setLoading(false);
@@ -295,7 +304,8 @@ export default function ListComoras() {
                     precio: formData.precio,
                     total: formData.total,
                     fechaVenta: formData.fechaVenta,
-                    formaPago: formData.formaPago,
+                    efectivo: formData.efectivo,
+                    transferencia: formData.transferencia,
                     idUsuario: formData.idUsuario,
                     cantidad: formData.cantidad,
                   })
@@ -306,7 +316,7 @@ export default function ListComoras() {
                   {/*Nombre usuario*/}
                   <Grid item xs={6}>
                     <Select
-                      label="Seleccionar usuario"
+                      label="Selecciona el Usuario"
                       variant="outlined"
                       fullWidth
                       value={formData.idUsuario}
@@ -331,34 +341,17 @@ export default function ListComoras() {
 
                   {/* fecha */}
                   <Grid item xs={12}>
-                    <TextField
-                      label="Fecha"
-                      type="date"
-                      fullWidth
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      value={dateFrom}
-                      onChange={(e) => setFormData({...formData, fechaVenta: e.target.value})}
-                      style={{ marginRight: "10px" }}
-                    />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label= "Fecha"
+                  value={dayjs(formData.fechaVenta).toDate()}
+                  onChange={(e: any) =>
+                    setFormData({ ...formData, fechaVenta: e })}
+                  inputFormat="DD MMMM YYYY"
+                  renderInput={(params: any) => <TextField {...params} fullWidth />}
+                />
+              </LocalizationProvider>
                   </Grid>
-
-        {/* Button
-        <DialogActions>
-          <LoadingButton
-            loading={loading}
-            disabled={
-              formData.cantidad == null ||
-              formData.formaPago == null ||
-              formData.total == null 
-            }
-            size="large"
-            onClick={(e: any) => validate(e)}
-          >
-            {"Añadir"}
-          </LoadingButton>
-        </DialogActions> */}
                 </Grid>
               </Box>
             </Box>
@@ -490,24 +483,6 @@ export default function ListComoras() {
                   </IconButton>
 
                   <IconButton
-                    aria-label="edit"
-                    onClick={() => {
-                      setDialog(true);
-                      setIsNew(false);
-                      setFormData({
-                        idProducto: row.idProducto,
-                        detalle: row.detalle,
-                        precioVenta: row.precioVenta,
-                        precioCompra: row.precioCompra,
-                        stock: row.stock,
-                        idProveedor: row.idProveedor,
-                        nombreProducto: row.nombreProducto,
-                      });
-                    }}
-                  >
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton
                     color="error"
                     aria-label="delete"
                     onClick={() => {
@@ -586,17 +561,20 @@ export default function ListComoras() {
             </Grid>
 
             <Grid item xs={6}>
-            <label htmlFor="checkbox1">Efectivo</label>
-                <Checkbox
-                  {...label}
-                  id="checkbox1"
-                  defaultChecked
-                  sx={{ mr: 2 }}
-                />
+            <FormControlLabel
+                control={<Checkbox checked={formData.efectivo} />}
+                label= "Efctivo"
+                onChange={(e) =>
+                  setFormData({ ...formData, efectivo: (e.target as HTMLInputElement).checked })}
+              />
              </Grid>  
              <Grid item xs={6}> 
-                <label htmlFor="checkbox2">Transferencia</label>
-                <Checkbox {...label} id="checkbox2" sx={{ mr: 2 }} />
+             <FormControlLabel
+                control={<Checkbox checked={formData.transferencia} />}
+                label= "Transferencia"
+                onChange={(e) =>
+                  setFormData({ ...formData, transferencia: (e.target as HTMLInputElement).checked })}
+              />
             </Grid>    
 
             <Grid item xs={4}> 
@@ -606,15 +584,21 @@ export default function ListComoras() {
                 </Grid> 
 
              <Grid item xs={4}>        
-                <Button onClick={handleOkClick} disabled={okClicked}>
-                  Ok
-                </Button>
-                </Grid> 
-
-                <Grid item xs={4}>   
-                <Button onClick={handleCancelClick} disabled={cancelClicked}>
-                  Cancelar
-                </Button>
+        <DialogActions>
+          <LoadingButton
+            loading={loading}
+            disabled={
+              formData.cantidad == null ||
+              formData.efectivo == null ||
+              formData.transferencia == null ||
+              formData.total == null 
+            }
+            size="large"
+            onClick={(e: any) => validate(e)}
+          >
+            {"Añadir"}
+          </LoadingButton>
+        </DialogActions>
                 </Grid> 
 
           </Grid>

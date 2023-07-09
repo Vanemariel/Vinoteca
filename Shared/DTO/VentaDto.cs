@@ -9,7 +9,8 @@ namespace Shared.DTO
     public class VentaDto
     {
         public string FechaVenta { get; set; }
-        public bool FormaPago { get; set; }
+        public bool efectivo { get; set; }
+        public bool transferencia { get; set; }
         public float Total { get; set; }
         public int IdUsuario { get; set; }
         public int IdCliente { get; set; }

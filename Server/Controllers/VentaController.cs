@@ -71,7 +71,8 @@ namespace Vinoteca.Server.Controllers
                 _context.TablaVentas.Add(new Venta
                 {
                     FechaVenta=ventadto.FechaVenta,
-                    FormaPago=ventadto.FormaPago,
+                    efectivo=ventadto.efectivo,
+                    transferencia=ventadto.transferencia,
                     Total=ventadto.Total,
                     IdUsuario=ventadto.IdUsuario,
                     IdCliente=ventadto.IdCliente,
@@ -108,7 +109,8 @@ namespace Vinoteca.Server.Controllers
             }
 
             ventax.FechaVenta = venta.FechaVenta;
-            ventax.FormaPago = venta.FormaPago;
+            ventax.efectivo = venta.efectivo;
+            ventax.transferencia = venta.transferencia;
             ventax.Total = venta.Total;
 
             try

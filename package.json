@@ -1,9 +1,12 @@
 {
   "dependencies": {
     "@date-io/dayjs": "^2.16.0",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
     "@material-ui/core": "^4.12.4",
     "@mui/lab": "^5.0.0-alpha.134",
     "@mui/x-date-pickers": "^6.9.2",
+    "@mui/x-date-pickers-pro": "^6.9.2",
     "dayjs": "^1.11.9",
     "react-datepicker": "^4.15.0",
     "react-router-dom": "^6.12.1",
