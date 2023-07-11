@@ -16,20 +16,37 @@ import Paper from "@mui/material/Paper";
 import { Button, Grid, useMediaQuery } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Typography from "@mui/material/Typography";
-import { Box, TextField, Select, FormControlLabel,InputBase, TableFooter, TablePagination, IconButton, MenuItem,
-CssBaseline, Toolbar, DialogTitle,  DialogActions, DialogContentText, DialogContent, Checkbox, Dialog } from "@mui/material";
-import AddShoppingCartSharpIcon from '@mui/icons-material/AddShoppingCartSharp';
-import RemoveIcon from '@mui/icons-material/Remove';
-import LoadingButton from '@mui/lab/LoadingButton';
+import {
+  Box,
+  TextField,
+  Select,
+  FormControlLabel,
+  InputBase,
+  TableFooter,
+  TablePagination,
+  IconButton,
+  MenuItem,
+  CssBaseline,
+  Toolbar,
+  DialogTitle,
+  DialogActions,
+  DialogContentText,
+  DialogContent,
+  Checkbox,
+  Dialog,
+} from "@mui/material";
+import AddShoppingCartSharpIcon from "@mui/icons-material/AddShoppingCartSharp";
+import RemoveIcon from "@mui/icons-material/Remove";
+import LoadingButton from "@mui/lab/LoadingButton";
 import { FormEvent } from "react";
 import { Producto, Venta } from "../../TYPES/crudTypes";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import DayjsUtils from "@date-io/dayjs";
 import dayjs from "dayjs";
-import { DatePicker } from '@mui/lab';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePickerProps } from '@mui/lab/DatePicker';
-import localizedFormat from 'dayjs/plugin/localizedFormat';
+import { DatePicker } from "@mui/lab";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePickerProps } from "@mui/lab/DatePicker";
+import localizedFormat from "dayjs/plugin/localizedFormat";
 
 export default function ListComoras() {
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -63,7 +80,7 @@ export default function ListComoras() {
     boxShadow: 24,
     p: 4,
   };
-  
+
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -101,27 +118,38 @@ export default function ListComoras() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const handleChangePage = (event: any | null, newPage: number) => {
-    setPage(newPage);};
+    setPage(newPage);
+  };
   const handleChangeRowsPerPage = (event: any) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);};
+    setPage(0);
+  };
   const [productoSearchList, setProductoSearchList] = useState(
-    [] as Producto[]); //para el buscador
+    [] as Producto[]
+  ); //para el buscador
   const filteredProductoList = (textSearch: string) => {
     const ProductoFilter = productoList.filter((producto) => {
       return producto.nombreProducto
         .toLowerCase()
         .includes(textSearch.toLowerCase());
     });
-    setProductoSearchList(ProductoFilter);};
+    setProductoSearchList(ProductoFilter);
+  };
+
+  const [ventaSearchList, setVentaSearchList] = useState(
+    [] as Venta[]
+  ); //para el buscador
+  
 
   const [usuarioList, setUsuarioList] = useState<
-    Array<{ idUsuario: number; nombre: string }>>([]);
+    Array<{ idUsuario: number; nombre: string }>
+  >([]);
 
   const [snackbar, setSnackbar] = useState({
     open: false,
     severity: "success",
-    message: "",});
+    message: "",
+  });
 
   const [formData, setFormData] = useState({
     idVenta: null as any,
@@ -248,117 +276,240 @@ export default function ListComoras() {
 
   return (
     <div>
-      {/* Encabezado */}
-      <Toolbar>
-      <Box
-        sx={{
-          marginTop: 8,
-          width: "100%", // Ancho ajustado al 100%
-          maxWidth: 1500, // Máximo ancho permitido
-        }}
-      >
-        <Grid container>
-          <CssBaseline />
+      <DialogContent>
+        <Grid container spacing={2}>
           <Grid
             item
             xs={12}
-            sm={8}
-            md={5}
-            component={Paper}
-            elevation={6}
-            square
+            sm={6}
+            sx={{ marginTop: 8, width: "100%", maxWidth: 1500 }}
           >
-            <Box
-              sx={{
-                my: 4,
-                mx: 4,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <Typography component="h1" variant="h5">
-                "Registra tus ventas"
-              </Typography>
-              <Box
-                component="form"
-                noValidate
-                onSubmit={handleSubmit}
-                sx={{ mt: 1 }}
-              >
-                <Grid
-                  container
-                  rowSpacing={1}
-                  columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-                >
-                  {/**nombre cliente */}
-                  <Grid item xs={6}>
-              <TextField
-                label="Nombre del cliente"
-                variant="outlined"
-                fullWidth
-                value={formData.idCliente}
-                onChange={(e) =>
-                  setFormData({
-                    idProducto: formData.idProducto,
-                    precio: formData.precio,
-                    total: formData.total,
-                    fechaVenta: formData.fechaVenta,
-                    efectivo: formData.efectivo,
-                    transferencia: formData.transferencia,
-                    idUsuario: formData.idUsuario,
-                    cantidad: formData.cantidad,
-                  })
-                }
-              />
-            </Grid>
-
-                  {/*Nombre usuario*/}
-                  <Grid item xs={6}>
-                    <Select
-                      label="Selecciona el Usuario"
-                      variant="outlined"
-                      fullWidth
-                      value={formData.idUsuario}
-                      onChange={(e: any) => {
-                        setFormData({
-                          ...formData,
-                          idUsuario: e.target.value,
-                        });
-                        console.log(formData);
+            {/* Encabezado */}
+            <Toolbar>
+              <Box>
+                <Grid container>
+                  <CssBaseline />
+                  <Grid
+                    item
+                    xs={12}
+                    sm={8}
+                    md={12}
+                    component={Paper}
+                    elevation={6}
+                    square
+                  >
+                    <Box
+                      sx={{
+                        my: 4,
+                        mx: 4,
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
                       }}
                     >
-                      {usuarioList.map((usuario) => (
-                        <MenuItem
-                          key={usuario.idUsuario}
-                          value={usuario.idUsuario}
+                      <Typography component="h1" variant="h5">
+                        "Registra tus ventas"
+                      </Typography>
+                      <Box
+                        component="form"
+                        noValidate
+                        onSubmit={handleSubmit}
+                        sx={{ mt: 1 }}
+                      >
+                        <Grid
+                          container
+                          rowSpacing={1}
+                          columnSpacing={{ xs: 1, sm: 2, md: 3 }}
                         >
-                          {usuario.nombre}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </Grid>
+                          {/* fecha */}
+                          <Grid item xs={12}>
+                            <TextField
+                              label="Fecha"
+                              type="date"
+                              fullWidth
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
+                              value={dateFrom}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  fechaVenta: e.target.value,
+                                })
+                              }
+                              style={{ marginRight: "10px" }}
+                            />
+                          </Grid>
 
-                  {/* fecha */}
-                  <Grid item xs={12}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  label= "Fecha"
-                  value={dayjs(formData.fechaVenta).toDate()}
-                  onChange={(e: any) =>
-                    setFormData({ ...formData, fechaVenta: e })}
-                  inputFormat="DD MMMM YYYY"
-                  renderInput={(params: any) => <TextField {...params} fullWidth />}
-                />
-              </LocalizationProvider>
+                          {/**nombre cliente */}
+                          <Grid item xs={12}>
+                            <TextField
+                              label="Nombre del cliente"
+                              variant="outlined"
+                              fullWidth
+                              value={formData.idCliente}
+                              onChange={(e) =>
+                                setFormData({
+                                  idProducto: formData.idProducto,
+                                  precio: formData.precio,
+                                  total: formData.total,
+                                  fechaVenta: formData.fechaVenta,
+                                  efectivo: formData.efectivo,
+                                  transferencia: formData.transferencia,
+                                  idUsuario: formData.idUsuario,
+                                  cantidad: formData.cantidad,
+                                })
+                              }
+                            />
+                          </Grid>
+
+                          {/*Nombre usuario*/}
+                          <Grid item xs={12}>
+                            <Select
+                              label="Selecciona el Vendedor"
+                              variant="outlined"
+                              fullWidth
+                              value={formData.idUsuario}
+                              onChange={(e: any) => {
+                                setFormData({
+                                  ...formData,
+                                  idUsuario: e.target.value,
+                                });
+                              }}
+                            >
+                              {usuarioList.map((usuario) => (
+                                <MenuItem
+                                  key={usuario.idUsuario}
+                                  value={usuario.idUsuario}
+                                >
+                                  {usuario.nombre}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </Grid>
+                        </Grid>
+                      </Box>
+                    </Box>
                   </Grid>
                 </Grid>
               </Box>
-            </Box>
+            </Toolbar>
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <Toolbar>
+              <Box
+                sx={{
+                  marginTop: 8,
+                  width: "100%", // Ancho ajustado al 100%
+                  maxWidth: 1500, // Máximo ancho permitido
+                }}
+              >
+                <Grid container>
+                  <CssBaseline />
+                  <Grid
+                    item
+                    xs={12}
+                    sm={8}
+                    md={12} //aca
+                    component={Paper}
+                    elevation={6}
+                    square
+                  >
+                    <Box
+                      sx={{
+                        my: 4,
+                        mx: 4,
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Typography component="h1" variant="h5">
+                        "Detalle de ventas"
+                      </Typography>
+                      <Box
+                        component="form"
+                        noValidate
+                        onSubmit={handleSubmit}
+                        sx={{ mt: 1 }}
+                      >
+                        {/* total */}
+                        <Grid item xs={12}>
+                          <TextField
+                            variant="outlined"
+                            fullWidth
+                            label="Total"
+                            name="Total"
+                            autoComplete="total"
+                            autoFocus
+                          />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                          <Typography
+                            id="modal-modal-title"
+                            variant="h6"
+                            component="h2"
+                          >
+                            Seleccione el método de pago
+                          </Typography>
+                        </Grid>
+
+                        <Grid item xs={4}>
+                          <FormControlLabel
+                            control={<Checkbox checked={formData.efectivo} />}
+                            label="Efectivo"
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                efectivo: (e.target as HTMLInputElement)
+                                  .checked,
+                              })
+                            }
+                          />
+                        </Grid>
+
+                        <Grid item xs={4}>
+                          <FormControlLabel
+                            control={
+                              <Checkbox checked={formData.transferencia} />
+                            }
+                            label="Transferencia"
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                transferencia: (e.target as HTMLInputElement)
+                                  .checked,
+                              })
+                            }
+                          />
+                        </Grid>
+
+                        <DialogActions>
+                          <LoadingButton
+                            loading={loading}
+                            disabled={
+                              formData.cantidad == null ||
+                              formData.efectivo == null ||
+                              formData.transferencia == null ||
+                              formData.total == null
+                            }
+                            size="large"
+                            onClick={(e: any) => validate(e)}
+                          >
+                            {"Terminar"}
+                          </LoadingButton>
+                        </DialogActions>
+                      </Box>
+                    </Box>
+                  </Grid>
+                </Grid>
+              </Box>
+            </Toolbar>
           </Grid>
         </Grid>
-      </Box>
-      </Toolbar>
+      </DialogContent>
 
       {/* Delete dialog */}
       <Dialog
@@ -415,7 +566,7 @@ export default function ListComoras() {
         onChange={(event) => filteredProductoList(event.target.value)}
       />
 
-      {/*Table */}
+      {/*Table productos */}
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
@@ -428,8 +579,6 @@ export default function ListComoras() {
               <StyledTableCell>Detalle</StyledTableCell>
               <StyledTableCell>Precio de compra</StyledTableCell>
               <StyledTableCell>Precio de venta</StyledTableCell>
-              <StyledTableCell>Cantidad</StyledTableCell>
-              <StyledTableCell>total por producto</StyledTableCell>
             </TableRow>
           </TableHead>
 
@@ -443,7 +592,6 @@ export default function ListComoras() {
             ).map((row) => (
               <StyledTableRow key={row.idProducto}>
                 <StyledTableCell component="th" scope="row">
-               
                   <IconButton
                     aria-label="edit"
                     onClick={() => {
@@ -462,36 +610,6 @@ export default function ListComoras() {
                   >
                     <AddShoppingCartSharpIcon />
                   </IconButton>
-
-                  <IconButton
-                    aria-label="edit"
-                    onClick={() => {
-                      setDialog(true);
-                      setIsNew(false);
-                      setFormData({
-                        idProducto: row.idProducto,
-                        detalle: row.detalle,
-                        precioVenta: row.precioVenta,
-                        precioCompra: row.precioCompra,
-                        stock: row.stock,
-                        idProveedor: row.idProveedor,
-                        nombreProducto: row.nombreProducto,
-                      });
-                    }}
-                  >
-                    <RemoveIcon />
-                  </IconButton>
-
-                  <IconButton
-                    color="error"
-                    aria-label="delete"
-                    onClick={() => {
-                      setToDelete(row.idProducto);
-                      setDeleteDialog(true);
-                    }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
                 </StyledTableCell>
                 <StyledTableCell component="th" scope="row">
                   {row.nombreProducto}
@@ -500,8 +618,6 @@ export default function ListComoras() {
                 <StyledTableCell>{row.detalle}</StyledTableCell>
                 <StyledTableCell>${row.precioVenta}</StyledTableCell>
                 <StyledTableCell>${row.precioCompra}</StyledTableCell>
-                <StyledTableCell>{row.cantidad}</StyledTableCell>
-                <StyledTableCell>${row.total}</StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>
@@ -526,88 +642,86 @@ export default function ListComoras() {
           </TableFooter>
         </Table>
       </TableContainer>
+      <br /> {/* Espacio entre las tablas */}
+      <br /> {/* Espacio entre las tablas */}
+      {/*Table ventas */}
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 700 }} aria-label="customized table">
+          <TableHead>
+            <TableRow>
+              <StyledTableCell width={115} align="center">
+                Acciones
+              </StyledTableCell>
+              <StyledTableCell>Nombre Producto</StyledTableCell>
+              <StyledTableCell>Cantidad</StyledTableCell>
+              <StyledTableCell>Precio</StyledTableCell>
+              <StyledTableCell>Total</StyledTableCell>
+            </TableRow>
+          </TableHead>
 
-      {/*Detalle de compra*/}
-      <Box
-        component={Paper}
-        sx={{
-          my: 8,
-          mx: "auto",
-          width: "80%", // Ancho ajustado
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          textAlign: "center",
-        }}
-      >
-        <Typography component="h1" variant="h5">Detalle de venta</Typography>
-
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
-          <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-          <Grid item xs={8}>
-            <TextField
-             variant="outlined"
-             fullWidth
-              label="Total "
-              name="Total"
-              autoComplete="total"
-              autoFocus
-            />
-            </Grid>
-            <Grid item xs={4}></Grid>
-
-            <Grid item xs={8}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">Seleccione el metodo de pago</Typography>
-            </Grid>
-
-            <Grid item xs={6}>
-            <FormControlLabel
-                control={<Checkbox checked={formData.efectivo} />}
-                label= "Efctivo"
-                onChange={(e) =>
-                  setFormData({ ...formData, efectivo: (e.target as HTMLInputElement).checked })}
+          <TableBody>
+            {(rowsPerPage > 0
+              ? ventaSearchList.slice(
+                  page * rowsPerPage,
+                  page * rowsPerPage + rowsPerPage
+                )
+              : ventaSearchList
+            ).map((row) => (
+              <StyledTableRow key={row.idVenta}>
+                <StyledTableCell component="th" scope="row">
+                  <IconButton
+                    aria-label="edit"
+                    onClick={() => {
+                      setDialog(true);
+                      setIsNew(false);
+                      setFormData({
+                        idProducto: row.idProducto,
+                        fechaVenta: row.fechaVenta,
+                        efectivo: row.efectivo,
+                        transferencia: row.transferencia,
+                        total: row.total,
+                        idUsuario: row.idUsuario,
+                        cantidad: row.cantidad,
+                        precio: row.precio,
+                        idCliente: row.idCliente,
+                        idVenta: row.idVenta,
+                      });
+                    }}
+                  >
+                    <AddShoppingCartSharpIcon />
+                  </IconButton>
+                </StyledTableCell>
+                <StyledTableCell component="th" scope="row">
+                  {row.idVenta}
+                </StyledTableCell>
+                <StyledTableCell>{row.idProducto}</StyledTableCell>
+                <StyledTableCell>{row.cantidad}</StyledTableCell>
+                <StyledTableCell>${row.precio}</StyledTableCell>
+                <StyledTableCell>${row.total}</StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+          <TableFooter>
+            <StyledTableRow>
+              <TablePagination
+                rowsPerPageOptions={[5]}
+                colSpan={9}
+                count={ventaSearchList.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                SelectProps={{
+                  inputProps: {
+                    "aria-label": "rows per page",
+                  },
+                  native: true,
+                }}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
               />
-             </Grid>  
-             <Grid item xs={6}> 
-             <FormControlLabel
-                control={<Checkbox checked={formData.transferencia} />}
-                label= "Transferencia"
-                onChange={(e) =>
-                  setFormData({ ...formData, transferencia: (e.target as HTMLInputElement).checked })}
-              />
-            </Grid>    
-
-            <Grid item xs={4}> 
-                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                  ¿Seguro desea finalizar la compra?
-                </Typography>
-                </Grid> 
-
-             <Grid item xs={4}>        
-        <DialogActions>
-          <LoadingButton
-            loading={loading}
-            disabled={
-              formData.cantidad == null ||
-              formData.efectivo == null ||
-              formData.transferencia == null ||
-              formData.total == null 
-            }
-            size="large"
-            onClick={(e: any) => validate(e)}
-          >
-            {"Añadir"}
-          </LoadingButton>
-        </DialogActions>
-                </Grid> 
-
-          </Grid>
-          <Grid container>
-            <Grid item xs></Grid>
-            <Grid item></Grid>
-          </Grid>
-        </Box>
-      </Box>
+            </StyledTableRow>
+          </TableFooter>
+        </Table>
+      </TableContainer>
     </div>
   );
 }

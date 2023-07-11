@@ -96,7 +96,7 @@ export type Compra = {
    /** venta type used in the CRUD operations.
  * @type {object}
  * @property {number} idVenta
- * @property {Date} fechaVenta
+ * @property {string} fechaVenta
  * @property {boolean} efectivo
  * @property {boolean} transferencia
  * @property {number} total
@@ -107,7 +107,7 @@ export type Compra = {
  */
 export type Venta = {
   idVenta?: number | null;
-  fechaVenta: Date | null;
+  fechaVenta: string | null;
   efectivo: boolean;
   transferencia: boolean;
   total: number ;
