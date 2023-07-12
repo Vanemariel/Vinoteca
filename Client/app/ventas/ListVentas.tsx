@@ -16,6 +16,7 @@ import Paper from "@mui/material/Paper";
 import { Button, Grid, useMediaQuery } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Typography from "@mui/material/Typography";
+import EditIcon from "@mui/icons-material/Edit";
 import {
   Box,
   TextField,
@@ -80,7 +81,6 @@ export default function ListComoras() {
     boxShadow: 24,
     p: 4,
   };
-
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -136,10 +136,7 @@ export default function ListComoras() {
     setProductoSearchList(ProductoFilter);
   };
 
-  const [ventaSearchList, setVentaSearchList] = useState(
-    [] as Venta[]
-  ); //para el buscador
-  
+  const [ventaSearchList, setVentaSearchList] = useState([] as Venta[]); //para el buscador
 
   const [usuarioList, setUsuarioList] = useState<
     Array<{ idUsuario: number; nombre: string }>
@@ -150,6 +147,30 @@ export default function ListComoras() {
     severity: "success",
     message: "",
   });
+  const [ventas, setVentas] = useState<
+    { nombreProducto: string; precio: number }[]
+  >([]);
+  const handleAddButtonClick = (row: any) => {
+    setDialog(true);
+    setIsNew(false);
+    setFormData({
+      idProducto: row.idProducto,
+      fechaVenta: row.fechaVenta,
+      efectivo: row.efectivo,
+      transferencia: row.transferencia,
+      total: row.total,
+      idUsuario: row.idUsuario,
+      cantidad: row.cantidad,
+      precio: row.precio,
+      idCliente: row.idCliente,
+      idVenta: row.idVenta,
+    });
+    const productoAVender = {
+      nombreProducto: row.nombreProducto,
+      precio: row.precio,
+    };
+    setVentas([...ventas, productoAVender]);
+  };
 
   const [formData, setFormData] = useState({
     idVenta: null as any,
@@ -308,7 +329,7 @@ export default function ListComoras() {
                       }}
                     >
                       <Typography component="h1" variant="h5">
-                        "Registra tus ventas"
+                        "Registra tus ventas"{" "}
                       </Typography>
                       <Box
                         component="form"
@@ -331,11 +352,8 @@ export default function ListComoras() {
                                 shrink: true,
                               }}
                               value={dateFrom}
-                              onChange={(e) =>
-                                setFormData({
-                                  ...formData,
-                                  fechaVenta: e.target.value,
-                                })
+                              onChange={
+                                (e) => setDateFrom(e.target.value) // Actualiza directamente el estado dateFrom aquí
                               }
                               style={{ marginRight: "10px" }}
                             />
@@ -510,7 +528,6 @@ export default function ListComoras() {
           </Grid>
         </Grid>
       </DialogContent>
-
       {/* Delete dialog */}
       <Dialog
         fullScreen={fullScreen}
@@ -538,7 +555,6 @@ export default function ListComoras() {
           </Button>
         </DialogActions>
       </Dialog>
-
       {/*Buscador*/}
       <InputBase
         sx={{
@@ -565,7 +581,6 @@ export default function ListComoras() {
         }
         onChange={(event) => filteredProductoList(event.target.value)}
       />
-
       {/*Table productos */}
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -594,19 +609,7 @@ export default function ListComoras() {
                 <StyledTableCell component="th" scope="row">
                   <IconButton
                     aria-label="edit"
-                    onClick={() => {
-                      setDialog(true);
-                      setIsNew(false);
-                      setFormData({
-                        idProducto: row.idProducto,
-                        detalle: row.detalle,
-                        precioVenta: row.precioVenta,
-                        precioCompra: row.precioCompra,
-                        stock: row.stock,
-                        idProveedor: row.idProveedor,
-                        nombreProducto: row.nombreProducto,
-                      });
-                    }}
+                    onClick={() => handleAddButtonClick(row)}
                   >
                     <AddShoppingCartSharpIcon />
                   </IconButton>
@@ -644,7 +647,6 @@ export default function ListComoras() {
       </TableContainer>
       <br /> {/* Espacio entre las tablas */}
       <br /> {/* Espacio entre las tablas */}
-      
       {/*Table ventas */}
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -677,19 +679,50 @@ export default function ListComoras() {
                       setIsNew(false);
                       setFormData({
                         idProducto: row.idProducto,
-                        fechaVenta: row.fechaVenta,
+                        idVenta: row.idVenta,
+                        precio: row.precio,
+                        idUsuario: row.idUsuario,
                         efectivo: row.efectivo,
                         transferencia: row.transferencia,
-                        total: row.total,
-                        idUsuario: row.idUsuario,
                         cantidad: row.cantidad,
-                        precio: row.precio,
-                        idCliente: row.idCliente,
-                        idVenta: row.idVenta,
+                        total: row.total,
+                        fechaVenta: row.fechaVenta,
                       });
                     }}
                   >
                     <AddShoppingCartSharpIcon />
+                  </IconButton>
+
+                  <IconButton
+                    aria-label="edit"
+                    onClick={() => {
+                      setDialog(true);
+                      setIsNew(false);
+                      setFormData({
+                        idProducto: row.idProducto,
+                        idVenta: row.idVenta,
+                        precio: row.precio,
+                        idUsuario: row.idUsuario,
+                        efectivo: row.efectivo,
+                        transferencia: row.transferencia,
+                        cantidad: row.cantidad,
+                        total: row.total,
+                        fechaVenta: row.fechaVenta,
+                      });
+                    }}
+                  >
+                    <EditIcon />
+                  </IconButton>
+
+                  <IconButton
+                    color="error"
+                    aria-label="delete"
+                    onClick={() => {
+                      setToDelete(row.idProducto);
+                      setDeleteDialog(true);
+                    }}
+                  >
+                    <DeleteIcon />
                   </IconButton>
                 </StyledTableCell>
                 <StyledTableCell component="th" scope="row">
