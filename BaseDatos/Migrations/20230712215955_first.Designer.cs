@@ -12,7 +12,7 @@ using Vinoteca.BaseDatos;
 namespace BaseDatos.Migrations
 {
     [DbContext(typeof(BDContext))]
-    [Migration("20230708230501_first")]
+    [Migration("20230712215955_first")]
     partial class first
     {
         /// <inheritdoc />
@@ -89,9 +89,6 @@ namespace BaseDatos.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("FormaPago")
-                        .HasColumnType("bit");
-
                     b.Property<int>("IdProducto")
                         .HasColumnType("int");
 
@@ -107,8 +104,14 @@ namespace BaseDatos.Migrations
                     b.Property<int>("cantidad")
                         .HasColumnType("int");
 
+                    b.Property<bool>("efectivo")
+                        .HasColumnType("bit");
+
                     b.Property<float>("precio")
                         .HasColumnType("real");
+
+                    b.Property<bool>("transferencia")
+                        .HasColumnType("bit");
 
                     b.HasKey("IdCompra");
 
@@ -287,9 +290,6 @@ namespace BaseDatos.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("FormaPago")
-                        .HasColumnType("bit");
-
                     b.Property<int>("IdCliente")
                         .HasColumnType("int");
 
@@ -305,8 +305,14 @@ namespace BaseDatos.Migrations
                     b.Property<int>("cantidad")
                         .HasColumnType("int");
 
+                    b.Property<bool>("efectivo")
+                        .HasColumnType("bit");
+
                     b.Property<float>("precio")
                         .HasColumnType("real");
+
+                    b.Property<bool>("transferencia")
+                        .HasColumnType("bit");
 
                     b.HasKey("IdVenta");
 

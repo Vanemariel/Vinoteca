@@ -644,6 +644,7 @@ export default function ListComoras() {
       </TableContainer>
       <br /> {/* Espacio entre las tablas */}
       <br /> {/* Espacio entre las tablas */}
+      
       {/*Table ventas */}
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">

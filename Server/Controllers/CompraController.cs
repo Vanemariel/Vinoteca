@@ -71,7 +71,8 @@ namespace Vinoteca.Server.Controllers
                 _context.TablaCompras.Add(new Compra
                 {
                     FechaCompra=compradto.FechaCompra,
-                    FormaPago=compradto.FormaPago,
+                    efectivo=compradto.efectivo,
+                    transferencia=compradto.transferencia,
                     Total=compradto.Total,
                     //NumeroDeFactura=compradto.NumeroDeFactura,
                     IdUsuario=compradto.IdUsuario,
@@ -108,7 +109,8 @@ namespace Vinoteca.Server.Controllers
             }
 
             comprax.FechaCompra = compra.FechaCompra;
-            comprax.FormaPago = compra.FormaPago;
+            comprax.efectivo=compra.efectivo;
+            comprax.transferencia=compra.transferencia;
             comprax.Total = compra.Total;
             //comprax.NumeroDeFactura= compra.NumeroDeFactura;
             comprax.cantidad = compra.cantidad;

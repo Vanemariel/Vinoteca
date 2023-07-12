@@ -109,7 +109,8 @@ namespace BaseDatos.Migrations
                     IdCompra = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FechaCompra = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FormaPago = table.Column<bool>(type: "bit", nullable: false),
+                    efectivo = table.Column<bool>(type: "bit", nullable: false),
+                    transferencia = table.Column<bool>(type: "bit", nullable: false),
                     Total = table.Column<float>(type: "real", nullable: false),
                     cantidad = table.Column<int>(type: "int", nullable: false),
                     precio = table.Column<float>(type: "real", nullable: false),
@@ -147,7 +148,8 @@ namespace BaseDatos.Migrations
                     IdVenta = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FechaVenta = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FormaPago = table.Column<bool>(type: "bit", nullable: false),
+                    efectivo = table.Column<bool>(type: "bit", nullable: false),
+                    transferencia = table.Column<bool>(type: "bit", nullable: false),
                     Total = table.Column<float>(type: "real", nullable: false),
                     cantidad = table.Column<int>(type: "int", nullable: false),
                     precio = table.Column<float>(type: "real", nullable: false),
