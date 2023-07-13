@@ -137,7 +137,7 @@ export default function ListComoras() {
   };
 
   const [ventaSearchList, setVentaSearchList] = useState([] as Venta[]); //para el buscador
-
+  const [totalVenta, setTotalVenta] = useState(0); // total de la venta
   const [usuarioList, setUsuarioList] = useState<
     Array<{ idUsuario: number; nombre: string }>
   >([]);
@@ -151,25 +151,35 @@ export default function ListComoras() {
     { nombreProducto: string; precio: number }[]
   >([]);
   const handleAddButtonClick = (row: any) => {
-    setDialog(true);
-    setIsNew(false);
-    setFormData({
-      idProducto: row.idProducto,
-      fechaVenta: row.fechaVenta,
-      efectivo: row.efectivo,
-      transferencia: row.transferencia,
-      total: row.total,
-      idUsuario: row.idUsuario,
-      cantidad: row.cantidad,
-      precio: row.precio,
-      idCliente: row.idCliente,
-      idVenta: row.idVenta,
-    });
     const productoAVender = {
+      idProducto: row.idProducto,
       nombreProducto: row.nombreProducto,
       precio: row.precio,
+      cantidad: 1, // cantidad inicial
+      total: row.precio, // total inicial
     };
-    setVentas([...ventas, productoAVender]);
+
+    setVentaSearchList([...ventaSearchList, productoAVender]);
+    setTotalVenta(totalVenta + row.precio); // sumar al total de la venta
+  };
+  const updateVentaItem = (index: number, cantidad: number) => {
+    const updatedList = [...ventaSearchList];
+    const producto = updatedList[index];
+    producto.cantidad = cantidad;
+    producto.total = producto.precio * cantidad;
+    setVentaSearchList(updatedList);
+
+    // Recalcular el total de la venta
+    const newTotal = updatedList.reduce((total, item) => total + item.total, 0);
+    setTotalVenta(newTotal);
+  };
+  const deleteVentaItem = (index: number) => {
+    const updatedList = [...ventaSearchList];
+    const deletedItem = updatedList.splice(index, 1)[0];
+    setVentaSearchList(updatedList);
+
+    // Restar el total del producto eliminado al total de la venta
+    setTotalVenta(totalVenta - deletedItem.total);
   };
 
   const [formData, setFormData] = useState({
@@ -604,8 +614,8 @@ export default function ListComoras() {
                   page * rowsPerPage + rowsPerPage
                 )
               : productoSearchList
-            ).map((row) => (
-              <StyledTableRow key={row.idProducto}>
+            ).map((row, index) => (
+              <StyledTableRow key={index}>
                 <StyledTableCell component="th" scope="row">
                   <IconButton
                     aria-label="edit"
@@ -669,29 +679,9 @@ export default function ListComoras() {
                   page * rowsPerPage + rowsPerPage
                 )
               : ventaSearchList
-            ).map((row) => (
-              <StyledTableRow key={row.idVenta}>
+            ).map((row, index) => (
+              <StyledTableRow key={index}>
                 <StyledTableCell component="th" scope="row">
-                  <IconButton
-                    aria-label="edit"
-                    onClick={() => {
-                      setDialog(true);
-                      setIsNew(false);
-                      setFormData({
-                        idProducto: row.idProducto,
-                        idVenta: row.idVenta,
-                        precio: row.precio,
-                        idUsuario: row.idUsuario,
-                        efectivo: row.efectivo,
-                        transferencia: row.transferencia,
-                        cantidad: row.cantidad,
-                        total: row.total,
-                        fechaVenta: row.fechaVenta,
-                      });
-                    }}
-                  >
-                    <AddShoppingCartSharpIcon />
-                  </IconButton>
 
                   <IconButton
                     aria-label="edit"
@@ -725,12 +715,18 @@ export default function ListComoras() {
                     <DeleteIcon />
                   </IconButton>
                 </StyledTableCell>
-                <StyledTableCell component="th" scope="row">
-                  {row.idVenta}
+
+                <StyledTableCell>{row.nombreProducto}</StyledTableCell>
+                <StyledTableCell>
+                  <TextField
+                    type="number"
+                    value={row.cantidad}
+                    onChange={(e) =>
+                    updateVentaItem(index, parseInt(e.target.value, 10))
+                    }
+                  />
                 </StyledTableCell>
-                <StyledTableCell>{row.idProducto}</StyledTableCell>
-                <StyledTableCell>{row.cantidad}</StyledTableCell>
-                <StyledTableCell>${row.precio}</StyledTableCell>
+                <StyledTableCell>${row.precioVenta}</StyledTableCell>
                 <StyledTableCell>${row.total}</StyledTableCell>
               </StyledTableRow>
             ))}
