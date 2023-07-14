@@ -154,14 +154,16 @@ export default function ListComoras() {
     const productoAVender = {
       idProducto: row.idProducto,
       nombreProducto: row.nombreProducto,
-      precio: row.precio,
+      precioVenta: row.precioVenta,
       cantidad: 1, // cantidad inicial
       total: row.precio, // total inicial
     };
 
     setVentaSearchList([...ventaSearchList, productoAVender]);
-    setTotalVenta(totalVenta + row.precio); // sumar al total de la venta
+    setTotalVenta(totalVenta + row.precioVenta); // Corregir el nombre de la propiedad
+    setVentas([...ventas, productoAVender]); // Agregar el producto a la lista de ventas
   };
+
   const updateVentaItem = (index: number, cantidad: number) => {
     const updatedList = [...ventaSearchList];
     const producto = updatedList[index];
@@ -169,10 +171,10 @@ export default function ListComoras() {
     producto.total = producto.precio * cantidad;
     setVentaSearchList(updatedList);
 
-    // Recalcular el total de la venta
     const newTotal = updatedList.reduce((total, item) => total + item.total, 0);
     setTotalVenta(newTotal);
   };
+
   const deleteVentaItem = (index: number) => {
     const updatedList = [...ventaSearchList];
     const deletedItem = updatedList.splice(index, 1)[0];
@@ -190,7 +192,7 @@ export default function ListComoras() {
     fechaVenta: null,
     transferencia: false,
     efectivo: true,
-    total: null as any,
+    total: 0,
     //numerodeFactura: 0
     cantidad: 0,
     precio: 0,
@@ -682,7 +684,6 @@ export default function ListComoras() {
             ).map((row, index) => (
               <StyledTableRow key={index}>
                 <StyledTableCell component="th" scope="row">
-
                   <IconButton
                     aria-label="edit"
                     onClick={() => {
@@ -722,7 +723,7 @@ export default function ListComoras() {
                     type="number"
                     value={row.cantidad}
                     onChange={(e) =>
-                    updateVentaItem(index, parseInt(e.target.value, 10))
+                      updateVentaItem(index, parseInt(e.target.value, 10))
                     }
                   />
                 </StyledTableCell>
