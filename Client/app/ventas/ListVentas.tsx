@@ -88,7 +88,7 @@ export default function ListComoras() {
   const [loaded, setLoaded] = useState(false);
   const { deleteObject, getList, newObject, updateObject } = useStore();
   const [productoList, setProductoList] = useState([] as Producto[]);
-  const [compraList, setCompraList] = useState([] as Venta[]);
+  const [ventaList, setVentaList] = useState([] as Venta[]);
   const [name, setName] = useState("");
   const [toDelete, setToDelete] = useState(null as any);
   const [deleteDialog, setDeleteDialog] = useState(false);
@@ -137,6 +137,7 @@ export default function ListComoras() {
   };
 
   const [ventaSearchList, setVentaSearchList] = useState([] as Venta[]); //para el buscador
+  
   const [totalVenta, setTotalVenta] = useState(0); // total de la venta
   const [usuarioList, setUsuarioList] = useState<
     Array<{ idUsuario: number; nombre: string }>
@@ -148,15 +149,15 @@ export default function ListComoras() {
     message: "",
   });
   const [ventas, setVentas] = useState<
-    { nombreProducto: string; precio: number }[]
-  >([]);
+  { idProducto: number; nombreProducto: string; precio: number; cantidad: number; total: number }[]
+>([]);
   const handleAddButtonClick = (row: any) => {
     const productoAVender = {
       idProducto: row.idProducto,
       nombreProducto: row.nombreProducto,
       precioVenta: row.precioVenta,
       cantidad: 1, // cantidad inicial
-      total: row.precio, // total inicial
+      total: row.precioVenta * 1, // total inicial
     };
 
     setVentaSearchList([...ventaSearchList, productoAVender]);
@@ -176,12 +177,16 @@ export default function ListComoras() {
   };
 
   const deleteVentaItem = (index: number) => {
-    const updatedList = [...ventaSearchList];
-    const deletedItem = updatedList.splice(index, 1)[0];
-    setVentaSearchList(updatedList);
-
+    const updatedVentaSearchList = [...ventaSearchList];
+    const deletedItem = updatedVentaSearchList.splice(index, 1)[0];
+    setVentaSearchList(updatedVentaSearchList);
+  
     // Restar el total del producto eliminado al total de la venta
     setTotalVenta(totalVenta - deletedItem.total);
+  
+    // Eliminar el elemento correspondiente de la lista de ventas
+    const updatedVentas = ventas.filter((item) => item.idProducto !== deletedItem.idProducto);
+    setVentas(updatedVentas);
   };
 
   const [formData, setFormData] = useState({
@@ -231,7 +236,7 @@ export default function ListComoras() {
   }, [getList, dialog]);
 
   const deleteItem = () => {
-    deleteObject(action.PRODUCTO_CONTROLLER, toDelete as unknown as number)
+    deleteObject(action.VENTA_CONTROLLER, toDelete as unknown as number)
       .then((res: any) => {
         setDeleteDialog(false);
         setSnackbar({
@@ -239,8 +244,8 @@ export default function ListComoras() {
           severity: "success",
           message: "Eliminado" + " " + "con excito",
         });
-        setProductoList(
-          productoList.filter((producto) => producto.idProducto !== toDelete)
+        setVentaList(
+          ventaList.filter((venta) => venta.idVenta !== toDelete)
         );
       })
       .catch((err: any) => {
