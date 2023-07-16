@@ -82,6 +82,7 @@ export default function ListComoras() {
     p: 4,
   };
   const [open, setOpen] = React.useState(false);
+  const [compraList, setCompraList] = useState<any[]>([]);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [loading, setLoading] = useState(false);
@@ -151,166 +152,172 @@ export default function ListComoras() {
   const [ventas, setVentas] = useState<
   { idProducto: number; nombreProducto: string; precio: number; cantidad: number; total: number }[]
 >([]);
-  const handleAddButtonClick = (row: any) => {
-    const productoAVender = {
-      idProducto: row.idProducto,
-      nombreProducto: row.nombreProducto,
-      precioVenta: row.precioVenta,
-      cantidad: 1, // cantidad inicial
-      total: row.precioVenta * 1, // total inicial
-    };
 
-    setVentaSearchList([...ventaSearchList, productoAVender]);
-    setTotalVenta(totalVenta + row.precioVenta); // Corregir el nombre de la propiedad
-    setVentas([...ventas, productoAVender]); // Agregar el producto a la lista de ventas
+const handleAddButtonClick = (row: any) => {
+  const productoAVender = {
+    idProducto: row.idProducto,
+    nombreProducto: row.nombreProducto,
+    precioVenta: row.precioVenta,
+    cantidad: 1, // cantidad inicial
+    total: row.precioVenta * 1, // total inicial
   };
 
-  const updateVentaItem = (index: number, cantidad: number) => {
-    const updatedList = [...ventaSearchList];
-    const producto = updatedList[index];
-    producto.cantidad = cantidad;
-    producto.total = producto.precio * cantidad;
-    setVentaSearchList(updatedList);
+  setVentaSearchList([...ventaSearchList, productoAVender]);
+  setTotalVenta(totalVenta + (row.precioVenta * 1)); // Corregir el nombre de la propiedad
+  setVentas([...ventas, productoAVender]); // Agregar el producto a la lista de ventas
+};
 
-    const newTotal = updatedList.reduce((total, item) => total + item.total, 0);
-    setTotalVenta(newTotal);
-  };
+const updateVentaItem = (index: number, cantidad: number) => {
+  const updatedList = [...ventaSearchList];
+  const producto = updatedList[index];
+  producto.cantidad = cantidad;
+  producto.total = producto.precioVenta * cantidad; // Corregir el nombre de la propiedad
+  setVentaSearchList(updatedList);
 
-  const deleteVentaItem = (index: number) => {
-    const updatedVentaSearchList = [...ventaSearchList];
-    const deletedItem = updatedVentaSearchList.splice(index, 1)[0];
-    setVentaSearchList(updatedVentaSearchList);
-  
-    // Restar el total del producto eliminado al total de la venta
-    setTotalVenta(totalVenta - deletedItem.total);
-  
-    // Eliminar el elemento correspondiente de la lista de ventas
-    const updatedVentas = ventas.filter((item) => item.idProducto !== deletedItem.idProducto);
-    setVentas(updatedVentas);
-  };
+  const newTotal = updatedList.reduce((total, item) => {
+    const itemTotal = parseFloat(item.total.toString());
+    return isNaN(itemTotal) ? total : total + itemTotal;
+  }, 0);
+  setTotalVenta(newTotal);
+};
 
-  const [formData, setFormData] = useState({
-    idVenta: null as any,
-    idUsuario: null as any,
-    idCliente: null as any,
-    idProducto: null as any,
-    fechaVenta: null,
-    transferencia: false,
-    efectivo: true,
-    total: 0,
-    //numerodeFactura: 0
-    cantidad: 0,
-    precio: 0,
-  } as Venta);
+const deleteVentaItem = (index: number) => {
+  const updatedVentaSearchList = [...ventaSearchList];
+  const deletedItem = updatedVentaSearchList.splice(index, 1)[0];
+  setVentaSearchList(updatedVentaSearchList);
 
-  useEffect(() => {
-    getList(action.VENTA_CONTROLLER)
-      .then((res: any) => {
-        setProductoList(res.data);
-        setProductoSearchList(res.data);
-        setLoaded(true);
-      })
-      .catch((err: any) => {
-        setSnackbar({
-          open: true,
-          severity: "error",
-          message: "ocurrio un error",
-        });
-        setLoaded(true);
+  const deletedItemTotal = parseFloat(deletedItem.total.toString());
+  const newTotalVenta = isNaN(deletedItemTotal)
+    ? totalVenta
+    : totalVenta - deletedItemTotal;
+
+  setTotalVenta(newTotalVenta);
+
+  // Eliminar el elemento correspondiente de la lista de ventas
+  const updatedVentas = ventas.filter((item) => item.idProducto !== deletedItem.idProducto);
+  setVentas(updatedVentas);
+};
+
+const [formData, setFormData] = useState<Venta>({
+  idVenta: null,
+  idUsuario: null,
+  cantidad: 0,
+  total: 0,
+  efectivo: true,
+  transferencia: true,
+  precio: 0,
+  fechaVenta: null,
+  idProducto: null,
+});
+
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const ventaListResponse = await getList(action.VENTA_CONTROLLER);
+      setVentaList(ventaListResponse.data);
+      setVentaSearchList(ventaListResponse.data);
+      setLoaded(true);
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        severity: "error",
+        message: "Ocurrió un error",
       });
+      setLoaded(true);
+    }
 
-    getList(action.PRODUCTO_CONTROLLER)
-      .then((res: any) => {
-        setProductoList(res.data);
-        setProductoSearchList(res.data);
-        setLoaded(true);
-      })
-      .catch((err: any) => {
-        setSnackbar({
-          open: true,
-          severity: "error",
-          message: "ocurrio un error",
-        });
-        setLoaded(true);
+    try {
+      const productoListResponse = await getList(action.PRODUCTO_CONTROLLER);
+      setProductoList(productoListResponse.data);
+      setProductoSearchList(productoListResponse.data);
+      setLoaded(true);
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        severity: "error",
+        message: "Ocurrió un error",
       });
-  }, [getList, dialog]);
-
-  const deleteItem = () => {
-    deleteObject(action.VENTA_CONTROLLER, toDelete as unknown as number)
-      .then((res: any) => {
-        setDeleteDialog(false);
-        setSnackbar({
-          open: true,
-          severity: "success",
-          message: "Eliminado" + " " + "con excito",
-        });
-        setVentaList(
-          ventaList.filter((venta) => venta.idVenta !== toDelete)
-        );
-      })
-      .catch((err: any) => {
-        setSnackbar({
-          open: true,
-          severity: "error",
-          message: "Algo sucedio",
-        });
-      });
-  };
-
-  const validate = async (e: Event) => {
-    e.preventDefault();
-    if (
-      formData.idUsuario != null ||
-      formData.idProducto != null ||
-      formData.total != null ||
-      formData.fechaVenta != null ||
-      formData.cantidad != null ||
-      formData.precio != null ||
-      formData.transferencia != null ||
-      formData.efectivo != null
-    ) {
-      setLoading(true);
-      let body = formData;
-      let response = null;
-      if (isNew) {
-        delete body.idVenta;
-        response = await newObject(action.VENTA_CONTROLLER, body);
-      } else {
-        response = await updateObject(action.VENTA_CONTROLLER, body);
-      }
-      setLoading(false);
-
-      setDialog(false);
-
-      setFormData({
-        idVenta: null as any,
-        idUsuario: null as any,
-        cantidad: null as any,
-        total: null as any,
-        efectivo: true,
-        transferencia: true,
-        precio: null as any,
-        fechaVenta: null,
-        idProducto: null as any,
-      });
-      setLoading(false);
-
-      getList(action.PRODUCTO_CONTROLLER)
-        .then((res: any) => {
-          setCompraList(res.data);
-          setLoaded(true);
-        })
-        .catch((err: any) => {
-          setSnackbar({
-            open: true,
-            severity: "success",
-            message: isNew
-              ? "creado" + " " + "con exito"
-              : "actualizado" + " " + "con exito",
-          });
-        });
+      setLoaded(true);
     }
   };
+
+  fetchData();
+}, [getList, dialog]);
+
+const deleteItem = () => {
+  deleteObject(action.VENTA_CONTROLLER, toDelete as number)
+    .then((res: any) => {
+      setDeleteDialog(false);
+      setSnackbar({
+        open: true,
+        severity: "success",
+        message: "Eliminado con éxito",
+      });
+      setVentaList((ventaList) =>
+        ventaList.filter((venta) => venta.idVenta !== toDelete)
+      );
+    })
+    .catch((err: any) => {
+      setSnackbar({
+        open: true,
+        severity: "error",
+        message: "Algo sucedió",
+      });
+    });
+};
+
+const validate = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (
+    formData.idUsuario !== null &&
+    formData.idProducto !== null &&
+    formData.total !== null &&
+    formData.fechaVenta !== null &&
+    formData.cantidad !== null &&
+    formData.precio !== null &&
+    formData.transferencia !== null &&
+    formData.efectivo !== null
+  ) {
+    setLoading(true);
+    let body = formData;
+    let response = null;
+    if (isNew) {
+      delete body.idVenta;
+      response = await newObject(action.VENTA_CONTROLLER, body);
+    } else {
+      response = await updateObject(action.VENTA_CONTROLLER, body);
+    }
+    setLoading(false);
+
+    setDialog(false);
+
+    setFormData({
+      idVenta: null,
+      idUsuario: null,
+      cantidad: 0,
+      total: 0,
+      efectivo: true,
+      transferencia: true,
+      precio: 0,
+      fechaVenta: null,
+      idProducto: null,
+    });
+    setLoading(false);
+
+    try {
+      const productoListResponse = await getList(action.PRODUCTO_CONTROLLER);
+      setCompraList(productoListResponse.data);
+      setLoaded(true);
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        severity: "success",
+        message: isNew ? "Creado con éxito" : "Actualizado con éxito",
+      });
+    }
+  }
+};
+
 
   return (
     <div>
