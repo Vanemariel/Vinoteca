@@ -572,9 +572,7 @@ export default function ListComoras() {
                 </Grid>
               </Box>
             </Toolbar>
-
             
-
           </Grid>
         </Grid>
       </DialogContent>
