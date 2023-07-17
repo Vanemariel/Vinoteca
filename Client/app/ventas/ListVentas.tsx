@@ -17,7 +17,6 @@ import Paper from "@mui/material/Paper";
 import { Button, Grid, useMediaQuery } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Typography from "@mui/material/Typography";
-import EditIcon from "@mui/icons-material/Edit";
 import {
   Box,
   TextField,
@@ -224,6 +223,7 @@ export default function ListComoras() {
     precioVenta: 0,
     fechaVenta: null,
     idProducto: null,
+    numeroDeFactura: "",
   });
 
   useEffect(() => {
@@ -293,6 +293,7 @@ export default function ListComoras() {
       formData.idProducto !== null &&
       formData.total !== null &&
       formData.fechaVenta !== null &&
+      formData.numeroDeFactura !== null &&
       formData.cantidad !== null &&
       formData.precio !== null &&
       formData.precioVenta !== null &&
@@ -324,6 +325,7 @@ export default function ListComoras() {
         precioVenta: 0,
         fechaVenta: null,
         idProducto: null,
+        numeroDeFactura: "",
       });
       setLoading(false);
 
@@ -410,7 +412,7 @@ export default function ListComoras() {
                             />
                           </Grid>
 
-                          {/**nombre cliente */}
+                          {/**numerodefactura */}
                           <Grid item xs={12}>
                             <TextField
                               label="Nombre del cliente"
@@ -428,6 +430,32 @@ export default function ListComoras() {
                                   transferencia: formData.transferencia,
                                   idUsuario: formData.idUsuario,
                                   cantidad: formData.cantidad,
+                                  numeroDeFactura: e.target.value,
+                                })
+                              }
+                            />
+                          </Grid>
+
+                          {/**nombre cliente */}
+                          <Grid item xs={12}>
+                            <TextField
+                              label="Nombre del cliente"
+                              variant="outlined"
+                              fullWidth
+                              value={formData.idCliente}
+                              onChange={(e) =>
+                                setFormData({
+                                  idCliente: +e.target.value,
+                                  idProducto: formData.idProducto,
+                                  precio: formData.precio,
+                                  precioVenta: formData.precioVenta,
+                                  total: formData.total,
+                                  fechaVenta: formData.fechaVenta,
+                                  efectivo: formData.efectivo,
+                                  transferencia: formData.transferencia,
+                                  idUsuario: formData.idUsuario,
+                                  cantidad: formData.cantidad,
+                                  numeroDeFactura: formData.numeroDeFactura,
                                 })
                               }
                             />

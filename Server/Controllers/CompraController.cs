@@ -74,7 +74,7 @@ namespace Vinoteca.Server.Controllers
                     efectivo=compradto.efectivo,
                     transferencia=compradto.transferencia,
                     Total=compradto.Total,
-                    //NumeroDeFactura=compradto.NumeroDeFactura,
+                    NumeroDeFactura=compradto.NumeroDeFactura,
                     IdUsuario=compradto.IdUsuario,
                     IdProveedor=compradto.IdProveedor,
                     IdProducto=compradto.IdProducto,

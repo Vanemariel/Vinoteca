@@ -12,7 +12,7 @@ namespace Shared.DTO
         public bool efectivo { get; set; }
         public bool transferencia { get; set; }
         public float Total { get; set; }
-        //public int NumeroDeFactura { get; set; }
+        public string NumeroDeFactura { get; set; }
         public int IdUsuario { get; set; }
         public int IdProveedor { get; set; }
         public int IdProducto { get; set; }

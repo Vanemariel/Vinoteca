@@ -18,7 +18,7 @@ namespace BaseDatos.Entidades
         public bool efectivo { get; set; }
         public bool transferencia { get; set; }
         public float Total { get; set; }
-        //public int NumeroDeFactura { get; set; }
+        public string NumeroDeFactura { get; set; }
         public int cantidad {get; set;}
         public float precio { get; set; }
         public float precioCompra { get; set; }
