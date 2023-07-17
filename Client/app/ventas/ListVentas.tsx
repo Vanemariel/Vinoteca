@@ -3,6 +3,7 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useStore } from "../../stores/crud";
+import { toast, ToastContainer } from "react-toastify";
 
 import { styled, useTheme } from "@mui/material/styles";
 import * as action from "../../Utilities/action";
@@ -37,17 +38,9 @@ import {
   Dialog,
 } from "@mui/material";
 import AddShoppingCartSharpIcon from "@mui/icons-material/AddShoppingCartSharp";
-import RemoveIcon from "@mui/icons-material/Remove";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { FormEvent } from "react";
 import { Producto, Venta } from "../../TYPES/crudTypes";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import DayjsUtils from "@date-io/dayjs";
-import dayjs from "dayjs";
-import { DatePicker } from "@mui/lab";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePickerProps } from "@mui/lab/DatePicker";
-import localizedFormat from "dayjs/plugin/localizedFormat";
 
 export default function ListComoras() {
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -138,10 +131,10 @@ export default function ListComoras() {
   };
 
   const [ventaSearchList, setVentaSearchList] = useState([] as Venta[]); //para el buscador
-  
+
   const [totalVenta, setTotalVenta] = useState(0); // total de la venta
   const [usuarioList, setUsuarioList] = useState<
-    Array<{ idUsuario: number; nombre: string }>
+    Array<{ idUsuario: number; nombre: string ; apellido: string }>
   >([]);
 
   const [snackbar, setSnackbar] = useState({
@@ -150,174 +143,208 @@ export default function ListComoras() {
     message: "",
   });
   const [ventas, setVentas] = useState<
-  { idProducto: number; nombreProducto: string; precio: number; cantidad: number; total: number }[]
->([]);
-
-const handleAddButtonClick = (row: any) => {
-  const productoAVender = {
-    idProducto: row.idProducto,
-    nombreProducto: row.nombreProducto,
-    precioVenta: row.precioVenta,
-    cantidad: 1, // cantidad inicial
-    total: row.precioVenta * 1, // total inicial
-  };
-
-  setVentaSearchList([...ventaSearchList, productoAVender]);
-  setTotalVenta(totalVenta + (row.precioVenta * 1)); // Corregir el nombre de la propiedad
-  setVentas([...ventas, productoAVender]); // Agregar el producto a la lista de ventas
-};
-
-const updateVentaItem = (index: number, cantidad: number) => {
-  const updatedList = [...ventaSearchList];
-  const producto = updatedList[index];
-  producto.cantidad = cantidad;
-  producto.total = producto.precioVenta * cantidad; // Corregir el nombre de la propiedad
-  setVentaSearchList(updatedList);
-
-  const newTotal = updatedList.reduce((total, item) => {
-    const itemTotal = parseFloat(item.total.toString());
-    return isNaN(itemTotal) ? total : total + itemTotal;
-  }, 0);
-  setTotalVenta(newTotal);
-};
-
-const deleteVentaItem = (index: number) => {
-  const updatedVentaSearchList = [...ventaSearchList];
-  const deletedItem = updatedVentaSearchList.splice(index, 1)[0];
-  setVentaSearchList(updatedVentaSearchList);
-
-  const deletedItemTotal = parseFloat(deletedItem.total.toString());
-  const newTotalVenta = isNaN(deletedItemTotal)
-    ? totalVenta
-    : totalVenta - deletedItemTotal;
-
-  setTotalVenta(newTotalVenta);
-
-  // Eliminar el elemento correspondiente de la lista de ventas
-  const updatedVentas = ventas.filter((item) => item.idProducto !== deletedItem.idProducto);
-  setVentas(updatedVentas);
-};
-
-const [formData, setFormData] = useState<Venta>({
-  idVenta: null,
-  idUsuario: null,
-  cantidad: 0,
-  total: 0,
-  efectivo: true,
-  transferencia: true,
-  precio: 0,
-  fechaVenta: null,
-  idProducto: null,
-});
-
-useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const ventaListResponse = await getList(action.VENTA_CONTROLLER);
-      setVentaList(ventaListResponse.data);
-      setVentaSearchList(ventaListResponse.data);
-      setLoaded(true);
-    } catch (error) {
-      setSnackbar({
-        open: true,
-        severity: "error",
-        message: "Ocurrió un error",
-      });
-      setLoaded(true);
-    }
-
-    try {
-      const productoListResponse = await getList(action.PRODUCTO_CONTROLLER);
-      setProductoList(productoListResponse.data);
-      setProductoSearchList(productoListResponse.data);
-      setLoaded(true);
-    } catch (error) {
-      setSnackbar({
-        open: true,
-        severity: "error",
-        message: "Ocurrió un error",
-      });
-      setLoaded(true);
-    }
-  };
-
-  fetchData();
-}, [getList, dialog]);
-
-const deleteItem = () => {
-  deleteObject(action.VENTA_CONTROLLER, toDelete as number)
-    .then((res: any) => {
-      setDeleteDialog(false);
-      setSnackbar({
-        open: true,
-        severity: "success",
-        message: "Eliminado con éxito",
-      });
-      setVentaList((ventaList) =>
-        ventaList.filter((venta) => venta.idVenta !== toDelete)
-      );
-    })
-    .catch((err: any) => {
-      setSnackbar({
-        open: true,
-        severity: "error",
-        message: "Algo sucedió",
-      });
-    });
-};
-
-const validate = async (e: React.FormEvent) => {
-  e.preventDefault();
-  if (
-    formData.idUsuario !== null &&
-    formData.idProducto !== null &&
-    formData.total !== null &&
-    formData.fechaVenta !== null &&
-    formData.cantidad !== null &&
-    formData.precio !== null &&
-    formData.transferencia !== null &&
-    formData.efectivo !== null
-  ) {
-    setLoading(true);
-    let body = formData;
-    let response = null;
-    if (isNew) {
-      delete body.idVenta;
-      response = await newObject(action.VENTA_CONTROLLER, body);
-    } else {
-      response = await updateObject(action.VENTA_CONTROLLER, body);
-    }
-    setLoading(false);
-
-    setDialog(false);
-
-    setFormData({
-      idVenta: null,
-      idUsuario: null,
-      cantidad: 0,
-      total: 0,
-      efectivo: true,
-      transferencia: true,
-      precio: 0,
-      fechaVenta: null,
-      idProducto: null,
-    });
-    setLoading(false);
-
-    try {
-      const productoListResponse = await getList(action.PRODUCTO_CONTROLLER);
-      setCompraList(productoListResponse.data);
-      setLoaded(true);
-    } catch (error) {
-      setSnackbar({
-        open: true,
-        severity: "success",
-        message: isNew ? "Creado con éxito" : "Actualizado con éxito",
-      });
-    }
+    {
+      idProducto: number;
+      nombreProducto: string;
+      precio: number;
+      cantidad: number;
+      total: number;
+    }[]
+  >([]);
+  {
+    /*logica para agregar el producto a venta*/
   }
-};
+  const handleAddButtonClick = (row: any) => {
+    // Verificar si el producto ya está en la lista de ventas
+    const isProductAlreadyAdded = ventaSearchList.find(
+      (producto) => producto.idProducto === row.idProducto
+    );
 
+    if (isProductAlreadyAdded) {
+      // Mostrar una alerta indicando que el producto ya fue agregado
+      toast.info("¡Este producto ya fue agregado a las ventas!");
+    } else {
+      const productoAVender = {
+        idProducto: row.idProducto,
+        nombreProducto: row.nombreProducto,
+        precioVenta: row.precioVenta,
+        cantidad: 1, // cantidad inicial
+        total: row.precioVenta * 1, // total inicial
+      };
+      setVentaSearchList([...ventaSearchList, productoAVender]);
+      setTotalVenta(totalVenta + row.precioVenta * 1); // Corregir el nombre de la propiedad
+      setVentas([...ventas, productoAVender]); // Agregar el producto a la lista de ventas
+    }
+  };
+
+  
+
+  const [totalFinal, setTotalFinal] = useState(0);
+  const updateVentaItem = (index: number, cantidad: number) => {
+    const updatedList = [...ventaSearchList];
+    const producto = updatedList[index];
+    producto.cantidad = cantidad;
+    producto.total = producto.precioVenta * cantidad;
+
+    setVentaSearchList(updatedList);
+
+    const newTotal = updatedList.reduce((total, item) => {
+      return total + item.total;
+    }, 0);
+
+    setTotalFinal(newTotal);
+  };
+
+  const deleteVentaItem = (index: number) => {
+    const updatedVentaSearchList = [...ventaSearchList];
+    const deletedItem = updatedVentaSearchList.splice(index, 1)[0];
+    setVentaSearchList(updatedVentaSearchList);
+
+    const deletedItemTotal = parseFloat(deletedItem.total.toString());
+    const newTotalVenta = isNaN(deletedItemTotal)
+      ? totalVenta
+      : totalVenta - deletedItemTotal;
+
+    setTotalVenta(newTotalVenta);
+
+    // Eliminar el elemento correspondiente de la lista de ventas
+    const updatedVentas = ventas.filter(
+      (item) => item.idProducto !== deletedItem.idProducto
+    );
+    setVentas(updatedVentas);
+  };
+  const [formData, setFormData] = useState<Venta>({
+    idVenta: null,
+    idUsuario: null,
+    cantidad: 0,
+    total: 0,
+    efectivo: true,
+    transferencia: true,
+    precio: 0,
+    precioVenta: 0,
+    fechaVenta: null,
+    idProducto: null,
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const ventaListResponse = await getList(action.VENTA_CONTROLLER);
+        setVentaList(ventaListResponse.data);
+        setVentaSearchList(ventaListResponse.data);
+        setLoaded(true);
+      } catch (error) {
+        setSnackbar({
+          open: true,
+          severity: "error",
+          message: "Ocurrió un error",
+        });
+        setLoaded(true);
+      }
+
+      try {
+        const productoListResponse = await getList(action.PRODUCTO_CONTROLLER);
+        setProductoList(productoListResponse.data);
+        setProductoSearchList(productoListResponse.data);
+        setLoaded(true);
+      } catch (error) {
+        setSnackbar({
+          open: true,
+          severity: "error",
+          message: "Ocurrió un error",
+        });
+        setLoaded(true);
+      }
+    };
+
+    fetchData();
+  }, [getList, dialog]);
+
+  const deleteItem = () => {
+    deleteObject(action.VENTA_CONTROLLER, toDelete as number)
+      .then((res: any) => {
+        setDeleteDialog(false);
+        setSnackbar({
+          open: true,
+          severity: "success",
+          message: "Eliminado con éxito",
+        });
+        setVentaList((prevVentaList) =>
+          prevVentaList.filter((venta) => venta.idVenta !== toDelete)
+        );
+      })
+      .catch((err: any) => {
+        setSnackbar({
+          open: true,
+          severity: "error",
+          message: "Algo sucedió",
+        });
+      })
+      .finally(() => {
+        setDeleteDialog(false); // Cerrar el diálogo de confirmación
+        setToDelete(null);
+      });
+  };
+
+  const validate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (
+      formData.idUsuario !== null &&
+      formData.idProducto !== null &&
+      formData.total !== null &&
+      formData.fechaVenta !== null &&
+      formData.cantidad !== null &&
+      formData.precio !== null &&
+      formData.precioVenta !== null &&
+      formData.transferencia !== null &&
+      formData.efectivo !== null
+    ) {
+      setLoading(true);
+      let body = formData;
+      let response = null;
+      if (isNew) {
+        delete body.idVenta;
+        console.log('Datos a enviar:', body);
+        response = await newObject(action.VENTA_CONTROLLER, body);
+      } else {
+        response = await updateObject(action.VENTA_CONTROLLER, body);
+      }
+      setLoading(false);
+
+      setDialog(false);
+
+      setFormData({
+        idVenta: null,
+        idUsuario: null,
+        cantidad: 0,
+        total: 0,
+        efectivo: true,
+        transferencia: true,
+        precio: 0,
+        precioVenta: 0,
+        fechaVenta: null,
+        idProducto: null,
+      });
+      setLoading(false);
+
+      try {
+        const productoListResponse = await getList(action.PRODUCTO_CONTROLLER);
+        setCompraList(productoListResponse.data);
+        setLoaded(true);
+      } catch (error) {
+        setSnackbar({
+          open: true,
+          severity: "success",
+          message: isNew ? "Creado con éxito" : "Actualizado con éxito",
+        });
+      }
+    }
+  };
+
+  {/**logica pa el boton terminar */}
+  const [modalOpen, setModalOpen] = useState(false);
+  const handleTerminarClick = () => {setModalOpen(true);};
+  const handleCloseModal = () => {setModalOpen(false);};
 
   return (
     <div>
@@ -394,6 +421,7 @@ const validate = async (e: React.FormEvent) => {
                                 setFormData({
                                   idProducto: formData.idProducto,
                                   precio: formData.precio,
+                                  precioVenta: formData.precioVenta,
                                   total: formData.total,
                                   fechaVenta: formData.fechaVenta,
                                   efectivo: formData.efectivo,
@@ -424,7 +452,7 @@ const validate = async (e: React.FormEvent) => {
                                   key={usuario.idUsuario}
                                   value={usuario.idUsuario}
                                 >
-                                  {usuario.nombre}
+                                  {usuario.nombre} {usuario.apellido}
                                 </MenuItem>
                               ))}
                             </Select>
@@ -478,14 +506,9 @@ const validate = async (e: React.FormEvent) => {
                       >
                         {/* total */}
                         <Grid item xs={12}>
-                          <TextField
-                            variant="outlined"
-                            fullWidth
-                            label="Total"
-                            name="Total"
-                            autoComplete="total"
-                            autoFocus
-                          />
+                          <Typography variant="h6" component="h2">
+                            Total: ${totalFinal}
+                          </Typography>
                         </Grid>
 
                         <Grid item xs={12}>
@@ -549,6 +572,9 @@ const validate = async (e: React.FormEvent) => {
                 </Grid>
               </Box>
             </Toolbar>
+
+            
+
           </Grid>
         </Grid>
       </DialogContent>
@@ -636,6 +662,8 @@ const validate = async (e: React.FormEvent) => {
                     onClick={() => handleAddButtonClick(row)}
                   >
                     <AddShoppingCartSharpIcon />
+                    <ToastContainer style={{ fontSize: "10px", padding: "8px 12px" }} />
+
                   </IconButton>
                 </StyledTableCell>
                 <StyledTableCell component="th" scope="row">
@@ -696,27 +724,6 @@ const validate = async (e: React.FormEvent) => {
             ).map((row, index) => (
               <StyledTableRow key={index}>
                 <StyledTableCell component="th" scope="row">
-                  <IconButton
-                    aria-label="edit"
-                    onClick={() => {
-                      setDialog(true);
-                      setIsNew(false);
-                      setFormData({
-                        idProducto: row.idProducto,
-                        idVenta: row.idVenta,
-                        precio: row.precio,
-                        idUsuario: row.idUsuario,
-                        efectivo: row.efectivo,
-                        transferencia: row.transferencia,
-                        cantidad: row.cantidad,
-                        total: row.total,
-                        fechaVenta: row.fechaVenta,
-                      });
-                    }}
-                  >
-                    <EditIcon />
-                  </IconButton>
-
                   <IconButton
                     color="error"
                     aria-label="delete"

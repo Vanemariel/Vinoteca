@@ -561,8 +561,8 @@ export default function CustomizedTables() {
                 </StyledTableCell>
                 <StyledTableCell>{row.stock}</StyledTableCell>
                 <StyledTableCell>{row.detalle}</StyledTableCell>
-                <StyledTableCell>${row.precioVenta}</StyledTableCell>
                 <StyledTableCell>${row.precioCompra}</StyledTableCell>
+                <StyledTableCell>${row.precioVenta}</StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>

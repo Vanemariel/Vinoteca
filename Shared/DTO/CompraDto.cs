@@ -18,5 +18,6 @@ namespace Shared.DTO
         public int IdProducto { get; set; }
         public int cantidad { get; set; }
         public float precio { get; set; }
+        public float precioCompra { get; set; }
     }
 }

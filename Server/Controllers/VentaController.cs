@@ -79,6 +79,7 @@ namespace Vinoteca.Server.Controllers
                     IdProducto=ventadto.IdProducto,
                     cantidad=ventadto.cantidad,
                     precio=ventadto.precio,
+                    precioVenta=ventadto.precioVenta,
 
                     DetalleDeVentas= new List<DetalleDeVenta>()
                 }) ;

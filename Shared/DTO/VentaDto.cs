@@ -16,6 +16,7 @@ namespace Shared.DTO
         public int IdCliente { get; set; }
         public int cantidad { get; set; }
         public float precio { get; set; }
+        public float precioVenta { get; set; }
         public int IdProducto { get; set; }
     }
 }

@@ -80,6 +80,7 @@ namespace Vinoteca.Server.Controllers
                     IdProducto=compradto.IdProducto,
                     cantidad=compradto.cantidad,
                     precio=compradto.precio,
+                    precioCompra=compradto.precioCompra,
                     DetalleDeCompras = new List<DetalleDeCompra>()
                 }) ;
                 await _context.SaveChangesAsync();

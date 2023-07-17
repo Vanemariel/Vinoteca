@@ -115,6 +115,7 @@ export type Venta = {
   idUsuario?: number | null;
   cantidad: number;
   precio: number ;
+  precioVenta: number;
   idProducto?: number | null;
   idCliente?: number | null;
   };

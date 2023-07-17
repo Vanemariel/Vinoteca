@@ -21,6 +21,7 @@ namespace BaseDatos.Entidades
         //public int NumeroDeFactura { get; set; }
         public int cantidad {get; set;}
         public float precio { get; set; }
+        public float precioCompra { get; set; }
         public int IdUsuario { get; set; }
         public int IdProducto { get; set; }
 
