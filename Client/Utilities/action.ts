@@ -1,16 +1,17 @@
 import config from "../config-api.json";
-
 // All endpoints routes.
-
 /**
  * Server dns.
  * @constant {string}
  */
 export const base = config.url;
-
 const api = config.apiVersion;
 
-
+export const USUARIO_CONTROLLER = base + "Api/Usuario/" + api + "usuario";
+/**
+ * General use endpoints.
+ * @constant {string}
+ */
 
 export const PRODUCTO_CONTROLLER = base + "Api/Producto/" + api + "producto";
 /**

@@ -19,6 +19,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import Typography from "@mui/material/Typography";
 import {
   Box,
+  InputLabel,
   TextField,
   Select,
   FormControlLabel,
@@ -130,12 +131,9 @@ export default function ListComoras() {
   };
 
   const [ventaSearchList, setVentaSearchList] = useState([] as Venta[]); //para el buscador
-
+  const [deleteIndex, setDeleteIndex] = useState(-1);
   const [totalVenta, setTotalVenta] = useState(0); // total de la venta
-  const [usuarioList, setUsuarioList] = useState<
-    Array<{ idUsuario: number; nombre: string ; apellido: string }>
-  >([]);
-
+  const [usuarioList, setUsuarioList] = useState<Array<{ idUsuario: number; nombre: string ; apellido: string }>>([]);
   const [snackbar, setSnackbar] = useState({
     open: false,
     severity: "success",
@@ -176,8 +174,6 @@ export default function ListComoras() {
     }
   };
 
-  
-
   const [totalFinal, setTotalFinal] = useState(0);
   const updateVentaItem = (index: number, cantidad: number) => {
     const updatedList = [...ventaSearchList];
@@ -198,14 +194,13 @@ export default function ListComoras() {
     const updatedVentaSearchList = [...ventaSearchList];
     const deletedItem = updatedVentaSearchList.splice(index, 1)[0];
     setVentaSearchList(updatedVentaSearchList);
-
+    setDeleteDialog(false); // Cerrar el diálogo después de borrar
+    setDeleteIndex(-1);
     const deletedItemTotal = parseFloat(deletedItem.total.toString());
     const newTotalVenta = isNaN(deletedItemTotal)
       ? totalVenta
       : totalVenta - deletedItemTotal;
-
     setTotalVenta(newTotalVenta);
-
     // Eliminar el elemento correspondiente de la lista de ventas
     const updatedVentas = ventas.filter(
       (item) => item.idProducto !== deletedItem.idProducto
@@ -255,36 +250,22 @@ export default function ListComoras() {
         });
         setLoaded(true);
       }
+      try {
+        const usuarioList = await getList(action.USUARIO_CONTROLLER);
+        setUsuarioList(usuarioList.data);
+        setLoaded(true);
+      } catch (error) {
+        setSnackbar({
+          open: true,
+          severity: "error",
+          message: "Ocurrió un error",
+        });
+        setLoaded(true);
+      }
     };
 
     fetchData();
   }, [getList, dialog]);
-
-  const deleteItem = () => {
-    deleteObject(action.VENTA_CONTROLLER, toDelete as number)
-      .then((res: any) => {
-        setDeleteDialog(false);
-        setSnackbar({
-          open: true,
-          severity: "success",
-          message: "Eliminado con éxito",
-        });
-        setVentaList((prevVentaList) =>
-          prevVentaList.filter((venta) => venta.idVenta !== toDelete)
-        );
-      })
-      .catch((err: any) => {
-        setSnackbar({
-          open: true,
-          severity: "error",
-          message: "Algo sucedió",
-        });
-      })
-      .finally(() => {
-        setDeleteDialog(false); // Cerrar el diálogo de confirmación
-        setToDelete(null);
-      });
-  };
 
   const validate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -344,10 +325,7 @@ export default function ListComoras() {
   };
 
   {/**logica pa el boton terminar */}
-  const [modalOpen, setModalOpen] = useState(false);
-  const handleTerminarClick = () => {setModalOpen(true);};
-  const handleCloseModal = () => {setModalOpen(false);};
-
+  
   return (
     <div>
       <DialogContent>
@@ -415,7 +393,7 @@ export default function ListComoras() {
                           {/**numerodefactura */}
                           <Grid item xs={12}>
                             <TextField
-                              label="Nombre del cliente"
+                              label="Factura"
                               variant="outlined"
                               fullWidth
                               value={formData.idCliente}
@@ -463,6 +441,7 @@ export default function ListComoras() {
 
                           {/*Nombre usuario*/}
                           <Grid item xs={12}>
+                          <InputLabel id="vendedor-label">Selecciona el Vendedor</InputLabel>
                             <Select
                               label="Selecciona el Vendedor"
                               variant="outlined"
@@ -548,7 +527,7 @@ export default function ListComoras() {
                             Seleccione el método de pago
                           </Typography>
                         </Grid>
-
+                       {/* efectivo */}
                         <Grid item xs={4}>
                           <FormControlLabel
                             control={<Checkbox checked={formData.efectivo} />}
@@ -562,7 +541,7 @@ export default function ListComoras() {
                             }
                           />
                         </Grid>
-
+                       {/* transferencia */}
                         <Grid item xs={4}>
                           <FormControlLabel
                             control={
@@ -584,6 +563,7 @@ export default function ListComoras() {
                             loading={loading}
                             disabled={
                               formData.cantidad == null ||
+                              formData.fechaVenta == null ||
                               formData.efectivo == null ||
                               formData.transferencia == null ||
                               formData.total == null
@@ -597,10 +577,10 @@ export default function ListComoras() {
                       </Box>
                     </Box>
                   </Grid>
-                </Grid>
+                </Grid> 
               </Box>
             </Toolbar>
-            
+
           </Grid>
         </Grid>
       </DialogContent>
@@ -621,12 +601,12 @@ export default function ListComoras() {
             color="error"
             onClick={() => {
               setDeleteDialog(false);
-              setToDelete(null);
+              setDeleteIndex(-1);
             }}
           >
             {"Cancelar"}
           </Button>
-          <Button size="large" onClick={() => deleteItem()}>
+          <Button size="large" onClick={() => deleteVentaItem(deleteIndex)}>
             {"Borrar"}
           </Button>
         </DialogActions>
@@ -688,7 +668,7 @@ export default function ListComoras() {
                     onClick={() => handleAddButtonClick(row)}
                   >
                     <AddShoppingCartSharpIcon />
-                    <ToastContainer style={{ fontSize: "10px", padding: "8px 12px" }} />
+                    {/* <ToastContainer style={{ fontSize: "10px", padding: "8px 12px" }} /> */}
 
                   </IconButton>
                 </StyledTableCell>
