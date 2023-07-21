@@ -80,7 +80,7 @@ export default function ListComoras() {
   const handleClose = () => setOpen(false);
   const [loading, setLoading] = useState(false);
   const [loaded, setLoaded] = useState(false);
-  const { deleteObject, getList, newObject, updateObject } = useStore();
+  const { getList, newObject, updateObject } = useStore();
   const [productoList, setProductoList] = useState([] as Producto[]);
   const [ventaList, setVentaList] = useState([] as Venta[]);
   const [name, setName] = useState("");
@@ -129,16 +129,11 @@ export default function ListComoras() {
     });
     setProductoSearchList(ProductoFilter);
   };
-
   const [ventaSearchList, setVentaSearchList] = useState([] as Venta[]); //para el buscador
   const [deleteIndex, setDeleteIndex] = useState(-1);
   const [totalVenta, setTotalVenta] = useState(0); // total de la venta
   const [usuarioList, setUsuarioList] = useState<Array<{ idUsuario: number; nombre: string ; apellido: string }>>([]);
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    severity: "success",
-    message: "",
-  });
+  const [snackbar, setSnackbar] = useState({open: false,severity: "success",message: "",});
   const [ventas, setVentas] = useState<
     {
       idProducto: number;
@@ -146,17 +141,13 @@ export default function ListComoras() {
       precio: number;
       cantidad: number;
       total: number;
-    }[]
-  >([]);
-  {
-    /*logica para agregar el producto a venta*/
-  }
+    }[]>([]);
+  
   const handleAddButtonClick = (row: any) => {
     // Verificar si el producto ya está en la lista de ventas
     const isProductAlreadyAdded = ventaSearchList.find(
       (producto) => producto.idProducto === row.idProducto
     );
-
     if (isProductAlreadyAdded) {
       // Mostrar una alerta indicando que el producto ya fue agregado
       toast.info("¡Este producto ya fue agregado a las ventas!");
@@ -173,22 +164,17 @@ export default function ListComoras() {
       setVentas([...ventas, productoAVender]); // Agregar el producto a la lista de ventas
     }
   };
-
   const [totalFinal, setTotalFinal] = useState(0);
   const updateVentaItem = (index: number, cantidad: number) => {
     const updatedList = [...ventaSearchList];
     const producto = updatedList[index];
     producto.cantidad = cantidad;
     producto.total = producto.precioVenta * cantidad;
-
     setVentaSearchList(updatedList);
-
     const newTotal = updatedList.reduce((total, item) => {
       return total + item.total;
     }, 0);
-
-    setTotalFinal(newTotal);
-  };
+    setTotalFinal(newTotal);};
 
   const deleteVentaItem = (index: number) => {
     const updatedVentaSearchList = [...ventaSearchList];
@@ -208,6 +194,7 @@ export default function ListComoras() {
     setVentas(updatedVentas);
   };
   const [formData, setFormData] = useState<Venta>({
+    nombre: "",
     idVenta: null,
     idUsuario: null,
     cantidad: 0,
@@ -270,11 +257,12 @@ export default function ListComoras() {
   const validate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (
+      formData.nombre !== "" &&
       formData.idUsuario !== null &&
       formData.idProducto !== null &&
       formData.total !== null &&
       formData.fechaVenta !== null &&
-      formData.numeroDeFactura !== null &&
+      formData.numeroDeFactura !== "" &&
       formData.cantidad !== null &&
       formData.precio !== null &&
       formData.precioVenta !== null &&
@@ -286,16 +274,14 @@ export default function ListComoras() {
       let response = null;
       if (isNew) {
         delete body.idVenta;
-        console.log('Datos a enviar:', body);
         response = await newObject(action.VENTA_CONTROLLER, body);
       } else {
         response = await updateObject(action.VENTA_CONTROLLER, body);
       }
       setLoading(false);
-
       setDialog(false);
-
       setFormData({
+        nombre: "",
         idVenta: null,
         idUsuario: null,
         cantidad: 0,
@@ -309,18 +295,20 @@ export default function ListComoras() {
         numeroDeFactura: "",
       });
       setLoading(false);
-
-      try {
-        const productoListResponse = await getList(action.PRODUCTO_CONTROLLER);
-        setCompraList(productoListResponse.data);
-        setLoaded(true);
-      } catch (error) {
-        setSnackbar({
-          open: true,
-          severity: "success",
-          message: isNew ? "Creado con éxito" : "Actualizado con éxito",
+      getList(action.VENTA_CONTROLLER)
+        .then((res: any) => {
+          setProductoList(res.data);
+          setLoaded(true);
+        })  
+        .catch((err: any) => {
+          setSnackbar({
+            open: true,
+            severity: "success",
+            message: isNew
+              ? "creado" + " " + "con exito"
+              : "actualizado" + " " + "con exito",
+          });
         });
-      }
     }
   };
 
@@ -396,7 +384,7 @@ export default function ListComoras() {
                               label="Factura"
                               variant="outlined"
                               fullWidth
-                              value={formData.idCliente}
+                              value={formData.numeroDeFactura}
                               onChange={(e) =>
                                 setFormData({
                                   idProducto: formData.idProducto,
@@ -420,10 +408,10 @@ export default function ListComoras() {
                               label="Nombre del cliente"
                               variant="outlined"
                               fullWidth
-                              value={formData.idCliente}
+                              value={formData.nombre}
                               onChange={(e) =>
                                 setFormData({
-                                  idCliente: +e.target.value,
+                                  nombre: e.target.value,
                                   idProducto: formData.idProducto,
                                   precio: formData.precio,
                                   precioVenta: formData.precioVenta,
@@ -562,16 +550,21 @@ export default function ListComoras() {
                           <LoadingButton
                             loading={loading}
                             disabled={
-                              formData.cantidad == null ||
-                              formData.fechaVenta == null ||
-                              formData.efectivo == null ||
-                              formData.transferencia == null ||
-                              formData.total == null
+                              formData.nombre !== ""&&
+                              formData.idUsuario !== null &&
+                              formData.fechaVenta !== null &&                           
+                              formData.cantidad !== null &&
+                              formData.idProducto !== null &&
+                              formData.efectivo !== null &&
+                              formData.transferencia !== null &&
+                              formData.numeroDeFactura !== "" &&
+                              formData.precioVenta !== null &&
+                              formData.total !== null
                             }
                             size="large"
                             onClick={(e: any) => validate(e)}
                           >
-                            {"Terminar"}
+                            {"Terminar Venta"}
                           </LoadingButton>
                         </DialogActions>
                       </Box>

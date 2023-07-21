@@ -101,7 +101,7 @@ export type Compra = {
  * @property {boolean} transferencia
  * @property {number} total
  * @property {number} idUsuario
- * @property {number} idCliente
+ * @property {string} nombre
  * @property {number} cantidad
  * @property {number} precio
  * @property {string} numeroDeFactura
@@ -118,7 +118,7 @@ export type Venta = {
   precio: number ;
   precioVenta: number;
   idProducto?: number | null;
-  idCliente?: number | null;
+  nombre?: string | null;
   };
 
   

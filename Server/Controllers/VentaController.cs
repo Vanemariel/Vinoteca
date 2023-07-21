@@ -29,7 +29,11 @@ namespace Vinoteca.Server.Controllers
         {
             try
             {
-                List<Venta> Ventas = await this._context.TablaVentas.ToListAsync();
+                List<Venta> Ventas = await this._context.TablaVentas
+                    .Include(venta => venta.Cliente)
+                    .Include(venta => venta.Usuario)
+                    .Include(venta => venta.Producto)
+                    .ToListAsync();
 
                 return Ok(Ventas);
             }
@@ -46,6 +50,9 @@ namespace Vinoteca.Server.Controllers
             {
                 Venta? Venta = await this._context.TablaVentas
                     .Where(Venta => Venta.IdVenta == id)
+                    .Include(venta => venta.Cliente)
+                    .Include(venta => venta.Usuario)
+                    .Include(venta => venta.Producto)
                     .FirstOrDefaultAsync();
 
                 if (Venta == null)
