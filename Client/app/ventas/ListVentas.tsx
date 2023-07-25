@@ -81,7 +81,7 @@ export default function ListComoras() {
   const [loading, setLoading] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const { getList, newObject, updateObject } = useStore();
-  const [productoList, setProductoList] = useState([] as Producto[]);
+  const [productoList, setProductoList] = useState<Producto[]>([]);
   const [ventaList, setVentaList] = useState([] as Venta[]);
   const [name, setName] = useState("");
   const [toDelete, setToDelete] = useState(null as any);
@@ -129,11 +129,17 @@ export default function ListComoras() {
     });
     setProductoSearchList(ProductoFilter);
   };
-  const [ventaSearchList, setVentaSearchList] = useState([] as Venta[]); //para el buscador
+  const [ventaSearchList, setVentaSearchList] = useState<Venta[]>([]); //para el buscador
   const [deleteIndex, setDeleteIndex] = useState(-1);
   const [totalVenta, setTotalVenta] = useState(0); // total de la venta
-  const [usuarioList, setUsuarioList] = useState<Array<{ idUsuario: number; nombre: string ; apellido: string }>>([]);
-  const [snackbar, setSnackbar] = useState({open: false,severity: "success",message: "",});
+  const [usuarioList, setUsuarioList] = useState<
+    Array<{ idUsuario: number; nombre: string; apellido: string }>
+  >([]);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    severity: "success",
+    message: "",
+  });
   const [ventas, setVentas] = useState<
     {
       idProducto: number;
@@ -141,30 +147,71 @@ export default function ListComoras() {
       precio: number;
       cantidad: number;
       total: number;
-    }[]>([]);
-  
+    }[]
+  >([]);
+
+  const [productoStock, setProductoStock] = useState<{ [key: number]: number }>({});
   const handleAddButtonClick = (row: any) => {
-    // Verificar si el producto ya está en la lista de ventas
+    const productToAdd = {
+      idProducto: row.idProducto,
+      nombreProducto: row.nombreProducto,
+      precioVenta: row.precioVenta,
+      cantidad: 1, // cantidad inicial
+      total: row.precioVenta * 1, // total inicial
+      fechaVenta: null,
+      efectivo: true,
+      transferencia: true,
+      numeroDeFactura: "",
+      precio: 0,
+    };
     const isProductAlreadyAdded = ventaSearchList.find(
       (producto) => producto.idProducto === row.idProducto
     );
+    const stock = productoList.find(
+      (producto) => producto.idProducto === row.idProducto
+    )?.stock;
     if (isProductAlreadyAdded) {
-      // Mostrar una alerta indicando que el producto ya fue agregado
       toast.info("¡Este producto ya fue agregado a las ventas!");
+    } else if (stock === undefined || stock === null || stock < 1) {
+      toast.warning("No hay stock disponible para este producto");
     } else {
-      const productoAVender = {
-        idProducto: row.idProducto,
-        nombreProducto: row.nombreProducto,
-        precioVenta: row.precioVenta,
-        cantidad: 1, // cantidad inicial
-        total: row.precioVenta * 1, // total inicial
-      };
-      setVentaSearchList([...ventaSearchList, productoAVender]);
-      setTotalVenta(totalVenta + row.precioVenta * 1); // Corregir el nombre de la propiedad
-      setVentas([...ventas, productoAVender]); // Agregar el producto a la lista de ventas
+      const updatedStock = stock - 1;
+      const updatedProductoList = productoList.map((producto) =>
+      producto.idProducto === row.idProducto
+        ? { ...producto, stock: updatedStock }
+        : producto
+    );
+    setProductoList(updatedProductoList);
+    const updatedProductoSearchList = productoSearchList.map((producto) =>
+      producto.idProducto === row.idProducto
+        ? { ...producto, stock: updatedStock }
+        : producto
+    );
+    setProductoSearchList(updatedProductoSearchList);
+      setVentaSearchList([...ventaSearchList, productToAdd]);
+      setTotalVenta(totalVenta + row.precioVenta * 1);
+      setVentas([...ventas, productToAdd]);
+      setProductoSearchList(updatedProductoList);
     }
   };
   const [totalFinal, setTotalFinal] = useState(0);
+
+  const updateStockAfterVentaModification = (ventaList: Venta[]) => {
+    const updatedProductoList = [...productoList];
+    ventaList.forEach((venta) => {
+      const producto = updatedProductoList.find(
+        (prod) => prod.idProducto === venta.idProducto
+      );
+  
+      if (producto) {
+        producto.stock -= venta.cantidad;
+      }
+    });
+    setProductoList(updatedProductoList);
+    setProductoSearchList(updatedProductoList);
+  };
+  
+  
   const updateVentaItem = (index: number, cantidad: number) => {
     const updatedList = [...ventaSearchList];
     const producto = updatedList[index];
@@ -174,7 +221,9 @@ export default function ListComoras() {
     const newTotal = updatedList.reduce((total, item) => {
       return total + item.total;
     }, 0);
-    setTotalFinal(newTotal);};
+    setTotalFinal(newTotal);
+    updateStockAfterVentaModification(updatedList);
+  };
 
   const deleteVentaItem = (index: number) => {
     const updatedVentaSearchList = [...ventaSearchList];
@@ -258,14 +307,14 @@ export default function ListComoras() {
     e.preventDefault();
     if (
       formData.nombre !== "" &&
-      formData.idUsuario !== null &&
-      formData.idProducto !== null &&
-      formData.total !== null &&
-      formData.fechaVenta !== null &&
+      formData.idUsuario &&
+      formData.idProducto &&
+      formData.total &&
+      formData.fechaVenta &&
       formData.numeroDeFactura !== "" &&
-      formData.cantidad !== null &&
-      formData.precio !== null &&
-      formData.precioVenta !== null &&
+      formData.cantidad &&
+      formData.precio &&
+      formData.precioVenta &&
       formData.transferencia !== null &&
       formData.efectivo !== null
     ) {
@@ -299,7 +348,7 @@ export default function ListComoras() {
         .then((res: any) => {
           setProductoList(res.data);
           setLoaded(true);
-        })  
+        })
         .catch((err: any) => {
           setSnackbar({
             open: true,
@@ -312,8 +361,6 @@ export default function ListComoras() {
     }
   };
 
-  {/**logica pa el boton terminar */}
-  
   return (
     <div>
       <DialogContent>
@@ -429,7 +476,9 @@ export default function ListComoras() {
 
                           {/*Nombre usuario*/}
                           <Grid item xs={12}>
-                          <InputLabel id="vendedor-label">Selecciona el Vendedor</InputLabel>
+                            <InputLabel id="vendedor-label">
+                              Selecciona el Vendedor
+                            </InputLabel>
                             <Select
                               label="Selecciona el Vendedor"
                               variant="outlined"
@@ -515,7 +564,7 @@ export default function ListComoras() {
                             Seleccione el método de pago
                           </Typography>
                         </Grid>
-                       {/* efectivo */}
+                        {/* efectivo */}
                         <Grid item xs={4}>
                           <FormControlLabel
                             control={<Checkbox checked={formData.efectivo} />}
@@ -529,7 +578,7 @@ export default function ListComoras() {
                             }
                           />
                         </Grid>
-                       {/* transferencia */}
+                        {/* transferencia */}
                         <Grid item xs={4}>
                           <FormControlLabel
                             control={
@@ -550,9 +599,9 @@ export default function ListComoras() {
                           <LoadingButton
                             loading={loading}
                             disabled={
-                              formData.nombre !== ""&&
+                              formData.nombre !== "" &&
                               formData.idUsuario !== null &&
-                              formData.fechaVenta !== null &&                           
+                              formData.fechaVenta !== null &&
                               formData.cantidad !== null &&
                               formData.idProducto !== null &&
                               formData.efectivo !== null &&
@@ -570,10 +619,9 @@ export default function ListComoras() {
                       </Box>
                     </Box>
                   </Grid>
-                </Grid> 
+                </Grid>
               </Box>
             </Toolbar>
-
           </Grid>
         </Grid>
       </DialogContent>
@@ -662,7 +710,6 @@ export default function ListComoras() {
                   >
                     <AddShoppingCartSharpIcon />
                     {/* <ToastContainer style={{ fontSize: "10px", padding: "8px 12px" }} /> */}
-
                   </IconButton>
                 </StyledTableCell>
                 <StyledTableCell component="th" scope="row">

@@ -110,7 +110,12 @@ namespace Vinoteca.Server.Controllers
                 return BadRequest("Datos incorrectos");
             }
 
-            var comprax = _context.TablaCompras.Where(e => e.IdCompra == id).FirstOrDefault();
+            var comprax = _context.TablaCompras
+                .Where(e => e.IdCompra == id)
+                 .Include(venta => venta.Proveedor)
+                    .Include(venta => venta.Usuario)
+                    .Include(venta => venta.Producto)
+                .FirstOrDefault();
             if (comprax == null)
             {
                 return NotFound("No existe la compra para modificar");

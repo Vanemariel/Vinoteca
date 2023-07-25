@@ -111,7 +111,12 @@ namespace Vinoteca.Server.Controllers
                 return BadRequest("Datos incorrectos");
             }
 
-            var ventax = _context.TablaVentas.Where(e => e.IdVenta == id).FirstOrDefault();
+            var ventax = _context.TablaVentas
+                .Where(e => e.IdVenta == id)
+                .Include(venta => venta.Cliente)
+                .Include(venta => venta.Usuario)
+                .Include(venta => venta.Producto)
+                .FirstOrDefault();
             if (ventax == null)
             {
                 return NotFound("No existe la venta para modificar");
