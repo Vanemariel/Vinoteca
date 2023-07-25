@@ -40,7 +40,7 @@ export type Cliente = {
 export type Producto = {
     idProducto?: number | null;
     nombreProducto: string;
-    stock: number | null;
+    stock: number ;
     detalle: string;
     precioVenta: number | null;
     precioCompra: number | null;
