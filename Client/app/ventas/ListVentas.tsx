@@ -77,7 +77,7 @@ export default function ListComoras() {
   // const [open, setOpen] = React.useState(false);
   // const [compraList, setCompraList] = useState<any[]>([]);
   // const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  // const handleClose = () => setOpen(false);
   const [loading, setLoading] = useState(false);
   // const [loaded, setLoaded] = useState(false);
   const { getList, newObject, updateObject } = useStore();
@@ -87,7 +87,7 @@ export default function ListComoras() {
   // const [toDelete, setToDelete] = useState(null as any);
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [dialog, setDialog] = useState(false);
-  const [isNew, setIsNew] = useState(false);
+  // const [isNew, setIsNew] = useState(false);
   const [dateFrom, setDateFrom] = useState(""); // Agregar esta línea
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -156,8 +156,8 @@ export default function ListComoras() {
       idProducto: row.idProducto,
       nombreProducto: row.nombreProducto,
       precioVenta: row.precioVenta,
-      cantidad: 1, // cantidad inicial
-      total: row.precioVenta * 1, // total inicial
+      cantidad: 0, // cantidad inicial
+      total: 0, // total inicial
       fechaVenta: null,
       efectivo: true,
       transferencia: true,
@@ -165,36 +165,44 @@ export default function ListComoras() {
       precio: 0,
       stock: row.stock,
     };
+
     const isProductAlreadyAdded = ventaSearchList.find(
       (producto) => producto.idProducto === row.idProducto
     );
+
     const stock = productoList.find(
       (producto) => producto.idProducto === row.idProducto
     )?.stock;
+
     if (isProductAlreadyAdded) {
       toast.info("¡Este producto ya fue agregado a las ventas!");
-    } else if (stock === undefined || stock === null || stock < 1) {
+    }
+
+    if (stock === undefined || stock === null || stock < 1) {
       toast.warning("No hay stock disponible para este producto");
     } else {
-      const updatedStock = stock - 1;
       const updatedProductoList = productoList.map((producto) =>
         producto.idProducto === row.idProducto
-          ? { ...producto, stock: updatedStock }
+          ? { ...producto, stock: stock }
           : producto
       );
+
       setProductoList(updatedProductoList);
-      const updatedProductoSearchList = productoSearchList.map((producto) =>
-        producto.idProducto === row.idProducto
-          ? { ...producto, stock: updatedStock }
-          : producto
-      );
-      setProductoSearchList(updatedProductoSearchList);
-      setVentaSearchList([...ventaSearchList, productToAdd]);
-      setTotalVenta(totalVenta + row.precioVenta * 1);
-      setVentas([...ventas, productToAdd]);
+
       setProductoSearchList(updatedProductoList);
+
+      setVentaSearchList([...ventaSearchList, productToAdd]);
+
+      setTotalVenta(totalVenta + row.precioVenta * 1);
+
+      setVentas([...ventas, productToAdd]);
+
+      // setFormData({
+
+      // })
     }
   };
+
   const [totalFinal, setTotalFinal] = useState(0);
 
   const updateVentaItem = (index: number, accion: string) => {
@@ -206,7 +214,7 @@ export default function ListComoras() {
       cantidad = productoVenta.cantidad += 1;
       stock = productoVenta.stock -= 1;
     }
-    if (accion === "quitar" && productoVenta.cantidad > 1 ) {
+    if (accion === "quitar" && productoVenta.cantidad > 1) {
       cantidad = productoVenta.cantidad -= 1;
       stock = productoVenta.stock += 1;
     }
@@ -308,6 +316,8 @@ export default function ListComoras() {
   }, [getList, dialog]);
 
   const validate = async (e: React.FormEvent) => {
+    console.log("formData", formData);
+    console.log("ventaSearchList", ventaSearchList);
     e.preventDefault();
     if (
       formData.nombre !== "" &&
@@ -325,12 +335,12 @@ export default function ListComoras() {
       setLoading(true);
       let body = formData;
       let response = null;
-      if (isNew) {
-        delete body.idVenta;
-        response = await newObject(action.VENTA_CONTROLLER, body);
-      } else {
-        response = await updateObject(action.VENTA_CONTROLLER, body);
-      }
+      // if (isNew) {
+      delete body.idVenta;
+      response = await newObject(action.VENTA_CONTROLLER, body);
+      // } else {
+      //   response = await updateObject(action.VENTA_CONTROLLER, body);
+      // }
       setLoading(false);
       setDialog(false);
       setFormData({
@@ -709,24 +719,24 @@ export default function ListComoras() {
                   page * rowsPerPage + rowsPerPage
                 )
               : productoSearchList
-            ).map((row, index) => (
+            ).map((producto, index) => (
               <StyledTableRow key={index}>
                 <StyledTableCell component="th" scope="row">
                   <IconButton
                     aria-label="edit"
-                    onClick={() => handleAddButtonClick(row)}
+                    onClick={() => handleAddButtonClick(producto)}
                   >
                     <AddShoppingCartSharpIcon />
                     {/* <ToastContainer style={{ fontSize: "10px", padding: "8px 12px" }} /> */}
                   </IconButton>
                 </StyledTableCell>
                 <StyledTableCell component="th" scope="row">
-                  {row.nombreProducto}
+                  {producto.nombreProducto}
                 </StyledTableCell>
-                <StyledTableCell>{row.stock}</StyledTableCell>
-                <StyledTableCell>{row.detalle}</StyledTableCell>
-                <StyledTableCell>${row.precioVenta}</StyledTableCell>
-                <StyledTableCell>${row.precioCompra}</StyledTableCell>
+                <StyledTableCell>{producto.stock}</StyledTableCell>
+                <StyledTableCell>{producto.detalle}</StyledTableCell>
+                <StyledTableCell>${producto.precioVenta}</StyledTableCell>
+                <StyledTableCell>${producto.precioCompra}</StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>
@@ -804,11 +814,7 @@ export default function ListComoras() {
                     Quitar
                   </button>
 
-                  <input
-                    type="number"
-                    value={row.cantidad}
-                    disabled
-                  />
+                  <input type="number" value={row.cantidad} disabled />
                   <button onClick={(e) => updateVentaItem(index, "agregar")}>
                     Agregar
                   </button>
