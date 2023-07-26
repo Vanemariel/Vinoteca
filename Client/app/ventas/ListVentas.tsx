@@ -63,35 +63,35 @@ export default function ListComoras() {
     },
   }));
 
-  const style = {
-    position: "absolute" as "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 400,
-    bgcolor: "background.paper",
-    border: "2px solid #000",
-    boxShadow: 24,
-    p: 4,
-  };
-  const [open, setOpen] = React.useState(false);
-  const [compraList, setCompraList] = useState<any[]>([]);
-  const handleOpen = () => setOpen(true);
+  // const style = {
+  //   position: "absolute" as "absolute",
+  //   top: "50%",
+  //   left: "50%",
+  //   transform: "translate(-50%, -50%)",
+  //   width: 400,
+  //   bgcolor: "background.paper",
+  //   border: "2px solid #000",
+  //   boxShadow: 24,
+  //   p: 4,
+  // };
+  // const [open, setOpen] = React.useState(false);
+  // const [compraList, setCompraList] = useState<any[]>([]);
+  // const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [loading, setLoading] = useState(false);
-  const [loaded, setLoaded] = useState(false);
+  // const [loaded, setLoaded] = useState(false);
   const { getList, newObject, updateObject } = useStore();
   const [productoList, setProductoList] = useState<Producto[]>([]);
-  const [ventaList, setVentaList] = useState([] as Venta[]);
-  const [name, setName] = useState("");
-  const [toDelete, setToDelete] = useState(null as any);
+  // const [ventaList, setVentaList] = useState([] as Venta[]);
+  // const [name, setName] = useState("");
+  // const [toDelete, setToDelete] = useState(null as any);
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [dialog, setDialog] = useState(false);
   const [isNew, setIsNew] = useState(false);
   const [dateFrom, setDateFrom] = useState(""); // Agregar esta línea
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-  const label = { inputProps: { "aria-label": "Checkbox demo" } };
+  // const label = { inputProps: { "aria-label": "Checkbox demo" } };
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -100,15 +100,15 @@ export default function ListComoras() {
       password: data.get("password"),
     });
   };
-  const [okClicked, setOkClicked] = useState(false);
-  const [cancelClicked, setCancelClicked] = useState(false);
-  const handleOkClick = () => {
-    setOkClicked(true);
-  };
-  const handleCancelClick = () => {
-    setCancelClicked(true);
-    handleClose(); // Cierra el modal
-  };
+  // const [okClicked, setOkClicked] = useState(false);
+  // const [cancelClicked, setCancelClicked] = useState(false);
+  // const handleOkClick = () => {
+  //   setOkClicked(true);
+  // };
+  // const handleCancelClick = () => {
+  //   setCancelClicked(true);
+  //   handleClose(); // Cierra el modal
+  // };
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const handleChangePage = (event: any | null, newPage: number) => {
@@ -135,11 +135,11 @@ export default function ListComoras() {
   const [usuarioList, setUsuarioList] = useState<
     Array<{ idUsuario: number; nombre: string; apellido: string }>
   >([]);
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    severity: "success",
-    message: "",
-  });
+  // const [snackbar, setSnackbar] = useState({
+  //   open: false,
+  //   severity: "success",
+  //   message: "",
+  // });
   const [ventas, setVentas] = useState<
     {
       idProducto: number;
@@ -150,7 +150,7 @@ export default function ListComoras() {
     }[]
   >([]);
 
-  const [productoStock, setProductoStock] = useState<{ [key: number]: number }>({});
+  // const [productoStock, setProductoStock] = useState<{ [key: number]: number }>({});
   const handleAddButtonClick = (row: any) => {
     const productToAdd = {
       idProducto: row.idProducto,
@@ -163,6 +163,7 @@ export default function ListComoras() {
       transferencia: true,
       numeroDeFactura: "",
       precio: 0,
+      stock: row.stock,
     };
     const isProductAlreadyAdded = ventaSearchList.find(
       (producto) => producto.idProducto === row.idProducto
@@ -177,17 +178,17 @@ export default function ListComoras() {
     } else {
       const updatedStock = stock - 1;
       const updatedProductoList = productoList.map((producto) =>
-      producto.idProducto === row.idProducto
-        ? { ...producto, stock: updatedStock }
-        : producto
-    );
-    setProductoList(updatedProductoList);
-    const updatedProductoSearchList = productoSearchList.map((producto) =>
-      producto.idProducto === row.idProducto
-        ? { ...producto, stock: updatedStock }
-        : producto
-    );
-    setProductoSearchList(updatedProductoSearchList);
+        producto.idProducto === row.idProducto
+          ? { ...producto, stock: updatedStock }
+          : producto
+      );
+      setProductoList(updatedProductoList);
+      const updatedProductoSearchList = productoSearchList.map((producto) =>
+        producto.idProducto === row.idProducto
+          ? { ...producto, stock: updatedStock }
+          : producto
+      );
+      setProductoSearchList(updatedProductoSearchList);
       setVentaSearchList([...ventaSearchList, productToAdd]);
       setTotalVenta(totalVenta + row.precioVenta * 1);
       setVentas([...ventas, productToAdd]);
@@ -196,33 +197,35 @@ export default function ListComoras() {
   };
   const [totalFinal, setTotalFinal] = useState(0);
 
-  const updateStockAfterVentaModification = (ventaList: Venta[]) => {
-    const updatedProductoList = [...productoList];
-    ventaList.forEach((venta) => {
-      const producto = updatedProductoList.find(
-        (prod) => prod.idProducto === venta.idProducto
-      );
-  
-      if (producto) {
-        producto.stock -= venta.cantidad;
-      }
-    });
-    setProductoList(updatedProductoList);
-    setProductoSearchList(updatedProductoList);
-  };
-  
-  
-  const updateVentaItem = (index: number, cantidad: number) => {
-    const updatedList = [...ventaSearchList];
-    const producto = updatedList[index];
-    producto.cantidad = cantidad;
-    producto.total = producto.precioVenta * cantidad;
-    setVentaSearchList(updatedList);
-    const newTotal = updatedList.reduce((total, item) => {
+  const updateVentaItem = (index: number, accion: string) => {
+    const productoVenta = ventaSearchList[index];
+
+    let cantidad = productoVenta.cantidad;
+    let stock = productoVenta.stock;
+    if (accion === "agregar" && productoVenta.stock > 0) {
+      cantidad = productoVenta.cantidad += 1;
+      stock = productoVenta.stock -= 1;
+    }
+    if (accion === "quitar" && productoVenta.cantidad > 1 ) {
+      cantidad = productoVenta.cantidad -= 1;
+      stock = productoVenta.stock += 1;
+    }
+
+    productoVenta.cantidad = cantidad;
+    productoVenta.total = productoVenta.precioVenta * cantidad;
+
+    setVentaSearchList(ventaSearchList);
+    const newTotal = ventaSearchList.reduce((total, item) => {
       return total + item.total;
     }, 0);
     setTotalFinal(newTotal);
-    updateStockAfterVentaModification(updatedList);
+
+    const producto = productoList.find(
+      (prod) => prod.idProducto === productoVenta.idProducto
+    );
+    if (producto) {
+      producto.stock = stock;
+    }
   };
 
   const deleteVentaItem = (index: number) => {
@@ -255,48 +258,49 @@ export default function ListComoras() {
     fechaVenta: null,
     idProducto: null,
     numeroDeFactura: "",
+    stock: 0,
   });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const ventaListResponse = await getList(action.VENTA_CONTROLLER);
-        setVentaList(ventaListResponse.data);
+        // setVentaList(ventaListResponse.data);
         setVentaSearchList(ventaListResponse.data);
-        setLoaded(true);
+        // setLoaded(true);
       } catch (error) {
-        setSnackbar({
-          open: true,
-          severity: "error",
-          message: "Ocurrió un error",
-        });
-        setLoaded(true);
+        // setSnackbar({
+        //   open: true,
+        //   severity: "error",
+        //   message: "Ocurrió un error",
+        // });
+        // setLoaded(true);
       }
 
       try {
         const productoListResponse = await getList(action.PRODUCTO_CONTROLLER);
         setProductoList(productoListResponse.data);
         setProductoSearchList(productoListResponse.data);
-        setLoaded(true);
+        // setLoaded(true);
       } catch (error) {
-        setSnackbar({
-          open: true,
-          severity: "error",
-          message: "Ocurrió un error",
-        });
-        setLoaded(true);
+        // setSnackbar({
+        //   open: true,
+        //   severity: "error",
+        //   message: "Ocurrió un error",
+        // });
+        // setLoaded(true);
       }
       try {
         const usuarioList = await getList(action.USUARIO_CONTROLLER);
         setUsuarioList(usuarioList.data);
-        setLoaded(true);
+        // setLoaded(true);
       } catch (error) {
-        setSnackbar({
-          open: true,
-          severity: "error",
-          message: "Ocurrió un error",
-        });
-        setLoaded(true);
+        // setSnackbar({
+        //   open: true,
+        //   severity: "error",
+        //   message: "Ocurrió un error",
+        // });
+        // setLoaded(true);
       }
     };
 
@@ -342,21 +346,22 @@ export default function ListComoras() {
         fechaVenta: null,
         idProducto: null,
         numeroDeFactura: "",
+        stock: 0,
       });
       setLoading(false);
       getList(action.VENTA_CONTROLLER)
         .then((res: any) => {
           setProductoList(res.data);
-          setLoaded(true);
+          // setLoaded(true);
         })
         .catch((err: any) => {
-          setSnackbar({
-            open: true,
-            severity: "success",
-            message: isNew
-              ? "creado" + " " + "con exito"
-              : "actualizado" + " " + "con exito",
-          });
+          // setSnackbar({
+          //   open: true,
+          //   severity: "success",
+          //   message: isNew
+          //     ? "creado" + " " + "con exito"
+          //     : "actualizado" + " " + "con exito",
+          // });
         });
     }
   };
@@ -444,6 +449,7 @@ export default function ListComoras() {
                                   idUsuario: formData.idUsuario,
                                   cantidad: formData.cantidad,
                                   numeroDeFactura: e.target.value,
+                                  stock: formData.stock,
                                 })
                               }
                             />
@@ -469,6 +475,8 @@ export default function ListComoras() {
                                   idUsuario: formData.idUsuario,
                                   cantidad: formData.cantidad,
                                   numeroDeFactura: formData.numeroDeFactura,
+                                  stock: formData.stock,
+                                  idVenta: formData.idVenta,
                                 })
                               }
                             />
@@ -774,7 +782,7 @@ export default function ListComoras() {
                     color="error"
                     aria-label="delete"
                     onClick={() => {
-                      setToDelete(row.idProducto);
+                      // setToDelete(row.idProducto);
                       setDeleteDialog(true);
                     }}
                   >
@@ -784,13 +792,26 @@ export default function ListComoras() {
 
                 <StyledTableCell>{row.nombreProducto}</StyledTableCell>
                 <StyledTableCell>
-                  <TextField
+                  {/* <TextField
                     type="number"
                     value={row.cantidad}
                     onChange={(e) =>
                       updateVentaItem(index, parseInt(e.target.value, 10))
                     }
+                  /> */}
+
+                  <button onClick={(e) => updateVentaItem(index, "quitar")}>
+                    Quitar
+                  </button>
+
+                  <input
+                    type="number"
+                    value={row.cantidad}
+                    disabled
                   />
+                  <button onClick={(e) => updateVentaItem(index, "agregar")}>
+                    Agregar
+                  </button>
                 </StyledTableCell>
                 <StyledTableCell>${row.precioVenta}</StyledTableCell>
                 <StyledTableCell>${row.total}</StyledTableCell>
