@@ -63,35 +63,14 @@ export default function ListComoras() {
     },
   }));
 
-  // const style = {
-  //   position: "absolute" as "absolute",
-  //   top: "50%",
-  //   left: "50%",
-  //   transform: "translate(-50%, -50%)",
-  //   width: 400,
-  //   bgcolor: "background.paper",
-  //   border: "2px solid #000",
-  //   boxShadow: 24,
-  //   p: 4,
-  // };
-  // const [open, setOpen] = React.useState(false);
-  // const [compraList, setCompraList] = useState<any[]>([]);
-  // const handleOpen = () => setOpen(true);
-  // const handleClose = () => setOpen(false);
   const [loading, setLoading] = useState(false);
-  // const [loaded, setLoaded] = useState(false);
   const { getList, newObject, updateObject } = useStore();
   const [productoList, setProductoList] = useState<Producto[]>([]);
-  // const [ventaList, setVentaList] = useState([] as Venta[]);
-  // const [name, setName] = useState("");
-  // const [toDelete, setToDelete] = useState(null as any);
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [dialog, setDialog] = useState(false);
-  // const [isNew, setIsNew] = useState(false);
   const [dateFrom, setDateFrom] = useState(""); // Agregar esta línea
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-  // const label = { inputProps: { "aria-label": "Checkbox demo" } };
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -100,15 +79,7 @@ export default function ListComoras() {
       password: data.get("password"),
     });
   };
-  // const [okClicked, setOkClicked] = useState(false);
-  // const [cancelClicked, setCancelClicked] = useState(false);
-  // const handleOkClick = () => {
-  //   setOkClicked(true);
-  // };
-  // const handleCancelClick = () => {
-  //   setCancelClicked(true);
-  //   handleClose(); // Cierra el modal
-  // };
+
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const handleChangePage = (event: any | null, newPage: number) => {
@@ -135,11 +106,7 @@ export default function ListComoras() {
   const [usuarioList, setUsuarioList] = useState<
     Array<{ idUsuario: number; nombre: string; apellido: string }>
   >([]);
-  // const [snackbar, setSnackbar] = useState({
-  //   open: false,
-  //   severity: "success",
-  //   message: "",
-  // });
+
   const [ventas, setVentas] = useState<
     {
       idProducto: number;
@@ -150,7 +117,6 @@ export default function ListComoras() {
     }[]
   >([]);
 
-  // const [productoStock, setProductoStock] = useState<{ [key: number]: number }>({});
   const handleAddButtonClick = (row: any) => {
     const productToAdd = {
       idProducto: row.idProducto,
@@ -273,42 +239,32 @@ export default function ListComoras() {
     const fetchData = async () => {
       try {
         const ventaListResponse = await getList(action.VENTA_CONTROLLER);
-        // setVentaList(ventaListResponse.data);
         setVentaSearchList(ventaListResponse.data);
-        // setLoaded(true);
       } catch (error) {
-        // setSnackbar({
-        //   open: true,
-        //   severity: "error",
-        //   message: "Ocurrió un error",
-        // });
-        // setLoaded(true);
+        console.log(
+          "🚀 ~ file: ListVentas.tsx:245 ~ fetchData ~ error:",
+          error
+        );
       }
 
       try {
         const productoListResponse = await getList(action.PRODUCTO_CONTROLLER);
         setProductoList(productoListResponse.data);
         setProductoSearchList(productoListResponse.data);
-        // setLoaded(true);
       } catch (error) {
-        // setSnackbar({
-        //   open: true,
-        //   severity: "error",
-        //   message: "Ocurrió un error",
-        // });
-        // setLoaded(true);
+        console.log(
+          "🚀 ~ file: ListVentas.tsx:256 ~ fetchData ~ error:",
+          error
+        );
       }
       try {
         const usuarioList = await getList(action.USUARIO_CONTROLLER);
         setUsuarioList(usuarioList.data);
-        // setLoaded(true);
       } catch (error) {
-        // setSnackbar({
-        //   open: true,
-        //   severity: "error",
-        //   message: "Ocurrió un error",
-        // });
-        // setLoaded(true);
+        console.log(
+          "🚀 ~ file: ListVentas.tsx:261 ~ fetchData ~ error:",
+          error
+        );
       }
     };
 
@@ -335,12 +291,10 @@ export default function ListComoras() {
       setLoading(true);
       let body = formData;
       let response = null;
-      // if (isNew) {
+
       delete body.idVenta;
       response = await newObject(action.VENTA_CONTROLLER, body);
-      // } else {
-      //   response = await updateObject(action.VENTA_CONTROLLER, body);
-      // }
+
       setLoading(false);
       setDialog(false);
       setFormData({
@@ -362,16 +316,9 @@ export default function ListComoras() {
       getList(action.VENTA_CONTROLLER)
         .then((res: any) => {
           setProductoList(res.data);
-          // setLoaded(true);
         })
         .catch((err: any) => {
-          // setSnackbar({
-          //   open: true,
-          //   severity: "success",
-          //   message: isNew
-          //     ? "creado" + " " + "con exito"
-          //     : "actualizado" + " " + "con exito",
-          // });
+          console.log("🚀 ~ file: ListVentas.tsx:315 ~ validate ~ err:", err);
         });
     }
   };
