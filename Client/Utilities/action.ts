@@ -37,7 +37,7 @@ export const COMPRA_CONTROLLER = base + "Api/Compra/" + api + "compra/";
  * HubConnection route used for SignalR connection.
  * @constant {string}
  */
-export const DETLLEVENTA_CONTROLLER = base + "Api/DetalleDeVenta/" + "detalleventa/";
+export const DETALLEVENTA_CONTROLLER = base + "Api/DetalleDeVenta/" + "detalleventa/";
 
 /**
  * File handling routes for getting and sending files (not in use).

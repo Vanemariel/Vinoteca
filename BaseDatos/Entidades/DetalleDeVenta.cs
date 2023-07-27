@@ -13,6 +13,7 @@ namespace BaseDatos.Entidades
     {
         [Key]
         public int IdDetalleVenta { get; set; }
+
         public float PrecioVenta { get; set; }
         public int CantidadVenta { get; set; }
 
@@ -21,9 +22,8 @@ namespace BaseDatos.Entidades
         public Venta Venta { get; set; }
 
         public int IdProducto { get; set; }
-
         [ForeignKey("IdProducto")]
         public Producto Producto { get; set; }
-
     }
+
 }

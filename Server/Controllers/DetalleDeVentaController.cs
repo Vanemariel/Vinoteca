@@ -68,14 +68,28 @@ namespace Vinoteca.Server.Controllers
         {
             try
             {
-                _context.TablaDetalleDeVentas.Add(new DetalleDeVenta
+                // Verificar si el IdProducto y el IdVenta existen en la base de datos
+                var venta = _context.TablaVentas.FirstOrDefault(v => v.IdVenta == detvtadto.IdVenta);
+                var producto = _context.TablaProductos.FirstOrDefault(p => p.IdProducto == detvtadto.IdProducto);
+
+                if (venta == null || producto == null)
+                {
+                    return BadRequest("La venta o el producto no existen en la base de datos.");
+                }
+
+                // Crear un nuevo objeto DetalleDeVenta
+                var detalleDeVenta = new DetalleDeVenta
                 {
                     PrecioVenta = detvtadto.PrecioVenta,
-                    CantidadVenta= detvtadto.CantidadVenta,
-                    IdVenta=detvtadto.IdVenta,
-                    IdProducto=detvtadto.IdProducto
-                });
+                    CantidadVenta = detvtadto.CantidadVenta,
+                    IdVenta = detvtadto.IdVenta,
+                    IdProducto = detvtadto.IdProducto
+                };
+
+                // Agregar el detalle de venta a la tabla correspondiente
+                _context.TablaDetalleDeVentas.Add(detalleDeVenta);
                 await _context.SaveChangesAsync();
+
                 return true;
             }
             catch (Exception e)
@@ -84,30 +98,37 @@ namespace Vinoteca.Server.Controllers
             }
         }
 
+
         #endregion
 
         #region HTTP PUT
         [HttpPut(ApiRoutes.DetalleDeVenta.Update)]
-        public ActionResult Update(int id, [FromBody] DetalleDeVenta ventitas)
+        public ActionResult Update(int id, [FromBody] DetalleDeVentaDto detvtadto)
         {
-            if (id != ventitas.IdDetalleVenta)
+            var detalleDeVenta = _context.TablaDetalleDeVentas.FirstOrDefault(e => e.IdDetalleVenta == id);
+            if (detalleDeVenta == null)
             {
-                return BadRequest("Datos incorrectos");
+                return NotFound("No existe el detalle para modificar");
             }
 
-            var ventitass = _context.TablaDetalleDeVentas.Where(e => e.IdDetalleVenta == id).FirstOrDefault();
-            if (ventitass == null)
+            // Verificar si el IdProducto y el IdVenta existen en la base de datos
+            var venta = _context.TablaVentas.FirstOrDefault(v => v.IdVenta == detvtadto.IdVenta);
+            var producto = _context.TablaProductos.FirstOrDefault(p => p.IdProducto == detvtadto.IdProducto);
+
+            if (venta == null || producto == null)
             {
-                return NotFound("No existe el detalle ¿? para modificar");
+                return BadRequest("La venta o el producto no existen en la base de datos.");
             }
 
-            ventitass.PrecioVenta = ventitass.PrecioVenta;
-            ventitass.CantidadVenta = ventitass.CantidadVenta;
+            // Actualizar las propiedades del DetalleDeVenta con las del DTO y las propiedades adicionales
+            detalleDeVenta.PrecioVenta = detvtadto.PrecioVenta;
+            detalleDeVenta.CantidadVenta = detvtadto.CantidadVenta;
+            detalleDeVenta.IdVenta = detvtadto.IdVenta;
+            detalleDeVenta.IdProducto = detvtadto.IdProducto;
 
             try
             {
-                //throw(new Exception("Cualquier Verdura"));
-                _context.TablaDetalleDeVentas.Update(ventitass);
+                _context.TablaDetalleDeVentas.Update(detalleDeVenta);
                 _context.SaveChanges();
                 return Ok();
             }
@@ -116,6 +137,7 @@ namespace Vinoteca.Server.Controllers
                 return BadRequest($"Los datos no han sido actualizados por: {e.Message}");
             }
         }
+
         #endregion
 
         #region HTTP DELETE

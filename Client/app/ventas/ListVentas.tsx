@@ -142,9 +142,7 @@ export default function ListComoras() {
 
     if (isProductAlreadyAdded) {
       toast.info("¡Este producto ya fue agregado a las ventas!");
-    }
-
-    if (stock === undefined || stock === null || stock < 1) {
+    } else if (stock === undefined || stock === null || stock < 1) {
       toast.warning("No hay stock disponible para este producto");
     } else {
       const updatedProductoList = productoList.map((producto) =>
@@ -205,20 +203,34 @@ export default function ListComoras() {
   const deleteVentaItem = (index: number) => {
     const updatedVentaSearchList = [...ventaSearchList];
     const deletedItem = updatedVentaSearchList.splice(index, 1)[0];
+  
+    // Buscar el producto correspondiente en la lista de productos
+    const producto = productoList.find(
+      (prod) => prod.idProducto === deletedItem.idProducto
+    );
+  
+    if (producto) {
+      // Sumar la cantidad eliminada al stock del producto
+      producto.stock += deletedItem.cantidad;
+    }
+  
     setVentaSearchList(updatedVentaSearchList);
-    setDeleteDialog(false); // Cerrar el diálogo después de borrar
+    setDeleteDialog(false);
     setDeleteIndex(-1);
+  
     const deletedItemTotal = parseFloat(deletedItem.total.toString());
     const newTotalVenta = isNaN(deletedItemTotal)
       ? totalVenta
       : totalVenta - deletedItemTotal;
     setTotalVenta(newTotalVenta);
+  
     // Eliminar el elemento correspondiente de la lista de ventas
     const updatedVentas = ventas.filter(
       (item) => item.idProducto !== deletedItem.idProducto
     );
     setVentas(updatedVentas);
   };
+  
   const [formData, setFormData] = useState<Venta>({
     nombre: "",
     idVenta: null,
@@ -272,8 +284,6 @@ export default function ListComoras() {
   }, [getList, dialog]);
 
   const validate = async (e: React.FormEvent) => {
-    console.log("formData", formData);
-    console.log("ventaSearchList", ventaSearchList);
     e.preventDefault();
     if (
       formData.nombre !== "" &&
@@ -289,39 +299,59 @@ export default function ListComoras() {
       formData.efectivo !== null
     ) {
       setLoading(true);
-      let body = formData;
-      let response = null;
-
-      delete body.idVenta;
-      response = await newObject(action.VENTA_CONTROLLER, body);
-
-      setLoading(false);
-      setDialog(false);
-      setFormData({
-        nombre: "",
-        idVenta: null,
-        idUsuario: null,
-        cantidad: 0,
-        total: 0,
-        efectivo: true,
-        transferencia: true,
-        precio: 0,
-        precioVenta: 0,
-        fechaVenta: null,
-        idProducto: null,
-        numeroDeFactura: "",
-        stock: 0,
-      });
-      setLoading(false);
-      getList(action.VENTA_CONTROLLER)
-        .then((res: any) => {
-          setProductoList(res.data);
-        })
-        .catch((err: any) => {
-          console.log("🚀 ~ file: ListVentas.tsx:315 ~ validate ~ err:", err);
+      
+      // Crea el objeto DetalleDeVentaDto con los datos de la venta
+      const detalleVentaDto = {
+        PrecioVenta: formData.precioVenta,
+        CantidadVenta: formData.cantidad,
+        IdVenta: formData.idVenta,
+        IdProducto: formData.idProducto,
+        FechaVenta: formData.fechaVenta,
+        NumeroDeFactura: formData.numeroDeFactura,
+        Efectivo: formData.efectivo,
+        Transferencia: formData.transferencia,
+        TotalVenta: formData.total,
+        // Otras propiedades relacionadas con la venta y el producto si es necesario
+      };
+  
+      // Realiza la petición para guardar los detalles de la venta en el backend
+      try {
+        const response = await newObject(action.DETALLEVENTA_CONTROLLER, detalleVentaDto);
+        console.log("Detalles de la venta guardados:", response);
+        setLoading(false);
+        setDialog(false);
+        setFormData({
+          // Reinicia los valores del formulario
+          nombre: "",
+          idVenta: null,
+          idUsuario: null,
+          cantidad: 0,
+          total: 0,
+          efectivo: true,
+          transferencia: true,
+          precio: 0,
+          precioVenta: 0,
+          fechaVenta: null,
+          idProducto: null,
+          numeroDeFactura: "",
+          stock: 0,
         });
+  
+        // Actualiza la lista de productos después de realizar la venta
+        getList(action.VENTA_CONTROLLER)
+          .then((res: any) => {
+            setProductoList(res.data);
+          })
+          .catch((err: any) => {
+            console.log("Error al obtener la lista de productos:", err);
+          });
+      } catch (error) {
+        console.log("Error al guardar los detalles de la venta:", error);
+        setLoading(false);
+      }
     }
   };
+  
 
   return (
     <div>
