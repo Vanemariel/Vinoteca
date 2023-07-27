@@ -80,8 +80,6 @@ namespace Vinoteca.Server.Controllers
                 // Crear un nuevo objeto DetalleDeVenta
                 var detalleDeVenta = new DetalleDeVenta
                 {
-                    PrecioVenta = detvtadto.PrecioVenta,
-                    CantidadVenta = detvtadto.CantidadVenta,
                     IdVenta = detvtadto.IdVenta,
                     IdProducto = detvtadto.IdProducto
                 };
@@ -120,9 +118,6 @@ namespace Vinoteca.Server.Controllers
                 return BadRequest("La venta o el producto no existen en la base de datos.");
             }
 
-            // Actualizar las propiedades del DetalleDeVenta con las del DTO y las propiedades adicionales
-            detalleDeVenta.PrecioVenta = detvtadto.PrecioVenta;
-            detalleDeVenta.CantidadVenta = detvtadto.CantidadVenta;
             detalleDeVenta.IdVenta = detvtadto.IdVenta;
             detalleDeVenta.IdProducto = detvtadto.IdProducto;
 
