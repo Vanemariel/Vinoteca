@@ -119,6 +119,7 @@ export type Venta = {
   precioVenta: number;
   idProducto?: number | null;
   nombre?: string | null;
+  nombreProducto: string | null;
   stock: number
 };
 

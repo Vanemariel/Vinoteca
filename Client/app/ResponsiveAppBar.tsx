@@ -10,12 +10,12 @@ import AdbIcon from '@mui/icons-material/Adb';
 
 const routes = [  
   {
-    label: "Productos",
-    path: "/productos"
-  },
-  {
     label: "Provedores",
     path: "/provedores"
+  },
+  {
+    label: "Productos",
+    path: "/productos"
   },
   {
     label: "Ventas",
@@ -33,6 +33,10 @@ const routes = [
   {
     label: "Historial Compras",
     path: "/comprasHistorial"
+  },
+  {
+    label: "Caja",
+    path: "/caja"
   },
   
 ];
@@ -57,8 +61,8 @@ function ResponsiveAppBar() {
     setAnchorElUser(null);
   };
 
-  
-  const isHomePage = window.location.pathname === "/";
+  let pathName = window.location.pathname;
+  const isHomePage = pathName === "/";
 
   return (
     <>

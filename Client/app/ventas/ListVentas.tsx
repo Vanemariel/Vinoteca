@@ -233,6 +233,7 @@ export default function ListComoras() {
   
   const [formData, setFormData] = useState<Venta>({
     nombre: "",
+    nombreProducto: "",
     idVenta: null,
     idUsuario: null,
     cantidad: 0,
@@ -323,6 +324,7 @@ export default function ListComoras() {
         setFormData({
           // Reinicia los valores del formulario
           nombre: "",
+          nombreProducto: "",
           idVenta: null,
           idUsuario: null,
           cantidad: 0,
@@ -424,21 +426,7 @@ export default function ListComoras() {
                               variant="outlined"
                               fullWidth
                               value={formData.numeroDeFactura}
-                              onChange={(e) =>
-                                setFormData({
-                                  idProducto: formData.idProducto,
-                                  precio: formData.precio,
-                                  precioVenta: formData.precioVenta,
-                                  total: formData.total,
-                                  fechaVenta: formData.fechaVenta,
-                                  efectivo: formData.efectivo,
-                                  transferencia: formData.transferencia,
-                                  idUsuario: formData.idUsuario,
-                                  cantidad: formData.cantidad,
-                                  numeroDeFactura: e.target.value,
-                                  stock: formData.stock,
-                                })
-                              }
+                              onChange={(e) => setFormData({ ...formData, numeroDeFactura: e.target.value }) }
                             />
                           </Grid>
 
@@ -449,23 +437,7 @@ export default function ListComoras() {
                               variant="outlined"
                               fullWidth
                               value={formData.nombre}
-                              onChange={(e) =>
-                                setFormData({
-                                  nombre: e.target.value,
-                                  idProducto: formData.idProducto,
-                                  precio: formData.precio,
-                                  precioVenta: formData.precioVenta,
-                                  total: formData.total,
-                                  fechaVenta: formData.fechaVenta,
-                                  efectivo: formData.efectivo,
-                                  transferencia: formData.transferencia,
-                                  idUsuario: formData.idUsuario,
-                                  cantidad: formData.cantidad,
-                                  numeroDeFactura: formData.numeroDeFactura,
-                                  stock: formData.stock,
-                                  idVenta: formData.idVenta,
-                                })
-                              }
+                              onChange={(e) => setFormData({ ...formData, nombre: e.target.value }) }
                             />
                           </Grid>
 
