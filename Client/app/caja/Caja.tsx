@@ -1,6 +1,8 @@
 "use client"
 
-import { Box, CssBaseline, Grid, Paper, TextField, Toolbar, Typography, Select, MenuItem } from "@mui/material";
+import { CssBaseline, Grid, Paper, TextField, Toolbar, Typography, Select, MenuItem, IconButton, InputBase, InputLabel } from "@mui/material";
+
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 
 export default function Caja() {
   return (
@@ -9,12 +11,12 @@ export default function Caja() {
       <Grid container component={Paper} padding={4}>
 
         <Grid item md={12} sm={12} xs={12}>
-          <Typography component="h1" variant="h5" textAlign="center"> Movimientos de caja </Typography>
+          <Typography component="h1" variant="h5" textAlign="center" sx={{ pb: 4 }}> Movimientos de caja </Typography>
         </Grid>
 
-        <Grid container>
+        <Grid container spacing={4}>
 
-          <Grid item container md={6} sm={6} xs={12}>
+          <Grid item container spacing={2} md={6} sm={6} xs={12}>
 
             <Grid item md={6} sm={6} xs={12}>
               <TextField
@@ -26,7 +28,6 @@ export default function Caja() {
                 }}
                 value={"dateFrom"}
                 onChange={ (e: any) => console.log("a") }
-                style={{ marginRight: "10px" }}
               />
             </Grid>
 
@@ -138,12 +139,58 @@ export default function Caja() {
             </Grid>
 
           </Grid>
-        </Grid>
 
-        <Grid item container md={6} sm={6} xs={12}>
+          <Grid item container spacing={3} md={6} sm={6} xs={12} direction="column" justifyContent="center" alignItems="center">
 
+            <Grid item>
+              <InputLabel>Ingreso total</InputLabel>
 
-          Aca van los totales
+              <Paper sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 360, background: "#008000AA" }}>
+                <IconButton sx={{ p: "20px", pt: "18px" }}>
+                  <AttachMoneyIcon />
+                </IconButton>
+                <InputBase
+                  disabled
+                  sx={{ ma: 1, flex: 1, fontSize: "30px" }}
+                  value="500"
+                  placeholder="500"
+                />
+              </Paper>
+            </Grid>
+
+            <Grid item>
+              <InputLabel>Gasto total</InputLabel>
+
+              <Paper sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 360, background: "#FF0000AA" }}>
+                <IconButton sx={{ p: "20px", pt: "18px" }}>
+                  <AttachMoneyIcon />
+                </IconButton>
+                <InputBase
+                  disabled
+                  sx={{ ma: 1, flex: 1, fontSize: "30px" }}
+                  value="150"
+                  placeholder="150"
+                />
+              </Paper>
+            </Grid>
+
+            <Grid item>
+              <InputLabel>Ganancia total</InputLabel>
+
+              <Paper sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 360, background: 350 > 0 ? "#008000AA" : "#FF0000AA" }}>
+                <IconButton sx={{ p: "20px", pt: "18px" }}>
+                  <AttachMoneyIcon />
+                </IconButton>
+                <InputBase
+                  disabled
+                  sx={{ ma: 1, flex: 1, fontSize: "30px", }}
+                  value="350"
+                  placeholder="350"
+                  />
+              </Paper>
+            </Grid>
+
+          </Grid>
         </Grid>
         
       </Grid>
