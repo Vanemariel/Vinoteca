@@ -68,7 +68,6 @@ export default function ListComoras() {
   const [productoList, setProductoList] = useState<Producto[]>([]);
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [dialog, setDialog] = useState(false);
-  const [dateFrom, setDateFrom] = useState(""); // Agregar esta línea
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -92,6 +91,20 @@ export default function ListComoras() {
   const [productoSearchList, setProductoSearchList] = useState(
     [] as Producto[]
   ); //para el buscador
+
+  const [productoVentaList, setProductoVentaList] = useState<
+    {
+      idProducto: number;
+      nombreProducto: string;
+      precio: number;
+      precioVenta: number;
+      cantidad: number;
+      total: number;
+    }[]
+  >([]);
+
+
+
   const filteredProductoList = (textSearch: string) => {
     const ProductoFilter = productoList.filter((producto) => {
       return producto.nombreProducto
@@ -105,16 +118,6 @@ export default function ListComoras() {
   const [totalVenta, setTotalVenta] = useState(0); // total de la venta
   const [usuarioList, setUsuarioList] = useState<
     Array<{ idUsuario: number; nombre: string; apellido: string }>
-  >([]);
-
-  const [ventas, setVentas] = useState<
-    {
-      idProducto: number;
-      nombreProducto: string;
-      precio: number;
-      cantidad: number;
-      total: number;
-    }[]
   >([]);
 
   const handleAddButtonClick = (row: any) => {
@@ -152,22 +155,16 @@ export default function ListComoras() {
       );
 
       setProductoList(updatedProductoList);
-
       setProductoSearchList(updatedProductoList);
-
-      setVentaSearchList([...ventaSearchList, productToAdd]);
 
       setTotalVenta(totalVenta + row.precioVenta * 1);
 
-      setVentas([...ventas, productToAdd]);
+      // ACA VA esto setProductoVentaList
+      setVentaSearchList([...ventaSearchList, productToAdd]); // ver
 
-      // setFormData({
-
-      // })
+      setProductoVentaList([...productoVentaList, productToAdd]);
     }
   };
-
-  const [totalFinal, setTotalFinal] = useState(0);
 
   const updateVentaItem = (index: number, accion: string) => {
     const productoVenta = ventaSearchList[index];
@@ -190,7 +187,11 @@ export default function ListComoras() {
     const newTotal = ventaSearchList.reduce((total, item) => {
       return total + item.total;
     }, 0);
-    setTotalFinal(newTotal);
+
+    setFormData({
+      ...formData,
+      total: newTotal,
+    });
 
     const producto = productoList.find(
       (prod) => prod.idProducto === productoVenta.idProducto
@@ -203,34 +204,34 @@ export default function ListComoras() {
   const deleteVentaItem = (index: number) => {
     const updatedVentaSearchList = [...ventaSearchList];
     const deletedItem = updatedVentaSearchList.splice(index, 1)[0];
-  
+
     // Buscar el producto correspondiente en la lista de productos
     const producto = productoList.find(
       (prod) => prod.idProducto === deletedItem.idProducto
     );
-  
+
     if (producto) {
       // Sumar la cantidad eliminada al stock del producto
       producto.stock += deletedItem.cantidad;
     }
-  
+
     setVentaSearchList(updatedVentaSearchList);
     setDeleteDialog(false);
     setDeleteIndex(-1);
-  
+
     const deletedItemTotal = parseFloat(deletedItem.total.toString());
     const newTotalVenta = isNaN(deletedItemTotal)
       ? totalVenta
       : totalVenta - deletedItemTotal;
     setTotalVenta(newTotalVenta);
-  
+
     // Eliminar el elemento correspondiente de la lista de ventas
-    const updatedVentas = ventas.filter(
+    const updatedVentas = productoVentaList.filter(
       (item) => item.idProducto !== deletedItem.idProducto
     );
-    setVentas(updatedVentas);
+    setProductoVentaList(updatedVentas);
   };
-  
+
   const [formData, setFormData] = useState<Venta>({
     nombre: "",
     nombreProducto: "",
@@ -238,8 +239,8 @@ export default function ListComoras() {
     idUsuario: null,
     cantidad: 0,
     total: 0,
-    efectivo: true,
-    transferencia: true,
+    efectivo: false,
+    transferencia: false,
     precio: 0,
     precioVenta: 0,
     fechaVenta: null,
@@ -250,15 +251,6 @@ export default function ListComoras() {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const ventaListResponse = await getList(action.VENTA_CONTROLLER);
-        setVentaSearchList(ventaListResponse.data);
-      } catch (error) {
-        console.log(
-          "🚀 ~ file: ListVentas.tsx:245 ~ fetchData ~ error:",
-          error
-        );
-      }
 
       try {
         const productoListResponse = await getList(action.PRODUCTO_CONTROLLER);
@@ -282,78 +274,108 @@ export default function ListComoras() {
     };
 
     fetchData();
-  }, [getList, dialog]);
+    // }, [getList, dialog]);
+  }, []);
 
   const validate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (
+    console.log("formData", formData);
+    console.log("ventaSearchList", ventaSearchList);
+
+    /* BORRAR */
+    // const flag = true;
+    // let ventaDto = {
+    //   fechaVenta: "2023-08-05",
+    //   numeroDeFactura: "3333",
+    //   efectivo: false,
+    //   transferencia: true,
+    //   totalVenta: 5750,
+    //   nombreCliente: "qqwdwqdwqd",
+    //   idUsuario: 1,
+    //   listaProductos: [
+    //     { idProducto: 2, cantidad: 1, total: 5400 },
+    //     { idProducto: 1, cantidad: 1, total: 350 },
+    //   ],
+    // };
+    /* BORRAR */
+
+    const flag =
       formData.nombre !== "" &&
       formData.idUsuario &&
-      formData.idProducto &&
-      formData.total &&
       formData.fechaVenta &&
       formData.numeroDeFactura !== "" &&
-      formData.cantidad &&
-      formData.precio &&
-      formData.precioVenta &&
       formData.transferencia !== null &&
-      formData.efectivo !== null
-    ) {
+      formData.efectivo !== null &&
+      formData.total > 0;
+
+    if (flag) {
       setLoading(true);
-      
-      // Crea el objeto DetalleDeVentaDto con los datos de la venta
-      const detalleVentaDto = {
-        PrecioVenta: formData.precioVenta,
-        CantidadVenta: formData.cantidad,
-        IdVenta: formData.idVenta,
-        IdProducto: formData.idProducto,
-        FechaVenta: formData.fechaVenta,
-        NumeroDeFactura: formData.numeroDeFactura,
-        Efectivo: formData.efectivo,
-        Transferencia: formData.transferencia,
-        TotalVenta: formData.total,
-        // Otras propiedades relacionadas con la venta y el producto si es necesario
+
+      // Crea el objeto VentaDto con los datos de la venta y detalle de venta
+      const ventaDto = {
+        fechaVenta: formData.fechaVenta,
+        numeroDeFactura: formData.numeroDeFactura,
+        efectivo: formData.efectivo,
+        transferencia: formData.transferencia,
+        totalVenta: formData.total,
+        nombreCliente: formData.nombre,
+        idUsuario: formData.idUsuario,
+        listaProductos: ventaSearchList.map((x) => {
+          return {
+            idProducto: x.idProducto,
+            cantidad: x.cantidad,
+            total: x.total,
+          };
+        }),
       };
-  
+
       // Realiza la petición para guardar los detalles de la venta en el backend
       try {
-        const response = await newObject(action.DETALLEVENTA_CONTROLLER, detalleVentaDto);
+        const response = await newObject(action.VENTA_CONTROLLER, ventaDto);
         console.log("Detalles de la venta guardados:", response);
         setLoading(false);
         setDialog(false);
-        setFormData({
-          // Reinicia los valores del formulario
-          nombre: "",
-          nombreProducto: "",
-          idVenta: null,
-          idUsuario: null,
-          cantidad: 0,
-          total: 0,
-          efectivo: true,
-          transferencia: true,
-          precio: 0,
-          precioVenta: 0,
-          fechaVenta: null,
-          idProducto: null,
-          numeroDeFactura: "",
-          stock: 0,
-        });
-  
-        // Actualiza la lista de productos después de realizar la venta
-        getList(action.VENTA_CONTROLLER)
-          .then((res: any) => {
-            setProductoList(res.data);
-          })
-          .catch((err: any) => {
-            console.log("Error al obtener la lista de productos:", err);
+
+        if (response) {
+          alert("Se realizo correctamente la venta");
+          try {
+            const productoListResponse = await getList(
+              action.PRODUCTO_CONTROLLER
+            );
+            setProductoList(productoListResponse.data);
+            setProductoSearchList(productoListResponse.data);
+          } catch (error) {
+            console.log(
+              "🚀 ~ file: ListVentas.tsx:256 ~ fetchData ~ error:",
+              error
+            );
+          }
+
+          setFormData({
+            // Reinicia los valores del formulario
+            nombre: "",
+            nombreProducto: "",
+            idVenta: null,
+            idUsuario: null,
+            cantidad: 0,
+            total: 0,
+            efectivo: false,
+            transferencia: false,
+            precio: 0,
+            precioVenta: 0,
+            fechaVenta: null,
+            idProducto: null,
+            numeroDeFactura: "",
+            stock: 0,
           });
+          setProductoVentaList([]);
+        }
       } catch (error) {
         console.log("Error al guardar los detalles de la venta:", error);
         setLoading(false);
       }
     }
   };
-  
 
   return (
     <div>
@@ -411,9 +433,12 @@ export default function ListComoras() {
                               InputLabelProps={{
                                 shrink: true,
                               }}
-                              value={dateFrom}
-                              onChange={
-                                (e) => setDateFrom(e.target.value) // Actualiza directamente el estado dateFrom aquí
+                              value={formData.fechaVenta}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  fechaVenta: e.target.value,
+                                })
                               }
                               style={{ marginRight: "10px" }}
                             />
@@ -426,7 +451,12 @@ export default function ListComoras() {
                               variant="outlined"
                               fullWidth
                               value={formData.numeroDeFactura}
-                              onChange={(e) => setFormData({ ...formData, numeroDeFactura: e.target.value }) }
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  numeroDeFactura: e.target.value,
+                                })
+                              }
                             />
                           </Grid>
 
@@ -437,7 +467,12 @@ export default function ListComoras() {
                               variant="outlined"
                               fullWidth
                               value={formData.nombre}
-                              onChange={(e) => setFormData({ ...formData, nombre: e.target.value }) }
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  nombre: e.target.value,
+                                })
+                              }
                             />
                           </Grid>
 
@@ -518,7 +553,7 @@ export default function ListComoras() {
                         {/* total */}
                         <Grid item xs={12}>
                           <Typography variant="h6" component="h2">
-                            Total: ${totalFinal}
+                            Total: ${formData.total}
                           </Typography>
                         </Grid>
 
@@ -728,13 +763,7 @@ export default function ListComoras() {
           </TableHead>
 
           <TableBody>
-            {(rowsPerPage > 0
-              ? ventaSearchList.slice(
-                  page * rowsPerPage,
-                  page * rowsPerPage + rowsPerPage
-                )
-              : ventaSearchList
-            ).map((row, index) => (
+            {productoVentaList.map((row, index) => (
               <StyledTableRow key={index}>
                 <StyledTableCell component="th" scope="row">
                   <IconButton

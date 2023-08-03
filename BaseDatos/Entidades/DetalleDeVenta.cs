@@ -20,6 +20,11 @@ namespace BaseDatos.Entidades
         public int IdProducto { get; set; }
         [ForeignKey("IdProducto")]
         public Producto Producto { get; set; }
+
+        public int Cantidad { get; set; } 
+
+        public float Total { get; set; }
+
     }
 
 }

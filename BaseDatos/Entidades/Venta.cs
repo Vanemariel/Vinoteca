@@ -16,24 +16,19 @@ namespace BaseDatos.Entidades
         public int IdVenta { get; set; }
         public string FechaVenta { get; set; }
         public string NumeroDeFactura { get; set; }
-        public bool efectivo { get; set; }
-        public bool transferencia { get; set; }
-        public float Total { get; set; }
-        public int cantidad { get; set; }
-        public float precio { get; set; }
-        public float precioVenta { get; set; }
-
-        public int IdProducto { get; set; }
-        [ForeignKey("IdProducto")]
-        public Producto Producto { get; set; }
-
+        public bool Efectivo { get; set; }
+        public bool Transferencia { get; set; }
+        public float Total { get; set; } 
+        
         public int IdUsuario { get; set; }
         [ForeignKey("IdUsuario")]
         public Usuario Usuario { get; set; }
 
-        public int IdCliente { get; set; }
-        [ForeignKey("IdCliente")]
-        public Cliente Cliente { get; set; }
+        //public int IdCliente { get; set; }
+        //[ForeignKey("IdCliente")]
+        //public Cliente Cliente { get; set; }
+        public string NombreCliente { get; set; }
+
 
         [InverseProperty("Venta")]
         public List<DetalleDeVenta> DetalleDeVentas { get; set; }

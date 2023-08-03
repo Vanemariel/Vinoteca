@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Vinoteca.BaseDatos;
 
@@ -11,9 +12,11 @@ using Vinoteca.BaseDatos;
 namespace BaseDatos.Migrations
 {
     [DbContext(typeof(BDContext))]
-    partial class BDContextModelSnapshot : ModelSnapshot
+    [Migration("20230802235256_quinta")]
+    partial class quinta
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -275,28 +278,6 @@ namespace BaseDatos.Migrations
                     b.HasIndex("IdProveedor");
 
                     b.ToTable("TablaProductos");
-
-                    b.HasData(
-                        new
-                        {
-                            IdProducto = 1,
-                            Detalle = "LALALALA COCA",
-                            IdProveedor = 1,
-                            NombreProducto = "Coca",
-                            PrecioCompra = 100f,
-                            PrecioVenta = 350f,
-                            Stock = 15
-                        },
-                        new
-                        {
-                            IdProducto = 2,
-                            Detalle = "LALALALA FERNETT",
-                            IdProveedor = 1,
-                            NombreProducto = "Fernet",
-                            PrecioCompra = 1000f,
-                            PrecioVenta = 1350f,
-                            Stock = 15
-                        });
                 });
 
             modelBuilder.Entity("BaseDatos.Entidades.Proveedor", b =>
@@ -329,17 +310,6 @@ namespace BaseDatos.Migrations
                     b.HasKey("IdProveedor");
 
                     b.ToTable("TablaProveedores");
-
-                    b.HasData(
-                        new
-                        {
-                            IdProveedor = 1,
-                            Descripcion = "EL mas capo",
-                            HorarioDesde = "08:00",
-                            HorarioHasta = "18:00",
-                            Nombre = "Jose",
-                            Telefono = 351112312L
-                        });
                 });
 
             modelBuilder.Entity("BaseDatos.Entidades.Venta", b =>
@@ -400,14 +370,6 @@ namespace BaseDatos.Migrations
                     b.HasKey("IdUsuario");
 
                     b.ToTable("TablaUsuarios");
-
-                    b.HasData(
-                        new
-                        {
-                            IdUsuario = 1,
-                            Apellido = "Salchicha",
-                            Nombre = "Jose"
-                        });
                 });
 
             modelBuilder.Entity("BaseDatos.Entidades.Caja", b =>

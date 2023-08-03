@@ -22,10 +22,11 @@ export default function SignInSide() {
   };
 
   const handleIngresar = () => {
-    window.location.href = "/productos";
+    window.location.href = "/caja";
   };
 
   return (
+    <div className="login">
     <Container component="main" maxWidth="lg">
       <Box>
         <Grid container>
@@ -74,6 +75,7 @@ export default function SignInSide() {
         </Grid>
       </Box>
     </Container>
+    </div>
   );
 }
 

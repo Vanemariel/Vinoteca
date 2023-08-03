@@ -80,13 +80,18 @@
 }
 
 html,
-body {
-  width: 100vw;
-  height: 100vh;
-  overflow-x: hidden;
+body{
+  background-color: #e6bbd4 !important;
 }
 
-body {
+.login {
+  min-width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+.login{
   color: (var(--foreground));
   background: linear-gradient(
       to bottom,
@@ -94,7 +99,12 @@ body {
       var(--background-end)
     )
     var(--background-start);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
+
+
 
 a {
   color: inherit;

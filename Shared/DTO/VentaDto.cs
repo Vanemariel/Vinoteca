@@ -8,16 +8,23 @@ namespace Shared.DTO
 {
     public class VentaDto
     {
-        public string FechaVenta { get; set; }
-        public string NumeroDeFactura { get; set; }
+        public string fechaVenta { get; set; }
+        public string numeroDeFactura { get; set; }
         public bool efectivo { get; set; }
         public bool transferencia { get; set; }
-        public float Total { get; set; }
-        public int IdUsuario { get; set; }
-        public int IdCliente { get; set; }
-        public int cantidad { get; set; }
-        public float precio { get; set; }
-        public float precioVenta { get; set; }
-        public int IdProducto { get; set; }
+        public float totalVenta { get; set; }
+        public int idUsuario { get; set; }
+        //public int IdCliente { get; set; }
+        public string nombreCliente { get; set; }
+
+        public List<ProductoDTOUltraOficial> listaProductos { get; set; }
     }
+
+    public class ProductoDTOUltraOficial
+    { // Esto viene del front en el metodo validate() de ListVentas.tsx, linea 288 aprox
+        public int idProducto { get; set; }
+        public int cantidad { get; set; }
+        public float total { get; set; }
+    }
+
 }

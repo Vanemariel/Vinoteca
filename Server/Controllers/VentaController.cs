@@ -30,9 +30,10 @@ namespace Vinoteca.Server.Controllers
             try
             {
                 List<Venta> Ventas = await this._context.TablaVentas
-                    .Include(venta => venta.Cliente)
+                    //.Include(venta => venta.Cliente) // no va por ahora
                     .Include(venta => venta.Usuario)
-                    .Include(venta => venta.Producto)
+                    .Include(venta => venta.DetalleDeVentas)
+                        .ThenInclude(detalle => detalle.Producto)
                     .ToListAsync();
 
                 return Ok(Ventas);
@@ -50,9 +51,9 @@ namespace Vinoteca.Server.Controllers
             {
                 Venta? Venta = await this._context.TablaVentas
                     .Where(Venta => Venta.IdVenta == id)
-                    .Include(venta => venta.Cliente)
+                    //.Include(venta => venta.Cliente) // no va por ahora
                     .Include(venta => venta.Usuario)
-                    .Include(venta => venta.Producto)
+                    .Include(venta => venta.DetalleDeVentas)
                     .FirstOrDefaultAsync();
 
                 if (Venta == null)
@@ -75,23 +76,50 @@ namespace Vinoteca.Server.Controllers
         {
             try
             {
-                _context.TablaVentas.Add(new Venta
-                {
-                    FechaVenta=ventadto.FechaVenta,
-                    efectivo=ventadto.efectivo,
-                    transferencia=ventadto.transferencia,
-                    Total=ventadto.Total,
-                    IdUsuario=ventadto.IdUsuario,
-                    IdCliente=ventadto.IdCliente,
-                    IdProducto=ventadto.IdProducto,
-                    cantidad=ventadto.cantidad,
-                    precio=ventadto.precio,
-                    precioVenta=ventadto.precioVenta,
-                    NumeroDeFactura=ventadto.NumeroDeFactura,
 
+                Venta newVenta = new Venta
+                {
+                    FechaVenta = ventadto.fechaVenta,
+                    Efectivo = ventadto.efectivo,
+                    Transferencia = ventadto.transferencia,
+                    NumeroDeFactura = ventadto.numeroDeFactura,
+                    Total = ventadto.totalVenta,
+                    IdUsuario = ventadto.idUsuario,
+                    NombreCliente = ventadto.nombreCliente,
                     DetalleDeVentas= new List<DetalleDeVenta>()
-                }) ;
+                };
+
+                _context.TablaVentas.Add(newVenta);
                 await _context.SaveChangesAsync();
+
+
+                if (newVenta == null)
+                {
+                    throw new Exception("No se pudo registrar la venta correctamente.");
+                }
+
+                ventadto.listaProductos.ForEach(prodVenta =>
+                {
+                    _context.TablaDetalleDeVentas.Add( new DetalleDeVenta {
+                        Cantidad = prodVenta.cantidad,
+                        IdProducto = prodVenta.idProducto,
+                        Total = prodVenta.total,
+                        IdVenta = newVenta.IdVenta
+                     });
+
+                    Producto? producto = _context.TablaProductos
+                        .FirstOrDefault(prod => prod.IdProducto == prodVenta.idProducto);
+
+                    if (producto == null)
+                    {
+                        throw new Exception("No se pudo encontrar el producto.");
+                    }
+
+                    producto.Stock = producto.Stock - prodVenta.cantidad;
+                });
+                await _context.SaveChangesAsync();
+
+
                 return true;
             }
             catch (Exception e)
@@ -102,66 +130,66 @@ namespace Vinoteca.Server.Controllers
 
         #endregion
 
-        #region HTTP PUT
-        [HttpPut(ApiRoutes.Venta.Update)]
-        public ActionResult Update(int id, [FromBody] Venta venta)
-        {
-            if (id != venta.IdVenta)
-            {
-                return BadRequest("Datos incorrectos");
-            }
+        //#region HTTP PUT
+        //[HttpPut(ApiRoutes.Venta.Update)]
+        //public ActionResult Update(int id, [FromBody] Venta venta)
+        //{
+        //    if (id != venta.IdVenta)
+        //    {
+        //        return BadRequest("Datos incorrectos");
+        //    }
 
-            var ventax = _context.TablaVentas
-                .Where(e => e.IdVenta == id)
-                .Include(venta => venta.Cliente)
-                .Include(venta => venta.Usuario)
-                .Include(venta => venta.Producto)
-                .FirstOrDefault();
-            if (ventax == null)
-            {
-                return NotFound("No existe la venta para modificar");
-            }
+        //    var ventax = _context.TablaVentas
+        //        .Where(e => e.IdVenta == id)
+        //        .Include(venta => venta.Cliente)
+        //        .Include(venta => venta.Usuario)
+        //        .Include(venta => venta.Producto)
+        //        .FirstOrDefault();
+        //    if (ventax == null)
+        //    {
+        //        return NotFound("No existe la venta para modificar");
+        //    }
 
-            ventax.FechaVenta = venta.FechaVenta;
-            ventax.efectivo = venta.efectivo;
-            ventax.transferencia = venta.transferencia;
-            ventax.Total = venta.Total;
+        //    ventax.FechaVenta = venta.FechaVenta;
+        //    ventax.efectivo = venta.efectivo;
+        //    ventax.transferencia = venta.transferencia;
+        //    ventax.Total = venta.Total;
 
-            try
-            {
-                //throw(new Exception("Cualquier Verdura"));
-                _context.TablaVentas.Update(ventax);
-                _context.SaveChanges();
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                return BadRequest($"Los datos no han sido actualizados por: {e.Message}");
-            }
-        }
-        #endregion
+        //    try
+        //    {
+        //        //throw(new Exception("Cualquier Verdura"));
+        //        _context.TablaVentas.Update(ventax);
+        //        _context.SaveChanges();
+        //        return Ok();
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return BadRequest($"Los datos no han sido actualizados por: {e.Message}");
+        //    }
+        //}
+        //#endregion
 
-        #region HTTP DELETE
-        [HttpDelete(ApiRoutes.Venta.Delete)]
-        public ActionResult Delete(int id)
-        {
-            var ventax = _context.TablaVentas.Where(x => x.IdVenta == id).FirstOrDefault();
+        //#region HTTP DELETE
+        //[HttpDelete(ApiRoutes.Venta.Delete)]
+        //public ActionResult Delete(int id)
+        //{
+        //    var ventax = _context.TablaVentas.Where(x => x.IdVenta == id).FirstOrDefault();
 
-            if (ventax == null)
-            {
-                return NotFound($"El registro {id} no fue encontrado");
-            }
-            try
-            {
-                _context.TablaVentas.Remove(ventax);
-                _context.SaveChanges();
-                return Ok($"El registro de {ventax.IdVenta} ha sido borrado.");
-            }
-            catch (Exception e)
-            {
-                return BadRequest($"Los datos no pudieron eliminarse por: {e.Message}");
-            }
-        }
-        #endregion
+        //    if (ventax == null)
+        //    {
+        //        return NotFound($"El registro {id} no fue encontrado");
+        //    }
+        //    try
+        //    {
+        //        _context.TablaVentas.Remove(ventax);
+        //        _context.SaveChanges();
+        //        return Ok($"El registro de {ventax.IdVenta} ha sido borrado.");
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return BadRequest($"Los datos no pudieron eliminarse por: {e.Message}");
+        //    }
+        //}
+        //#endregion
     }
 }

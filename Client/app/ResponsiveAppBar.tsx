@@ -21,6 +21,10 @@ import AdbIcon from '@mui/icons-material/Adb';
 
 const routes = [
   {
+    label: 'Caja',
+    path: '/caja',
+  },
+  {
     label: 'Provedores',
     path: '/provedores',
   },
@@ -44,11 +48,7 @@ const routes = [
   {
     label: 'Historial Compras',
     path: '/comprasHistorial',
-  },
-  {
-    label: 'Caja',
-    path: '/caja',
-  },
+  }
 ];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 

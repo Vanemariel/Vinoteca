@@ -2,7 +2,7 @@ import LoginForm from "./LoginForm";
 
 export default function HomePage() {
     return (
-        <div style={{ margin: "20vh auto" }}>
+        <div style={{justifyContent:"center", alignItems:"center", margin: "auto" }}>
             <LoginForm />
         </div>
     )
