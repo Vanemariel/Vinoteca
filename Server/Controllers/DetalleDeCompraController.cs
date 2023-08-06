@@ -1,12 +1,11 @@
 ﻿using BaseDatos.Entidades;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Vinoteca.Server.Contracts;
-using System;
-using System.Diagnostics.Metrics;
-using Vinoteca.BaseDatos;
-using Vinoteca.BaseDatos.Entidades;
 using Shared.DTO;
+using Vinoteca.BaseDatos;
+using Vinoteca.Server.Contracts;
+using static Vinoteca.Server.Contracts.ApiRoutes;
+using DetalleDeCompra = BaseDatos.Entidades.DetalleDeCompra;
 
 namespace Vinoteca.Server.Controllers
 {
@@ -68,46 +67,60 @@ namespace Vinoteca.Server.Controllers
         {
             try
             {
-                _context.TablaDetalleDeCompras.Add(new DetalleDeCompra
+                // Verificar si el IdProducto y el IdCompra existen en la base de datos
+                var compra = _context.TablaCompras.FirstOrDefault(v => v.IdCompra == DetalleDeCompraDTO.IdCompra);
+                var productol = _context.TablaProductos.FirstOrDefault(p => p.IdProducto == DetalleDeCompraDTO.IdProducto);
+
+                if (compra == null || productol == null)
                 {
-                    PrecioCompra=DetalleDeCompraDTO.PrecioCompra,
-                    CantidadCompra=DetalleDeCompraDTO.CantidadCompra,
-                    IdCompra=DetalleDeCompraDTO.IdCompra,
-                    IdProducto=DetalleDeCompraDTO.IdProducto
-                });
+                    return BadRequest("La compra o el producto no existen en la base de datos.");
+                }
+                // Crear un nuevo objeto DetalleDeVenta
+                var detalleDeCOMPRAS = new DetalleDeCompra
+                {
+                    IdCompra =DetalleDeCompraDTO.IdCompra,
+                    IdProducto = DetalleDeCompraDTO.IdProducto
+                };
+
+                // Agregar el detalle de compra a la tabla correspondiente
+                _context.TablaDetalleDeCompras.Add(detalleDeCOMPRAS);
                 await _context.SaveChangesAsync();
+
                 return true;
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
+
         }
 
         #endregion
 
         #region HTTP PUT
         [HttpPut(ApiRoutes.DetalleDeCompra.Update)]
-        public ActionResult Update(int id, [FromBody] DetalleDeCompra detalleDeCompra)
+        public ActionResult Update(int id, [FromBody] DetalleDeCompraDto detalleDeCompra)
         {
-            if (id != detalleDeCompra.IdDetalleCompra)
+            var detDC = _context.TablaDetalleDeCompras.FirstOrDefault(e => e.IdDetalleCompra == id);
+            if (detDC==null)
             {
-                return BadRequest("Datos incorrectos");
+                return NotFound("No existe detalle para modificar");
+            }
+            // Verificar si el IdProducto y el IdCompra existen en la base de datos
+            var compra1 = _context.TablaCompras.Where(e => e.IdCompra == detalleDeCompra.IdCompra);
+            var producto43 = _context.TablaProductos.FirstOrDefault(p => p.IdProducto == detalleDeCompra.IdProducto);
+
+            if (compra1 == null || producto43 == null)
+            {
+                return BadRequest("No existe la compra o producto en la base de datos");
             }
 
-            var cAjAjAjA = _context.TablaDetalleDeCompras.Where(e => e.IdDetalleCompra == id).FirstOrDefault();
-            if (cAjAjAjA == null)
-            {
-                return NotFound("No existe la compra para modificar");
-            }
-
-            cAjAjAjA.PrecioCompra = cAjAjAjA.PrecioCompra;
-            cAjAjAjA.CantidadCompra = cAjAjAjA.CantidadCompra;
+            detDC.IdCompra = detDC.IdCompra;
+            detDC.IdProducto = detDC.IdProducto;
 
             try
             {
-                //throw(new Exception("Cualquier Verdura"));
-                _context.TablaDetalleDeCompras.Update(cAjAjAjA);
+                _context.TablaDetalleDeCompras.Update(detDC);
                 _context.SaveChanges();
                 return Ok();
             }

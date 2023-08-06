@@ -32,7 +32,7 @@ namespace Vinoteca.Server.Controllers
                 List<Compra> Compras = await this._context.TablaCompras
                     .Include(venta => venta.Proveedor)
                     .Include(venta => venta.Usuario)
-                    .Include(venta => venta.Producto)
+                    //.Include(venta => venta.producto)
                     .ToListAsync();
 
                 return Ok(Compras);
@@ -52,7 +52,7 @@ namespace Vinoteca.Server.Controllers
                     .Where(Compra => Compra.IdCompra == id)
                     .Include(venta => venta.Proveedor)
                     .Include(venta => venta.Usuario)
-                    .Include(venta => venta.Producto)
+                    //.Include(venta => venta.Producto)
                     .FirstOrDefaultAsync();
 
                 if (Compra == null)
@@ -75,23 +75,49 @@ namespace Vinoteca.Server.Controllers
         {
             try
             {
-                _context.TablaCompras.Add(new Compra
+                Compra newCompra = new Compra
                 {
-                    FechaCompra=compradto.FechaCompra,
-                    efectivo=compradto.efectivo,
-                    transferencia=compradto.transferencia,
-                    Total=compradto.Total,
-                    NumeroDeFactura=compradto.NumeroDeFactura,
-                    IdUsuario=compradto.IdUsuario,
-                    IdProveedor=compradto.IdProveedor,
-                    IdProducto=compradto.IdProducto,
-                    cantidad=compradto.cantidad,
-                    precio=compradto.precio,
-                    precioCompra=compradto.precioCompra,
+                    FechaCompra=compradto.fechaCompra,
+                    efectivo=compradto.Efectivo,
+                    transferencia=compradto.Transferencia,
+                    Total=compradto.total,
+                    NumeroDeFactura=compradto.numeroDeFactura,
+                    IdUsuario=compradto.idUsuario,
+                    IdProveedor=compradto.idProveedor,
+                    //IdProducto=compradto.IdProducto,
                     DetalleDeCompras = new List<DetalleDeCompra>()
-                }) ;
+                };
+
+                _context.TablaCompras.Add(newCompra);
+                await _context.SaveChangesAsync();
+
+
+                if (newCompra == null)
+                {
+                    throw new Exception("No se pudo registrar la compra correctamente.");
+                }
+                compradto.listaProductos.ForEach(prodCompra =>
+                {
+                    _context.TablaDetalleDeCompras.Add(new DetalleDeCompra
+                    {
+                        Cantidad = prodCompra.cantidad,
+                        IdProducto = prodCompra.idProducto,
+                        Total = prodCompra.total,
+                        IdCompra = newCompra.IdCompra
+                    });
+                    Producto? producto = _context.TablaProductos
+                        .FirstOrDefault(prod => prod.IdProducto == prodCompra.idProducto);
+
+                    if (producto == null)
+                    {
+                        throw new Exception("No se pudo encontrar el producto.");
+                    }
+
+                    producto.Stock = producto.Stock - prodCompra.cantidad;
+                });
                 await _context.SaveChangesAsync();
                 return true;
+            
             }
             catch (Exception e)
             {
@@ -114,7 +140,7 @@ namespace Vinoteca.Server.Controllers
                 .Where(e => e.IdCompra == id)
                  .Include(venta => venta.Proveedor)
                     .Include(venta => venta.Usuario)
-                    .Include(venta => venta.Producto)
+                    //.Include(venta => venta.Producto)
                 .FirstOrDefault();
             if (comprax == null)
             {
@@ -125,10 +151,7 @@ namespace Vinoteca.Server.Controllers
             comprax.efectivo=compra.efectivo;
             comprax.transferencia=compra.transferencia;
             comprax.Total = compra.Total;
-            //comprax.NumeroDeFactura= compra.NumeroDeFactura;
-            comprax.cantidad = compra.cantidad;
-            comprax.precio = compra.precio;
-
+            
             try
             {
                 //throw(new Exception("Cualquier Verdura"));
