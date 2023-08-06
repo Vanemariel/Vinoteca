@@ -78,9 +78,9 @@ namespace Vinoteca.Server.Controllers
                 Compra newCompra = new Compra
                 {
                     FechaCompra=compradto.fechaCompra,
-                    efectivo=compradto.Efectivo,
-                    transferencia=compradto.Transferencia,
-                    Total=compradto.total,
+                    Efectivo=compradto.efectivo,
+                    Transferencia=compradto.transferencia,
+                    Total=compradto.totalCompra,
                     NumeroDeFactura=compradto.numeroDeFactura,
                     IdUsuario=compradto.idUsuario,
                     IdProveedor=compradto.idProveedor,

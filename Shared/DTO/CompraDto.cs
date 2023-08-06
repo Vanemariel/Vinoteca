@@ -10,9 +10,9 @@ namespace Shared.DTO
     {
         public string fechaCompra { get; set; }
         public string numeroDeFactura { get; set; }
-        public bool Efectivo { get; set; }
-        public bool Transferencia { get; set; }
-        public float total { get; set; }
+        public bool efectivo { get; set; }
+        public bool transferencia { get; set; }
+        public float totalCompra { get; set; }
         public int idUsuario { get; set; }
         public int idProveedor { get; set; }
 

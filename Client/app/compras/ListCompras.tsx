@@ -176,11 +176,11 @@ export default function ListCompras() {
     let stock = productoCompra.stock;
     if (accion === "agregar" && productoCompra.stock > 0) {
       cantidad = productoCompra.cantidad += 1;
-      stock = productoCompra.stock -= 1;
+      stock = productoCompra.stock += 1;
     }
     if (accion === "quitar" && productoCompra.cantidad > 1) {
       cantidad = productoCompra.cantidad -= 1;
-      stock = productoCompra.stock += 1;
+      stock = productoCompra.stock -= 1;
     }
 
     productoCompra.cantidad = cantidad;
