@@ -81,16 +81,20 @@ export type Proveedor = {
  * @property {number} idProducto
  */
 export type Compra = {
-    idCompra?: number | null;
-    fecha: Date | null;
-    formaPago: boolean;
-    total: number ;
-    //numerodeFactura: number;
-    idUsuario: number | null;
-    idProveedor?: number | null;
-    cantidad: number ;
-    precio: number ;
-    idProducto: number | null;
+  idCompra?: number | null;
+  fechaCompra: string | null;
+  efectivo: boolean;
+  transferencia: boolean;
+  total: number ;
+  numeroDeFactura: string;
+  idUsuario?: number | null;
+  cantidad: number;
+  precio: number ;
+  precioCompra: number;
+  idProducto?: number | null;
+  idProveedor?: number | null;
+  nombreProducto: string | null;
+  stock: number
   };
 
    /** venta type used in the CRUD operations.

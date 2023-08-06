@@ -3,6 +3,7 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useStore } from "../../stores/crud";
+import { toast, ToastContainer } from "react-toastify";
 
 import { styled, useTheme } from "@mui/material/styles";
 import * as action from "../../Utilities/action";
@@ -14,17 +15,34 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Button, Grid, useMediaQuery } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Typography from "@mui/material/Typography";
-import Modal from "@mui/material/Modal";
-import { LoadingButton } from "@mui/lab";
-import { Box, TextField, Select, InputBase, TableFooter, TablePagination, IconButton, MenuItem,
-CssBaseline, Toolbar, DialogTitle, DialogActions, DialogContentText, DialogContent, Checkbox, Dialog } from "@mui/material";
+import {
+  Box,
+  InputLabel,
+  TextField,
+  Select,
+  FormControlLabel,
+  InputBase,
+  TableFooter,
+  TablePagination,
+  IconButton,
+  MenuItem,
+  CssBaseline,
+  Toolbar,
+  DialogTitle,
+  DialogActions,
+  DialogContentText,
+  DialogContent,
+  Checkbox,
+  Dialog,
+} from "@mui/material";
+import AddShoppingCartSharpIcon from "@mui/icons-material/AddShoppingCartSharp";
+import LoadingButton from "@mui/lab/LoadingButton";
 import { FormEvent } from "react";
-import { Compra, Producto, Proveedor } from "../../TYPES/crudTypes";
+import { Producto, Compra } from "../../TYPES/crudTypes";
 
-export default function ListComoras() {
+export default function ListCompras() {
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
       backgroundColor: theme.palette.common.black,
@@ -45,36 +63,13 @@ export default function ListComoras() {
     },
   }));
 
-  const style = {
-    position: "absolute" as "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 400,
-    bgcolor: "background.paper",
-    border: "2px solid #000",
-    boxShadow: 24,
-    p: 4,
-  };
-  
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
   const [loading, setLoading] = useState(false);
-  const [loaded, setLoaded] = useState(false);
-  const { deleteObject, getList, newObject, updateObject } = useStore();
-  const [productoList, setProductoList] = useState([] as Producto[]);
-  const [proveedorList, setProveedorList] = useState([] as Proveedor[]);
-  const [compraList, setCompraList] = useState([] as Compra[]);
-  const [name, setName] = useState("");
-  const [toDelete, setToDelete] = useState(null as any);
+  const { getList, newObject, updateObject } = useStore();
+  const [productoList, setProductoList] = useState<Producto[]>([]);
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [dialog, setDialog] = useState(false);
-  const [isNew, setIsNew] = useState(false);
-  const [dateFrom, setDateFrom] = useState(""); // Agregar esta línea
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-  const label = { inputProps: { "aria-label": "Checkbox demo" } };
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -83,316 +78,569 @@ export default function ListComoras() {
       password: data.get("password"),
     });
   };
-  const [okClicked, setOkClicked] = useState(false);
-  const [cancelClicked, setCancelClicked] = useState(false);
-  const handleOkClick = () => {
-    setOkClicked(true);
-  };
-  const handleCancelClick = () => {
-    setCancelClicked(true);
-    handleClose(); // Cierra el modal
-  };
+
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const handleChangePage = (event: any | null, newPage: number) => {
-    setPage(newPage);};
+    setPage(newPage);
+  };
   const handleChangeRowsPerPage = (event: any) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);};
+    setPage(0);
+  };
   const [productoSearchList, setProductoSearchList] = useState(
-    [] as Producto[]); //para el buscador
+    [] as Producto[]
+  ); //para el buscador
+
+  const [productoCompraList, setProductoCompraList] = useState<
+    {
+      idProducto: number;
+      nombreProducto: string;
+      precio: number;
+      precioCompra: number;
+      cantidad: number;
+      total: number;
+    }[]
+  >([]);
+
+
+
   const filteredProductoList = (textSearch: string) => {
     const ProductoFilter = productoList.filter((producto) => {
       return producto.nombreProducto
         .toLowerCase()
         .includes(textSearch.toLowerCase());
     });
-    setProductoSearchList(ProductoFilter);};
-
-  const [proveedoresList, setProveedoresList] = useState<
-    Array<{ idProveedor: number; nombre: string }>>([]);
+    setProductoSearchList(ProductoFilter);
+  };
+  const [compraSearchList, setCompraSearchList] = useState<Compra[]>([]); //para el buscador
+  const [deleteIndex, setDeleteIndex] = useState(-1);
+  const [totalCompra, setTotalCompra] = useState(0); // total de la venta
   const [usuarioList, setUsuarioList] = useState<
-    Array<{ idUsuario: number; nombre: string }>>([]);
+    Array<{ idUsuario: number; nombre: string; apellido: string }>
+  >([]);
+  const [proveedorList, setProveedorList] = useState<
+  Array<{ idProveedor: number; nombre: string; apellido: string }>
+>([]);
 
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    severity: "success",
-    message: "",});
+  const handleAddButtonClick = (row: any) => {
+    const productToAdd = {
+      idProducto: row.idProducto,
+      nombreProducto: row.nombreProducto,
+      precioCompra: row.precioCompra,
+      cantidad: 0, // cantidad inicial
+      total: 0, // total inicial
+      fechaCompra: null,
+      efectivo: true,
+      transferencia: true,
+      numeroDeFactura: "",
+      precio: 0,
+      stock: row.stock,
+    };
 
-  const [formData, setFormData] = useState({
-    idCompra: 0,
-    idUsuario: 0,
-    idProveedor: 0,
-    idProducto: 0,
-    fecha: "",
-    formaPago: false,
-    total: 0,
-    //numerodeFactura: 0
-    cantidad: 0,
-    precio: 0,
-  } as Compra);
+    const isProductAlreadyAdded = compraSearchList.find(
+      (producto) => producto.idProducto === row.idProducto
+    );
 
-  useEffect(() => {
-    getList(action.COMPRA_CONTROLLER)
-      .then((res: any) => {
-        setProductoList(res.data);
-        setProductoSearchList(res.data);
-        setLoaded(true);
-      })
-      .catch((err: any) => {
-        setSnackbar({
-          open: true,
-          severity: "error",
-          message: "ocurrio un error",
-        });
-        setLoaded(true);
-      });
+    const stock = productoList.find(
+      (producto) => producto.idProducto === row.idProducto
+    )?.stock;
 
-    getList(action.PRODUCTO_CONTROLLER)
-      .then((res: any) => {
-        setProductoList(res.data);
-        setProductoSearchList(res.data);
-        setLoaded(true);
-      })
-      .catch((err: any) => {
-        setSnackbar({
-          open: true,
-          severity: "error",
-          message: "ocurrio un error",
-        });
-        setLoaded(true);
-      });
+    if (isProductAlreadyAdded) {
+      toast.info("¡Este producto ya fue agregado a las ventas!");
+    } else if (stock === undefined || stock === null || stock < 1) {
+      toast.warning("No hay stock disponible para este producto");
+    } else {
+      const updatedProductoList = productoList.map((producto) =>
+        producto.idProducto === row.idProducto
+          ? { ...producto, stock: stock }
+          : producto
+      );
 
-    getList(action.PROVEEDOR_CONTROLLER)
-      .then((res: any) => {
-        console.log(res.data)
-        setProveedoresList(res.data);
-        setLoaded(true);
-      })
-      .catch((err: any) => {
-        setSnackbar({
-          open: true,
-          severity: "error",
-          message: "ocurrio un error",
-        });
-        setLoaded(true);
-      });
-  }, [getList, dialog]);
+      setProductoList(updatedProductoList);
+      setProductoSearchList(updatedProductoList);
 
-  const deleteItem = () => {
-    deleteObject(action.PRODUCTO_CONTROLLER, toDelete as unknown as number)
-      .then((res: any) => {
-        setDeleteDialog(false);
-        setSnackbar({
-          open: true,
-          severity: "success",
-          message: "Eliminado" + " " + "con excito",
-        });
-        setProductoList(
-          productoList.filter((producto) => producto.idProducto !== toDelete)
-        );
-      })
-      .catch((err: any) => {
-        setSnackbar({
-          open: true,
-          severity: "error",
-          message: "Algo sucedio",
-        });
-      });
+      setTotalCompra(totalCompra + row.precioCompra * 1);
+
+      // ACA VA esto setProductoVentaList
+      setCompraSearchList([...compraSearchList, productToAdd]); // ver
+
+      setProductoCompraList([...productoCompraList, productToAdd]);
+    }
   };
 
-  const validate = async (e: Event) => {
-    e.preventDefault();
-    if (
-      formData.idUsuario != null ||
-      formData.idProveedor != null ||
-      formData.cantidad != null ||
-      formData.total != null ||
-      formData.fecha != null ||
-      formData.formaPago != null
-    ) {
-      setLoading(true);
-      let body = formData;
-      let response = null;
-      if (isNew) {
-        delete body.idCompra;
-        response = await newObject(action.COMPRA_CONTROLLER, body);
-      } else {
-        response = await updateObject(action.COMPRA_CONTROLLER, body);
+  const updateCompraItem = (index: number, accion: string) => {
+    const productoCompra = compraSearchList[index];
+
+    let cantidad = productoCompra.cantidad;
+    let stock = productoCompra.stock;
+    if (accion === "agregar" && productoCompra.stock > 0) {
+      cantidad = productoCompra.cantidad += 1;
+      stock = productoCompra.stock -= 1;
+    }
+    if (accion === "quitar" && productoCompra.cantidad > 1) {
+      cantidad = productoCompra.cantidad -= 1;
+      stock = productoCompra.stock += 1;
+    }
+
+    productoCompra.cantidad = cantidad;
+    productoCompra.total = productoCompra.precioCompra * cantidad;
+
+    setCompraSearchList(compraSearchList);
+    const newTotal = compraSearchList.reduce((total, item) => {
+      return total + item.total;
+    }, 0);
+
+    setFormData({
+      ...formData,
+      total: newTotal,
+    });
+
+    const producto = productoList.find(
+      (prod) => prod.idProducto === productoCompra.idProducto
+    );
+    if (producto) {
+      producto.stock = stock;
+    }
+  };
+
+  const deleteCompraItem = (index: number) => {
+    const updatedCompraSearchList = [...compraSearchList];
+    const deletedItem = updatedCompraSearchList.splice(index, 1)[0];
+
+    // Buscar el producto correspondiente en la lista de productos
+    const producto = productoList.find(
+      (prod) => prod.idProducto === deletedItem.idProducto
+    );
+
+    if (producto) {
+      // Sumar la cantidad eliminada al stock del producto
+      producto.stock += deletedItem.cantidad;
+    }
+
+    setCompraSearchList(updatedCompraSearchList);
+    setDeleteDialog(false);
+    setDeleteIndex(-1);
+
+    const deletedItemTotal = parseFloat(deletedItem.total.toString());
+    const newTotalCompra = isNaN(deletedItemTotal)
+      ? totalCompra
+      : totalCompra - deletedItemTotal;
+    setTotalCompra(newTotalCompra);
+
+    // Eliminar el elemento correspondiente de la lista de ventas
+    const updatedCompras = productoCompraList.filter(
+      (item) => item.idProducto !== deletedItem.idProducto
+    );
+    setProductoCompraList(updatedCompras);
+  };
+
+  const [formData, setFormData] = useState<Compra>({
+    idProveedor: null,
+    nombreProducto: "",
+    idCompra: null,
+    idUsuario: null,
+    cantidad: 0,
+    total: 0,
+    efectivo: false,
+    transferencia: false,
+    precio: 0,
+    precioCompra: 0,
+    fechaCompra: null,
+    idProducto: null,
+    numeroDeFactura: "",
+    stock: 0,
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+
+      try {
+        const productoListResponse = await getList(action.PRODUCTO_CONTROLLER);
+        setProductoList(productoListResponse.data);
+        setProductoSearchList(productoListResponse.data);
+      } catch (error) {      
       }
-      setLoading(false);
+      try {
+        const usuarioList = await getList(action.USUARIO_CONTROLLER);
+        setUsuarioList(usuarioList.data);
+      } catch (error) {
+      }
+      try {
+        const proveedorList = await getList(action.PROVEEDOR_CONTROLLER);
+        setProveedorList(proveedorList.data);
+      } catch (error) {
+      }
+    };
 
-      setDialog(false);
+    fetchData();
+    // }, [getList, dialog]);
+  }, []);
 
-      setFormData({
-        idCompra: null as any,
-        idUsuario: null as any,
-        cantidad: null as any,
-        total: null as any,
-        formaPago: true,
-        idProveedor: null as any,
-        precio: null as any,
-        fecha: "",
-        idProducto: null as any,
-      });
-      setLoading(false);
+  const validate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("formData", formData);
+    console.log("compraSearchList", compraSearchList);
 
-      getList(action.PRODUCTO_CONTROLLER)
-        .then((res: any) => {
-          setCompraList(res.data);
-          setLoaded(true);
-        })
-        .catch((err: any) => {
-          setSnackbar({
-            open: true,
-            severity: "success",
-            message: isNew
-              ? "creado" + " " + "con exito"
-              : "actualizado" + " " + "con exito",
+    /* BORRAR */
+    // const flag = true;
+    // let ventaDto = {
+    //   fechaVenta: "2023-08-05",
+    //   numeroDeFactura: "3333",
+    //   efectivo: false,
+    //   transferencia: true,
+    //   totalVenta: 5750,
+    //   nombreCliente: "qqwdwqdwqd",
+    //   idUsuario: 1,
+    //   listaProductos: [
+    //     { idProducto: 2, cantidad: 1, total: 5400 },
+    //     { idProducto: 1, cantidad: 1, total: 350 },
+    //   ],
+    // };
+    /* BORRAR */
+
+    const flag =
+      formData.idProveedor !== null &&
+      formData.idUsuario &&
+      formData.fechaCompra &&
+      formData.numeroDeFactura !== "" &&
+      formData.transferencia !== null &&
+      formData.efectivo !== null &&
+      formData.total > 0;
+
+    if (flag) {
+      setLoading(true);
+
+      // Crea el objeto VentaDto con los datos de la venta y detalle de venta
+      const compraDto = {
+        fechaCompra: formData.fechaCompra,
+        numeroDeFactura: formData.numeroDeFactura,
+        efectivo: formData.efectivo,
+        transferencia: formData.transferencia,
+        totalCompra: formData.total,
+        idProveedor: formData.idProveedor,
+        idUsuario: formData.idUsuario,
+        listaProductos: compraSearchList.map((x) => {
+          return {
+            idProducto: x.idProducto,
+            cantidad: x.cantidad,
+            total: x.total,
+          };
+        }),
+      };
+
+      // Realiza la petición para guardar los detalles de la venta en el backend
+      try {
+        const response = await newObject(action.COMPRA_CONTROLLER, compraDto);
+        console.log("Detalles de la COMPRA guardados:", response);
+        setLoading(false);
+        setDialog(false);
+
+        if (response) {
+          alert("Se realizo correctamente la COMPRA");
+          try {
+            const productoListResponse = await getList(
+              action.PRODUCTO_CONTROLLER
+            );
+            setProductoList(productoListResponse.data);
+            setProductoSearchList(productoListResponse.data);
+          } catch (error) {
+            console.log(
+              "🚀 ~ file: ListVentas.tsx:256 ~ fetchData ~ error:",
+              error
+            );
+          }
+
+          setFormData({
+            // Reinicia los valores del formulario
+            idProveedor: null,
+            nombreProducto: "",
+            idCompra: null,
+            idUsuario: null,
+            cantidad: 0,
+            total: 0,
+            efectivo: false,
+            transferencia: false,
+            precio: 0,
+            precioCompra: 0,
+            fechaCompra: null,
+            idProducto: null,
+            numeroDeFactura: "",
+            stock: 0,
           });
-        });
+          setProductoCompraList([]);
+        }
+      } catch (error) {
+        console.log("Error al guardar los detalles de la compra:", error);
+        setLoading(false);
+      }
     }
   };
 
   return (
     <div>
-      {/* Encabezado */}
-      <Toolbar>
-      <Box
-        sx={{
-          marginTop: 8,
-          width: "100%", // Ancho ajustado al 100%
-          maxWidth: 1500, // Máximo ancho permitido
-        }}
-      >
-        <Grid container>
-          <CssBaseline />
+      <DialogContent>
+        <Grid container spacing={2}>
           <Grid
             item
             xs={12}
-            sm={8}
-            md={5}
-            component={Paper}
-            elevation={6}
-            square
+            sm={6}
+            sx={{ marginTop: 8, width: "100%", maxWidth: 1500 }}
           >
-            <Box
-              sx={{
-                my: 4,
-                mx: 4,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <Typography component="h1" variant="h5">
-                "Registra tus compras"
-              </Typography>
-              <Box
-                component="form"
-                noValidate
-                onSubmit={handleSubmit}
-                sx={{ mt: 1 }}
-              >
-                <Grid
-                  container
-                  rowSpacing={1}
-                  columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-                >
-
-            {/*Nombre Proveedor*/}
-            <Grid item xs={4}>
-                    <Select
-                      label="Seleccionar provedor"
-                      variant="outlined"
-                      fullWidth
-                      value={formData.idProveedor}
-                      onChange={(e: any) => {
-                        setFormData({
-                          ...formData,
-                          idProveedor: e.target.value,
-                        });
-                        console.log(formData);
+            {/* Encabezado */}
+            <Toolbar>
+              <Box>
+                <Grid container>
+                  <CssBaseline />
+                  <Grid
+                    item
+                    xs={12}
+                    sm={8}
+                    md={12}
+                    component={Paper}
+                    elevation={6}
+                    square
+                  >
+                    <Box
+                      sx={{
+                        my: 4,
+                        mx: 4,
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
                       }}
                     >
-                      {proveedoresList.map((proveedor) => (
-                        <MenuItem
-                          key={proveedor.idProveedor}
-                          value={proveedor.idProveedor}
+                      <Typography component="h1" variant="h5">
+                        "Registra tus compras"{" "}
+                      </Typography>
+                      <Box
+                        component="form"
+                        noValidate
+                        onSubmit={handleSubmit}
+                        sx={{ mt: 1 }}
+                      >
+                        <Grid
+                          container
+                          rowSpacing={1}
+                          columnSpacing={{ xs: 1, sm: 2, md: 3 }}
                         >
-                          {proveedor.nombre}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </Grid>
+                          {/* fecha */}
+                          <Grid item xs={12}>
+                            <TextField
+                              label="Fecha"
+                              type="date"
+                              fullWidth
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
+                              value={formData.fechaCompra}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  fechaCompra: e.target.value,
+                                })
+                              }
+                              style={{ marginRight: "10px" }}
+                            />
+                          </Grid>
 
-                  {/*Nombre usuario*/}
-                  <Grid item xs={4}>
-                    <Select
-                      label="Seleccionar usuario"
-                      variant="outlined"
-                      fullWidth
-                      value={formData.idUsuario}
-                      onChange={(e: any) => {
-                        setFormData({
-                          ...formData,
-                          idUsuario: e.target.value,
-                        });
-                        console.log(formData);
-                      }}
-                    >
-                      {usuarioList.map((usuario) => (
-                        <MenuItem
-                          key={usuario.idUsuario}
-                          value={usuario.idUsuario}
-                        >
-                          {usuario.nombre}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </Grid>
+                          {/**numerodefactura */}
+                          <Grid item xs={12}>
+                            <TextField
+                              label="Factura"
+                              variant="outlined"
+                              fullWidth
+                              value={formData.numeroDeFactura}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  numeroDeFactura: e.target.value,
+                                })
+                              }
+                            />
+                          </Grid>
 
-                  {/* fecha */}
-                  <Grid item xs={4}>
-                    <TextField
-                      label="Fecha"
-                      type="date"
-                      fullWidth
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      value={dateFrom}
-                      onChange={(e) => setFormData({...formData, fecha: e.target.value})}
-                      style={{ marginRight: "10px" }}
-                    />
+                          {/**nombre proveedor */}
+                          <Grid item xs={12}>
+                            <InputLabel id="proveedor-label">
+                              Selecciona el Proveedor
+                            </InputLabel>
+                            <Select
+                              label="Selecciona el Proveedor"
+                              variant="outlined"
+                              fullWidth
+                              value={formData.idProveedor}
+                              onChange={(e: any) => {
+                                setFormData({
+                                  ...formData,
+                                  idProveedor: e.target.value,
+                                });
+                              }}
+                            >
+                              {proveedorList.map((proveedor) => (
+                                <MenuItem
+                                  key={proveedor.idProveedor}
+                                  value={proveedor.idProveedor}
+                                >
+                                  {proveedor.nombre} {proveedor.apellido}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </Grid>
+                          {/*Nombre usuario*/}
+                          <Grid item xs={12}>
+                            <InputLabel id="comprador-label">
+                              Selecciona el comprador
+                            </InputLabel>
+                            <Select
+                              label="Selecciona el comprador"
+                              variant="outlined"
+                              fullWidth
+                              value={formData.idUsuario}
+                              onChange={(e: any) => {
+                                setFormData({
+                                  ...formData,
+                                  idUsuario: e.target.value,
+                                });
+                              }}
+                            >
+                              {usuarioList.map((usuario) => (
+                                <MenuItem
+                                  key={usuario.idUsuario}
+                                  value={usuario.idUsuario}
+                                >
+                                  {usuario.nombre} {usuario.apellido}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </Grid>
+                        </Grid>
+                      </Box>
+                    </Box>
                   </Grid>
-        
-            
-
-        {/*Button */}
-        <DialogActions>
-          <LoadingButton
-            loading={loading}
-            disabled={
-              formData.cantidad == null ||
-              formData.formaPago == null ||
-              formData.total == null ||
-              formData.fecha == null
-            }
-            size="large"
-            onClick={(e: any) => validate(e)}
-          >
-            {"Añadir"}
-          </LoadingButton>
-        </DialogActions>
                 </Grid>
               </Box>
-            </Box>
+            </Toolbar>
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <Toolbar>
+              <Box
+                sx={{
+                  marginTop: 8,
+                  width: "100%", // Ancho ajustado al 100%
+                  maxWidth: 1500, // Máximo ancho permitido
+                }}
+              >
+                <Grid container>
+                  <CssBaseline />
+                  <Grid
+                    item
+                    xs={12}
+                    sm={8}
+                    md={12} //aca
+                    component={Paper}
+                    elevation={6}
+                    square
+                  >
+                    <Box
+                      sx={{
+                        my: 4,
+                        mx: 4,
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Typography component="h1" variant="h5">
+                        "Detalle de compras"
+                      </Typography>
+                      <Box
+                        component="form"
+                        noValidate
+                        onSubmit={handleSubmit}
+                        sx={{ mt: 1 }}
+                      >
+                        {/* total */}
+                        <Grid item xs={12}>
+                          <Typography variant="h6" component="h2">
+                            Total: ${formData.total}
+                          </Typography>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                          <Typography
+                            id="modal-modal-title"
+                            variant="h6"
+                            component="h2"
+                          >
+                            Seleccione el método de pago
+                          </Typography>
+                        </Grid>
+                        {/* efectivo */}
+                        <Grid item xs={4}>
+                          <FormControlLabel
+                            control={<Checkbox checked={formData.efectivo} />}
+                            label="Efectivo"
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                efectivo: (e.target as HTMLInputElement)
+                                  .checked,
+                              })
+                            }
+                          />
+                        </Grid>
+                        {/* transferencia */}
+                        <Grid item xs={4}>
+                          <FormControlLabel
+                            control={
+                              <Checkbox checked={formData.transferencia} />
+                            }
+                            label="Transferencia"
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                transferencia: (e.target as HTMLInputElement)
+                                  .checked,
+                              })
+                            }
+                          />
+                        </Grid>
+
+                        <DialogActions>
+                          <LoadingButton
+                            loading={loading}
+                            disabled={
+                              formData.fechaCompra !== null &&
+                              formData.efectivo !== null &&
+                              formData.transferencia !== null &&
+                              formData.total !== null &&
+                              formData.numeroDeFactura !== "" &&
+                              formData.idUsuario !== null &&
+                              formData.cantidad !== null &&
+                              formData.precio !== null &&
+                              formData.precioCompra!== null &&
+                              formData.idProducto !== null &&
+                              formData.idProveedor !== null &&
+                              formData.nombreProducto!== null &&
+                              formData.stock !== null
+                            }
+                            size="large"
+                            onClick={(e: any) => validate(e)}
+                          >
+                            {"Terminar Compra"}
+                          </LoadingButton>
+                        </DialogActions>
+                      </Box>
+                    </Box>
+                  </Grid>
+                </Grid>
+              </Box>
+            </Toolbar>
           </Grid>
         </Grid>
-      </Box>
-      </Toolbar>
-
+      </DialogContent>
       {/* Delete dialog */}
       <Dialog
         fullScreen={fullScreen}
@@ -410,17 +658,16 @@ export default function ListComoras() {
             color="error"
             onClick={() => {
               setDeleteDialog(false);
-              setToDelete(null);
+              setDeleteIndex(-1);
             }}
           >
             {"Cancelar"}
           </Button>
-          <Button size="large" onClick={() => deleteItem()}>
+          <Button size="large" onClick={() => deleteCompraItem(deleteIndex)}>
             {"Borrar"}
           </Button>
         </DialogActions>
       </Dialog>
-
       {/*Buscador*/}
       <InputBase
         sx={{
@@ -447,8 +694,7 @@ export default function ListComoras() {
         }
         onChange={(event) => filteredProductoList(event.target.value)}
       />
-
-      {/*Table */}
+      {/*Table productos */}
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
@@ -456,13 +702,11 @@ export default function ListComoras() {
               <StyledTableCell width={115} align="center">
                 Acciones
               </StyledTableCell>
-              <StyledTableCell>Nombre</StyledTableCell>
-              <StyledTableCell>Nombre Proveedor</StyledTableCell>
+              <StyledTableCell>Nombre Producto</StyledTableCell>
               <StyledTableCell>Stock</StyledTableCell>
               <StyledTableCell>Detalle</StyledTableCell>
               <StyledTableCell>Precio de compra</StyledTableCell>
-              <StyledTableCell>Cantidad</StyledTableCell>
-              <StyledTableCell>Total por Producto</StyledTableCell>
+              <StyledTableCell>Precio de venta</StyledTableCell>
             </TableRow>
           </TableHead>
 
@@ -473,46 +717,24 @@ export default function ListComoras() {
                   page * rowsPerPage + rowsPerPage
                 )
               : productoSearchList
-            ).map((row) => (
-              <StyledTableRow key={row.idProducto}>
+            ).map((producto, index) => (
+              <StyledTableRow key={index}>
                 <StyledTableCell component="th" scope="row">
                   <IconButton
                     aria-label="edit"
-                    onClick={() => {
-                      setDialog(true);
-                      setIsNew(false);
-                      setFormData({
-                        idProducto: row.idProducto,
-                        detalle: row.detalle,
-                        precioVenta: row.precioVenta,
-                        precioCompra: row.precioCompra,
-                        stock: row.stock,
-                        idProveedor: row.idProveedor,
-                        nombreProducto: row.nombreProducto,
-                      });
-                    }}
+                    onClick={() => handleAddButtonClick(producto)}
                   >
-                    <EditIcon />
-                  </IconButton>
-
-                  <IconButton
-                    color="error"
-                    aria-label="delete"
-                    onClick={() => {
-                      setToDelete(row.idProducto);
-                      setDeleteDialog(true);
-                    }}
-                  >
-                    <DeleteIcon />
+                    <AddShoppingCartSharpIcon />
+                    {/* <ToastContainer style={{ fontSize: "10px", padding: "8px 12px" }} /> */}
                   </IconButton>
                 </StyledTableCell>
                 <StyledTableCell component="th" scope="row">
-                  {row.nombreProducto}
+                  {producto.nombreProducto}
                 </StyledTableCell>
-                <StyledTableCell>{row.stock}</StyledTableCell>
-                <StyledTableCell>{row.detalle}</StyledTableCell>
-                <StyledTableCell>${row.precioVenta}</StyledTableCell>
-                <StyledTableCell>${row.precioCompra}</StyledTableCell>
+                <StyledTableCell>{producto.stock}</StyledTableCell>
+                <StyledTableCell>{producto.detalle}</StyledTableCell>
+                <StyledTableCell>${producto.precioVenta}</StyledTableCell>
+                <StyledTableCell>${producto.precioCompra}</StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>
@@ -537,81 +759,84 @@ export default function ListComoras() {
           </TableFooter>
         </Table>
       </TableContainer>
+      <br /> {/* Espacio entre las tablas */}
+      <br /> {/* Espacio entre las tablas */}
+      {/*Table ventas */}
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 700 }} aria-label="customized table">
+          <TableHead>
+            <TableRow>
+              <StyledTableCell width={115} align="center">
+                Acciones
+              </StyledTableCell>
+              <StyledTableCell>Nombre Producto</StyledTableCell>
+              <StyledTableCell>Cantidad</StyledTableCell>
+              <StyledTableCell>Precio</StyledTableCell>
+              <StyledTableCell>Total</StyledTableCell>
+            </TableRow>
+          </TableHead>
 
-      {/*Detalle de compra*/}
-      <Box
-        component={Paper}
-        sx={{
-          my: 8,
-          mx: "auto",
-          width: "80%", // Ancho ajustado
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          textAlign: "center",
-        }}
-      >
-        <Typography component="h1" variant="h5">
-          Detalle de compra
-        </Typography>
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
-          <Grid
-            container
-            rowSpacing={1}
-            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-          >
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              label="Total "
-              name="Total"
-              autoComplete="total"
-              autoFocus
-            />
-            <Button onClick={handleOpen} style={{ marginTop: "-6px" }}>
-              Terminar Compra
-            </Button>
-            <Modal
-              open={open}
-              onClose={handleClose}
-              aria-labelledby="modal-modal-title"
-              aria-describedby="modal-modal-description"
-            >
-              <Box sx={style}>
-                <Typography id="modal-modal-title" variant="h6" component="h2">
-                  Seleccione el metodo de pago
-                </Typography>
-                <label htmlFor="checkbox1">Efectivo</label>
-                <Checkbox
-                  {...label}
-                  id="checkbox1"
-                  defaultChecked
-                  sx={{ mr: 2 }}
-                />
-                <label htmlFor="checkbox2">Transferencia</label>
-                <Checkbox {...label} id="checkbox2" sx={{ mr: 2 }} />
-                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                  Numero de vta
-                </Typography>
-                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                  ¿Seguro desea finalizar la compra?
-                </Typography>
-                <Button onClick={handleOkClick} disabled={okClicked}>
-                  Ok
-                </Button>
-                <Button onClick={handleCancelClick} disabled={cancelClicked}>
-                  Cancelar
-                </Button>
-              </Box>
-            </Modal>
-          </Grid>
-          <Grid container>
-            <Grid item xs></Grid>
-            <Grid item></Grid>
-          </Grid>
-        </Box>
-      </Box>
+          <TableBody>
+            {productoCompraList.map((row, index) => (
+              <StyledTableRow key={index}>
+                <StyledTableCell component="th" scope="row">
+                  <IconButton
+                    color="error"
+                    aria-label="delete"
+                    onClick={() => {
+                      // setToDelete(row.idProducto);
+                      setDeleteDialog(true);
+                    }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </StyledTableCell>
+
+                <StyledTableCell>{row.nombreProducto}</StyledTableCell>
+                <StyledTableCell>
+                  {/* <TextField
+                    type="number"
+                    value={row.cantidad}
+                    onChange={(e) =>
+                      updateVentaItem(index, parseInt(e.target.value, 10))
+                    }
+                  /> */}
+
+                  <button onClick={(e) => updateCompraItem(index, "quitar")}>
+                    Quitar
+                  </button>
+
+                  <input type="number" value={row.cantidad} disabled />
+                  <button onClick={(e) => updateCompraItem(index, "agregar")}>
+                    Agregar
+                  </button>
+                </StyledTableCell>
+                <StyledTableCell>${row.precioCompra}</StyledTableCell>
+                <StyledTableCell>${row.total}</StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+          <TableFooter>
+            <StyledTableRow>
+              <TablePagination
+                rowsPerPageOptions={[5]}
+                colSpan={9}
+                count={compraSearchList.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                SelectProps={{
+                  inputProps: {
+                    "aria-label": "rows per page",
+                  },
+                  native: true,
+                }}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </StyledTableRow>
+          </TableFooter>
+        </Table>
+      </TableContainer>
     </div>
   );
 }

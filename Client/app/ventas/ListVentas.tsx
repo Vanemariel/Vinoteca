@@ -42,7 +42,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { FormEvent } from "react";
 import { Producto, Venta } from "../../TYPES/crudTypes";
 
-export default function ListComoras() {
+export default function ListVentas() {
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
       backgroundColor: theme.palette.common.black,
