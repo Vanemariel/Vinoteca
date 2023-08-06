@@ -80,9 +80,9 @@ namespace Vinoteca.Server.Controllers
                 Venta newVenta = new Venta
                 {
                     FechaVenta = ventadto.fechaVenta,
+                    NumeroDeFactura = ventadto.numeroDeFactura,
                     Efectivo = ventadto.efectivo,
                     Transferencia = ventadto.transferencia,
-                    NumeroDeFactura = ventadto.numeroDeFactura,
                     Total = ventadto.totalVenta,
                     IdUsuario = ventadto.idUsuario,
                     NombreCliente = ventadto.nombreCliente,
@@ -169,27 +169,27 @@ namespace Vinoteca.Server.Controllers
         //}
         //#endregion
 
-        //#region HTTP DELETE
-        //[HttpDelete(ApiRoutes.Venta.Delete)]
-        //public ActionResult Delete(int id)
-        //{
-        //    var ventax = _context.TablaVentas.Where(x => x.IdVenta == id).FirstOrDefault();
+        #region HTTP DELETE
+        [HttpDelete(ApiRoutes.Venta.Delete)]
+        public ActionResult Delete(int id)
+        {
+            var ventax = _context.TablaVentas.Where(x => x.IdVenta == id).FirstOrDefault();
 
-        //    if (ventax == null)
-        //    {
-        //        return NotFound($"El registro {id} no fue encontrado");
-        //    }
-        //    try
-        //    {
-        //        _context.TablaVentas.Remove(ventax);
-        //        _context.SaveChanges();
-        //        return Ok($"El registro de {ventax.IdVenta} ha sido borrado.");
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return BadRequest($"Los datos no pudieron eliminarse por: {e.Message}");
-        //    }
-        //}
-        //#endregion
+            if (ventax == null)
+            {
+                return NotFound($"El registro {id} no fue encontrado");
+            }
+            try
+            {
+                _context.TablaVentas.Remove(ventax);
+                _context.SaveChanges();
+                return Ok($"El registro de {ventax.IdVenta} ha sido borrado.");
+            }
+            catch (Exception e)
+            {
+                return BadRequest($"Los datos no pudieron eliminarse por: {e.Message}");
+            }
+        }
+        #endregion
     }
 }

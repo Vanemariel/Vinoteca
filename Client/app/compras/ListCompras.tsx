@@ -147,13 +147,13 @@ export default function ListCompras() {
     )?.stock;
 
     if (isProductAlreadyAdded) {
-      toast.info("¡Este producto ya fue agregado a las ventas!");
-    } else if (stock === undefined || stock === null || stock < 1) {
-      toast.warning("No hay stock disponible para este producto");
-    } else {
+      toast.info("¡Este producto ya fue agregado a las compras!");
+    } //else if (stock === undefined || stock === null || stock < 1) {
+      //toast.warning("No hay stock disponible para este producto");} 
+      else {
       const updatedProductoList = productoList.map((producto) =>
         producto.idProducto === row.idProducto
-          ? { ...producto, stock: stock }
+          ? { ...producto, stock: row.stock }
           : producto
       );
 
@@ -174,7 +174,7 @@ export default function ListCompras() {
 
     let cantidad = productoCompra.cantidad;
     let stock = productoCompra.stock;
-    if (accion === "agregar" && productoCompra.stock > 0) {
+    if (accion === "agregar" && productoCompra.stock >= 0 || productoCompra.stock <= 0) {
       cantidad = productoCompra.cantidad += 1;
       stock = productoCompra.stock += 1;
     }
@@ -282,22 +282,7 @@ export default function ListCompras() {
     console.log("formData", formData);
     console.log("compraSearchList", compraSearchList);
 
-    /* BORRAR */
-    // const flag = true;
-    // let ventaDto = {
-    //   fechaVenta: "2023-08-05",
-    //   numeroDeFactura: "3333",
-    //   efectivo: false,
-    //   transferencia: true,
-    //   totalVenta: 5750,
-    //   nombreCliente: "qqwdwqdwqd",
-    //   idUsuario: 1,
-    //   listaProductos: [
-    //     { idProducto: 2, cantidad: 1, total: 5400 },
-    //     { idProducto: 1, cantidad: 1, total: 350 },
-    //   ],
-    // };
-    /* BORRAR */
+   
 
     const flag =
       formData.idProveedor !== null &&
