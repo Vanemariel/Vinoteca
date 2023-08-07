@@ -2,10 +2,12 @@
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace BaseDatos.Migrations
 {
     /// <inheritdoc />
-    public partial class first : Migration
+    public partial class pucho : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -89,6 +91,15 @@ namespace BaseDatos.Migrations
                     Fecha = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Inicio = table.Column<float>(type: "real", nullable: false),
                     Cierre = table.Column<float>(type: "real", nullable: false),
+                    MañanaOTarde = table.Column<bool>(type: "bit", nullable: false),
+                    TipoIngreso = table.Column<bool>(type: "bit", nullable: false),
+                    IngresoEfectivo = table.Column<int>(type: "int", nullable: false),
+                    IngresoDébito = table.Column<int>(type: "int", nullable: false),
+                    TipoEgreso = table.Column<bool>(type: "bit", nullable: false),
+                    EgresoSueldo = table.Column<int>(type: "int", nullable: false),
+                    EgresoProveedores = table.Column<int>(type: "int", nullable: false),
+                    EgresoRetiro = table.Column<int>(type: "int", nullable: false),
+                    Ingreso = table.Column<int>(type: "int", nullable: false),
                     IdUsuario = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -109,13 +120,11 @@ namespace BaseDatos.Migrations
                     IdCompra = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FechaCompra = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    efectivo = table.Column<bool>(type: "bit", nullable: false),
-                    transferencia = table.Column<bool>(type: "bit", nullable: false),
+                    NumeroDeFactura = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Efectivo = table.Column<bool>(type: "bit", nullable: false),
+                    Transferencia = table.Column<bool>(type: "bit", nullable: false),
                     Total = table.Column<float>(type: "real", nullable: false),
-                    cantidad = table.Column<int>(type: "int", nullable: false),
-                    precio = table.Column<float>(type: "real", nullable: false),
                     IdUsuario = table.Column<int>(type: "int", nullable: false),
-                    IdProducto = table.Column<int>(type: "int", nullable: false),
                     IdProveedor = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -126,12 +135,6 @@ namespace BaseDatos.Migrations
                         column: x => x.IdProveedor,
                         principalTable: "TablaProveedores",
                         principalColumn: "IdProveedor",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_TablaCompras_TablaUsuarios_IdProducto",
-                        column: x => x.IdProducto,
-                        principalTable: "TablaUsuarios",
-                        principalColumn: "IdUsuario",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_TablaCompras_TablaUsuarios_IdUsuario",
@@ -148,30 +151,16 @@ namespace BaseDatos.Migrations
                     IdVenta = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FechaVenta = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    efectivo = table.Column<bool>(type: "bit", nullable: false),
-                    transferencia = table.Column<bool>(type: "bit", nullable: false),
+                    NumeroDeFactura = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Efectivo = table.Column<bool>(type: "bit", nullable: false),
+                    Transferencia = table.Column<bool>(type: "bit", nullable: false),
                     Total = table.Column<float>(type: "real", nullable: false),
-                    cantidad = table.Column<int>(type: "int", nullable: false),
-                    precio = table.Column<float>(type: "real", nullable: false),
-                    IdProducto = table.Column<int>(type: "int", nullable: false),
                     IdUsuario = table.Column<int>(type: "int", nullable: false),
-                    IdCliente = table.Column<int>(type: "int", nullable: false)
+                    NombreCliente = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TablaVentas", x => x.IdVenta);
-                    table.ForeignKey(
-                        name: "FK_TablaVentas_TablaClientes_IdCliente",
-                        column: x => x.IdCliente,
-                        principalTable: "TablaClientes",
-                        principalColumn: "IdCliente",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_TablaVentas_TablaProductos_IdProducto",
-                        column: x => x.IdProducto,
-                        principalTable: "TablaProductos",
-                        principalColumn: "IdProducto",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_TablaVentas_TablaUsuarios_IdUsuario",
                         column: x => x.IdUsuario,
@@ -214,10 +203,10 @@ namespace BaseDatos.Migrations
                 {
                     IdDetalleCompra = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PrecioCompra = table.Column<float>(type: "real", nullable: false),
-                    CantidadCompra = table.Column<int>(type: "int", nullable: false),
                     IdCompra = table.Column<int>(type: "int", nullable: false),
-                    IdProducto = table.Column<int>(type: "int", nullable: false)
+                    IdProducto = table.Column<int>(type: "int", nullable: false),
+                    Cantidad = table.Column<int>(type: "int", nullable: false),
+                    Total = table.Column<float>(type: "real", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -242,10 +231,10 @@ namespace BaseDatos.Migrations
                 {
                     IdDetalleVenta = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PrecioVenta = table.Column<float>(type: "real", nullable: false),
-                    CantidadVenta = table.Column<int>(type: "int", nullable: false),
                     IdVenta = table.Column<int>(type: "int", nullable: false),
-                    IdProducto = table.Column<int>(type: "int", nullable: false)
+                    IdProducto = table.Column<int>(type: "int", nullable: false),
+                    Cantidad = table.Column<int>(type: "int", nullable: false),
+                    Total = table.Column<float>(type: "real", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -264,15 +253,29 @@ namespace BaseDatos.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.InsertData(
+                table: "TablaProveedores",
+                columns: new[] { "IdProveedor", "Descripcion", "HorarioDesde", "HorarioHasta", "Nombre", "Telefono" },
+                values: new object[] { 1, "EL mas capo", "08:00", "18:00", "Jose", 351112312L });
+
+            migrationBuilder.InsertData(
+                table: "TablaUsuarios",
+                columns: new[] { "IdUsuario", "Apellido", "Nombre" },
+                values: new object[] { 1, "Salchicha", "Jose" });
+
+            migrationBuilder.InsertData(
+                table: "TablaProductos",
+                columns: new[] { "IdProducto", "Detalle", "IdProveedor", "NombreProducto", "PrecioCompra", "PrecioVenta", "Stock" },
+                values: new object[,]
+                {
+                    { 1, "LALALALA COCA", 1, "Coca", 100f, 350f, 15 },
+                    { 2, "LALALALA FERNETT", 1, "Fernet", 1000f, 1350f, 15 }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_TablaCajas_IdUsuario",
                 table: "TablaCajas",
                 column: "IdUsuario");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TablaCompras_IdProducto",
-                table: "TablaCompras",
-                column: "IdProducto");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TablaCompras_IdProveedor",
@@ -320,16 +323,6 @@ namespace BaseDatos.Migrations
                 column: "IdProveedor");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TablaVentas_IdCliente",
-                table: "TablaVentas",
-                column: "IdCliente");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TablaVentas_IdProducto",
-                table: "TablaVentas",
-                column: "IdProducto");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_TablaVentas_IdUsuario",
                 table: "TablaVentas",
                 column: "IdUsuario");
@@ -338,6 +331,9 @@ namespace BaseDatos.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "TablaClientes");
+
             migrationBuilder.DropTable(
                 name: "TablaDetalleDeCajas");
 
@@ -354,19 +350,16 @@ namespace BaseDatos.Migrations
                 name: "TablaCompras");
 
             migrationBuilder.DropTable(
-                name: "TablaVentas");
-
-            migrationBuilder.DropTable(
-                name: "TablaClientes");
-
-            migrationBuilder.DropTable(
                 name: "TablaProductos");
 
             migrationBuilder.DropTable(
-                name: "TablaUsuarios");
+                name: "TablaVentas");
 
             migrationBuilder.DropTable(
                 name: "TablaProveedores");
+
+            migrationBuilder.DropTable(
+                name: "TablaUsuarios");
         }
     }
 }

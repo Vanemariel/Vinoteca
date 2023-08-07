@@ -106,20 +106,20 @@ namespace Vinoteca.Server.Controllers
                         IdCompra = newCompra.IdCompra
                     };
 
-                    _context.TablaDetalleDeCompras.Add(detalleCompra);
-
-                    Producto producto = await _context.TablaProductos
-                        .FirstOrDefaultAsync(prod => prod.IdProducto == prodCompra.idProducto);
+                    Producto? producto = _context.TablaProductos
+                          .FirstOrDefault(prod => prod.IdProducto == prodCompra.idProducto);
 
                     if (producto == null)
                     {
                         throw new Exception("No se pudo encontrar el producto.");
                     }
 
-                    producto.Stock = producto.Stock + prodCompra.cantidad;
-                }
-
+                    producto.Stock = producto.Stock - prodCompra.cantidad;
+                };
+            
                 await _context.SaveChangesAsync();
+
+
                 return true;
             }
             catch (Exception e)
@@ -127,7 +127,6 @@ namespace Vinoteca.Server.Controllers
                 return BadRequest(e.Message);
             }
         }
-
 
 
         //#region HTTP PUT

@@ -109,6 +109,9 @@ namespace BaseDatos.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCompra"));
 
+                    b.Property<bool>("Efectivo")
+                        .HasColumnType("bit");
+
                     b.Property<string>("FechaCompra")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -123,20 +126,15 @@ namespace BaseDatos.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Proveedor")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<float>("Total")
                         .HasColumnType("real");
 
-                    b.Property<bool>("efectivo")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("transferencia")
+                    b.Property<bool>("Transferencia")
                         .HasColumnType("bit");
 
                     b.HasKey("IdCompra");
+
+                    b.HasIndex("IdProveedor");
 
                     b.HasIndex("IdUsuario");
 
@@ -411,11 +409,19 @@ namespace BaseDatos.Migrations
 
             modelBuilder.Entity("BaseDatos.Entidades.Compra", b =>
                 {
+                    b.HasOne("BaseDatos.Entidades.Proveedor", "Proveedor")
+                        .WithMany()
+                        .HasForeignKey("IdProveedor")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("Vinoteca.BaseDatos.Entidades.Usuario", "Usuario")
                         .WithMany("Compras")
                         .HasForeignKey("IdUsuario")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Proveedor");
 
                     b.Navigation("Usuario");
                 });

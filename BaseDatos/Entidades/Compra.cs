@@ -26,7 +26,7 @@ namespace BaseDatos.Entidades
 
         public int IdProveedor { get; set; }
         [ForeignKey("IdProveedor")]
-        public string Proveedor { get; set; }
+        public  Proveedor Proveedor { get; set; }
 
 
 

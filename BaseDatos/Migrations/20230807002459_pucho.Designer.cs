@@ -12,8 +12,8 @@ using Vinoteca.BaseDatos;
 namespace BaseDatos.Migrations
 {
     [DbContext(typeof(BDContext))]
-    [Migration("20230717114047_tercera")]
-    partial class tercera
+    [Migration("20230807002459_pucho")]
+    partial class pucho
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,6 +36,15 @@ namespace BaseDatos.Migrations
                     b.Property<float>("Cierre")
                         .HasColumnType("real");
 
+                    b.Property<int>("EgresoProveedores")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EgresoRetiro")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EgresoSueldo")
+                        .HasColumnType("int");
+
                     b.Property<string>("Fecha")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -43,8 +52,26 @@ namespace BaseDatos.Migrations
                     b.Property<int>("IdUsuario")
                         .HasColumnType("int");
 
+                    b.Property<int>("Ingreso")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IngresoDébito")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IngresoEfectivo")
+                        .HasColumnType("int");
+
                     b.Property<float>("Inicio")
                         .HasColumnType("real");
+
+                    b.Property<bool>("MañanaOTarde")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("TipoEgreso")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("TipoIngreso")
+                        .HasColumnType("bit");
 
                     b.HasKey("IdCaja");
 
@@ -85,12 +112,12 @@ namespace BaseDatos.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCompra"));
 
+                    b.Property<bool>("Efectivo")
+                        .HasColumnType("bit");
+
                     b.Property<string>("FechaCompra")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("IdProducto")
-                        .HasColumnType("int");
 
                     b.Property<int>("IdProveedor")
                         .HasColumnType("int");
@@ -105,24 +132,10 @@ namespace BaseDatos.Migrations
                     b.Property<float>("Total")
                         .HasColumnType("real");
 
-                    b.Property<int>("cantidad")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("efectivo")
-                        .HasColumnType("bit");
-
-                    b.Property<float>("precio")
-                        .HasColumnType("real");
-
-                    b.Property<float>("precioCompra")
-                        .HasColumnType("real");
-
-                    b.Property<bool>("transferencia")
+                    b.Property<bool>("Transferencia")
                         .HasColumnType("bit");
 
                     b.HasKey("IdCompra");
-
-                    b.HasIndex("IdProducto");
 
                     b.HasIndex("IdProveedor");
 
@@ -168,7 +181,7 @@ namespace BaseDatos.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdDetalleCompra"));
 
-                    b.Property<int>("CantidadCompra")
+                    b.Property<int>("Cantidad")
                         .HasColumnType("int");
 
                     b.Property<int>("IdCompra")
@@ -177,7 +190,7 @@ namespace BaseDatos.Migrations
                     b.Property<int>("IdProducto")
                         .HasColumnType("int");
 
-                    b.Property<float>("PrecioCompra")
+                    b.Property<float>("Total")
                         .HasColumnType("real");
 
                     b.HasKey("IdDetalleCompra");
@@ -197,7 +210,7 @@ namespace BaseDatos.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdDetalleVenta"));
 
-                    b.Property<int>("CantidadVenta")
+                    b.Property<int>("Cantidad")
                         .HasColumnType("int");
 
                     b.Property<int>("IdProducto")
@@ -206,7 +219,7 @@ namespace BaseDatos.Migrations
                     b.Property<int>("IdVenta")
                         .HasColumnType("int");
 
-                    b.Property<float>("PrecioVenta")
+                    b.Property<float>("Total")
                         .HasColumnType("real");
 
                     b.HasKey("IdDetalleVenta");
@@ -251,6 +264,28 @@ namespace BaseDatos.Migrations
                     b.HasIndex("IdProveedor");
 
                     b.ToTable("TablaProductos");
+
+                    b.HasData(
+                        new
+                        {
+                            IdProducto = 1,
+                            Detalle = "LALALALA COCA",
+                            IdProveedor = 1,
+                            NombreProducto = "Coca",
+                            PrecioCompra = 100f,
+                            PrecioVenta = 350f,
+                            Stock = 15
+                        },
+                        new
+                        {
+                            IdProducto = 2,
+                            Detalle = "LALALALA FERNETT",
+                            IdProveedor = 1,
+                            NombreProducto = "Fernet",
+                            PrecioCompra = 1000f,
+                            PrecioVenta = 1350f,
+                            Stock = 15
+                        });
                 });
 
             modelBuilder.Entity("BaseDatos.Entidades.Proveedor", b =>
@@ -283,6 +318,17 @@ namespace BaseDatos.Migrations
                     b.HasKey("IdProveedor");
 
                     b.ToTable("TablaProveedores");
+
+                    b.HasData(
+                        new
+                        {
+                            IdProveedor = 1,
+                            Descripcion = "EL mas capo",
+                            HorarioDesde = "08:00",
+                            HorarioHasta = "18:00",
+                            Nombre = "Jose",
+                            Telefono = 351112312L
+                        });
                 });
 
             modelBuilder.Entity("BaseDatos.Entidades.Venta", b =>
@@ -293,18 +339,19 @@ namespace BaseDatos.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdVenta"));
 
+                    b.Property<bool>("Efectivo")
+                        .HasColumnType("bit");
+
                     b.Property<string>("FechaVenta")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("IdCliente")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdProducto")
-                        .HasColumnType("int");
-
                     b.Property<int>("IdUsuario")
                         .HasColumnType("int");
+
+                    b.Property<string>("NombreCliente")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NumeroDeFactura")
                         .IsRequired()
@@ -313,26 +360,10 @@ namespace BaseDatos.Migrations
                     b.Property<float>("Total")
                         .HasColumnType("real");
 
-                    b.Property<int>("cantidad")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("efectivo")
-                        .HasColumnType("bit");
-
-                    b.Property<float>("precio")
-                        .HasColumnType("real");
-
-                    b.Property<float>("precioVenta")
-                        .HasColumnType("real");
-
-                    b.Property<bool>("transferencia")
+                    b.Property<bool>("Transferencia")
                         .HasColumnType("bit");
 
                     b.HasKey("IdVenta");
-
-                    b.HasIndex("IdCliente");
-
-                    b.HasIndex("IdProducto");
 
                     b.HasIndex("IdUsuario");
 
@@ -358,6 +389,14 @@ namespace BaseDatos.Migrations
                     b.HasKey("IdUsuario");
 
                     b.ToTable("TablaUsuarios");
+
+                    b.HasData(
+                        new
+                        {
+                            IdUsuario = 1,
+                            Apellido = "Salchicha",
+                            Nombre = "Jose"
+                        });
                 });
 
             modelBuilder.Entity("BaseDatos.Entidades.Caja", b =>
@@ -373,12 +412,6 @@ namespace BaseDatos.Migrations
 
             modelBuilder.Entity("BaseDatos.Entidades.Compra", b =>
                 {
-                    b.HasOne("Vinoteca.BaseDatos.Entidades.Usuario", "Producto")
-                        .WithMany()
-                        .HasForeignKey("IdProducto")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("BaseDatos.Entidades.Proveedor", "Proveedor")
                         .WithMany()
                         .HasForeignKey("IdProveedor")
@@ -390,8 +423,6 @@ namespace BaseDatos.Migrations
                         .HasForeignKey("IdUsuario")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("Producto");
 
                     b.Navigation("Proveedor");
 
@@ -467,27 +498,11 @@ namespace BaseDatos.Migrations
 
             modelBuilder.Entity("BaseDatos.Entidades.Venta", b =>
                 {
-                    b.HasOne("BaseDatos.Entidades.Cliente", "Cliente")
-                        .WithMany()
-                        .HasForeignKey("IdCliente")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("BaseDatos.Entidades.Producto", "Producto")
-                        .WithMany()
-                        .HasForeignKey("IdProducto")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("Vinoteca.BaseDatos.Entidades.Usuario", "Usuario")
                         .WithMany()
                         .HasForeignKey("IdUsuario")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("Cliente");
-
-                    b.Navigation("Producto");
 
                     b.Navigation("Usuario");
                 });
