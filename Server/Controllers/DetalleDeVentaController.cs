@@ -29,7 +29,10 @@ namespace Vinoteca.Server.Controllers
         {
             try
             {
-                List<DetalleDeVenta> detalleDeVentas = await this._context.TablaDetalleDeVentas.ToListAsync();
+                List<DetalleDeVenta> detalleDeVentas = await this._context.TablaDetalleDeVentas
+                    .Include(detalleDeVentas => detalleDeVentas.Producto)
+                    .Include(detalleDeVentas => detalleDeVentas.Venta)
+                    .ToListAsync();
 
                 return Ok(detalleDeVentas);
             }

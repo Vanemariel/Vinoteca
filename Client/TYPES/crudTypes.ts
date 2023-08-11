@@ -126,5 +126,64 @@ export type Venta = {
   nombreProducto: string | null;
   stock: number
 };
+/** detalles type used in the CRUD operations.
+ * @type {object}
+ * @property {number} idDetalleVenta
+ * @property {number} idVenta
+ * @property {number} cantidad
+ * @property {number} total
+ * @property {boolean} efectivo
+ * @property {boolean} transferencia
+ * @property {string} numeroDeFactura
+ * @property {number} idUsuario
+ * @property {number} idProducto
+ * @property {string} nombre
+ * @property {string} nombreProducto
+ */
+export type DetalleVenta = {
+  idDetalleVenta?: number | null;
+  idVenta?: number | null;
+  cantidad?: number | null;
+  total?: number | null;
+  efectivo: boolean;
+  transferencia: boolean;
+  numeroDeFactura: string;
+  idUsuario?: number | null;
+  idProducto?: number | null;
+  nombre?: string | null;
+  nombreProducto: string | null;
+};
+
+/** detalles type used in the CRUD operations.
+ * @type {object}
+ * @property {number} idDetalleCompra
+ * @property {number} idCompra
+ * @property {number} cantidad
+ * @property {number} total
+ * @property {boolean} efectivo
+ * @property {boolean} transferencia
+ * @property {string} numeroDeFactura
+ * @property {number} idUsuario
+ * @property {number} idProducto
+ * @property {number} idProveedor
+ * @property {string} nombre
+ * @property {number} precio
+ */
+export type DetalleCompra = {
+  idVenta?: number | null;
+  fechaVenta: string | null;
+  efectivo: boolean;
+  transferencia: boolean;
+  total: number ;
+  numeroDeFactura: string;
+  idUsuario?: number | null;
+  cantidad: number;
+  precio: number ;
+  precioVenta: number;
+  idProducto?: number | null;
+  nombre?: string | null;
+  nombreProducto: string | null;
+  stock: number
+};
 
   

@@ -4,7 +4,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import * as action from "../../Utilities/action";
 import { useStore } from "../../stores/crud";
-import { Venta } from "../../TYPES/crudTypes";
+import { DetalleVenta, Venta } from "../../TYPES/crudTypes";
 
 import { styled, useTheme } from "@mui/material/styles";
 import Table from "@mui/material/Table";
@@ -18,7 +18,17 @@ import { Button, Grid, useMediaQuery } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Typography from "@mui/material/Typography";
-import { Box, Snackbar, Alert, AlertColor, TablePagination, TableFooter, TextField, IconButton, CssBaseline } from "@mui/material";
+import {
+  Box,
+  Snackbar,
+  Alert,
+  AlertColor,
+  TablePagination,
+  TableFooter,
+  TextField,
+  IconButton,
+  CssBaseline,
+} from "@mui/material";
 import { FormEvent } from "react";
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -117,22 +127,22 @@ export default function VentasHistorial() {
     message: "",
   });
 
-  const [formData, setFormData] = useState({
+   const [formData, setFormData] = useState({
+    idDetalleVenta: null as any, 
     idVenta: null as any,
-    idUsuario: null as any,
-    idCliente: null as any,
-    idProducto: null as any,
-    fechaVenta: null,
-    transferencia: false,
-    efectivo: true,
+    cantidad: null as any,
     total: null as any,
-    //numerodeFactura: 0
-    cantidad: 0,
-    precio: 0,
-  } as Venta);
+    efectivo: true,
+    transferencia: false,
+    numeroDeFactura: null as any,
+    idUsuario: null as any,
+    idProducto: null as any,
+    nombre: null as any,
+    nombreProducto: null,
+   } as DetalleVenta);
 
   useEffect(() => {
-    getList(action.VENTA_CONTROLLER)
+    getList(action.DETALLEVENTA_CONTROLLER)
       .then((res: any) => {
         setVentaList(res.data);
         setVentaSearchList(res.data);
@@ -147,80 +157,7 @@ export default function VentasHistorial() {
         setLoaded(true);
       });
   }, [getList, dialog]);
-
-  const validate = async (e: Event) => {
-    e.preventDefault();
-    if (
-      formData.cantidad != null ||
-      formData.precio != null ||
-      formData.total != null 
-    ) {
-      setLoading(true);
-      let body = formData;
-      let response = null;
-      if (isNew) {
-        delete body.idProducto;
-        response = await newObject(action.PRODUCTO_CONTROLLER, body);
-      } else {
-        response = await updateObject(action.PRODUCTO_CONTROLLER, body);
-      }
-      setLoading(false);
-
-      setDialog(false);
-
-      setFormData({
-        idVenta: null as any,
-        idProducto: null as any,
-        idUsuario: null as any,
-        efectivo: null as any,
-        transferencia: null as any,
-        total: null as any,
-        precio: null as any,
-        cantidad: null as any,
-        fechaVenta: null as any,
-      });
-      setLoading(false);
-
-      getList(action.VENTA_CONTROLLER)
-        .then((res: any) => {
-          setVentaList(res.data);
-          setLoaded(true);
-        })
-        .catch((err: any) => {
-          setSnackbar({
-            open: true,
-            severity: "success",
-            message: isNew
-              ? "creado" + " " + "con exito"
-              : "actualizado" + " " + "con exito",
-          });
-        });
-    }
-  };
-
-  const deleteItem = () => {
-    deleteObject(action.VENTA_CONTROLLER, toDelete as unknown as number)
-      .then((res: any) => {
-        setDeleteDialog(false);
-        setSnackbar({
-          open: true,
-          severity: "success",
-          message: "Eliminado" + " " + "con excito",
-        });
-        setVentaList(
-          ventaList.filter((producto) => producto.idVenta !== toDelete)
-        );
-      })
-      .catch((err: any) => {
-        setSnackbar({
-          open: true,
-          severity: "error",
-          message: "Algo sucedio",
-        });
-      });
-  };
-
-
+ 
   return (
     <div>
       {/**Box INGRESAR PRODUCTOS */}
@@ -298,14 +235,7 @@ export default function VentasHistorial() {
                       />
                     </div>
                   </Grid>
-                  <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    sx={{ mt: 3, mb: 2 }}
-                  >
-                    BUSCAR
-                  </Button>
+
                   <Grid container>
                     <Grid item xs></Grid>
                     <Grid item></Grid>
@@ -329,10 +259,10 @@ export default function VentasHistorial() {
               </StyledTableCell>
               <StyledTableCell>fechaVenta</StyledTableCell>
               <StyledTableCell>Vendedor</StyledTableCell>
+              <StyledTableCell>Productos</StyledTableCell>
               <StyledTableCell>Cliente</StyledTableCell>
               <StyledTableCell>efectivo</StyledTableCell>
               <StyledTableCell>transferencia</StyledTableCell>
-              <StyledTableCell>Productos</StyledTableCell>
               <StyledTableCell>Cantidad</StyledTableCell>
               <StyledTableCell>Total</StyledTableCell>
             </TableRow>
@@ -348,39 +278,10 @@ export default function VentasHistorial() {
             ).map((row) => (
               <StyledTableRow key={row.idProducto}>
                 <StyledTableCell component="th" scope="row">
-                  <IconButton
-                    aria-label="edit"
-                    onClick={() => {
-                      setDialog(true);
-                      setIsNew(false);
-                      setFormData({
-                        fechaVenta: row.fechaVenta,
-                        efectivo: row.efectivo,
-                        transferencia: row.transferencia,
-                        idProducto: row.idProducto,
-                        total: row.total,
-                        idUsuario: row.idUsuario,
-                        cantidad: row.cantidad,
-                        precio: row.precio,
-                      });
-                    }}
-                  >
-                    <EditIcon />
-                  </IconButton>
 
-                  <IconButton
-                    color="error"
-                    aria-label="delete"
-                    onClick={() => {
-                      setToDelete(row.idVenta);
-                      setDeleteDialog(true);
-                    }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
                 </StyledTableCell>
                 <StyledTableCell component="th" scope="row">
-                {row.fechaVenta ? row.fechaVenta.toLocaleString() : null}
+                  {row.fechaVenta ? row.fechaVenta.toLocaleString() : null}
                 </StyledTableCell>
                 <StyledTableCell>{row.efectivo}</StyledTableCell>
                 <StyledTableCell>{row.transferencia}</StyledTableCell>
