@@ -115,7 +115,7 @@ export default function VentasHistorial() {
     setPage(0);
   };
 
-  const [ventaSearchList, setVentaSearchList] = useState([] as Venta[]); //para el buscador
+  const [ventaSearchList, setVentaSearchList] = useState([] as DetalleVenta[]); //para el buscador
 
   const [usuarioList, setUsuarioList] = useState<
     Array<{ idUsuario: number; nombre: string }>
@@ -129,15 +129,16 @@ export default function VentasHistorial() {
 
    const [formData, setFormData] = useState({
     idDetalleVenta: null as any, 
+    fechaVenta:null as any,
     idVenta: null as any,
     cantidad: null as any,
     total: null as any,
     efectivo: true,
     transferencia: false,
     numeroDeFactura: null as any,
-    idUsuario: null as any,
+    nombreUsuario: null,
     idProducto: null as any,
-    nombre: null as any,
+    nombreCliente: null as any,
     nombreProducto: null,
    } as DetalleVenta);
 
@@ -145,6 +146,7 @@ export default function VentasHistorial() {
     getList(action.DETALLEVENTA_CONTROLLER)
       .then((res: any) => {
         setVentaList(res.data);
+        console.log("Pasa x acá", res.data)
         setVentaSearchList(res.data);
         setLoaded(true);
       })
@@ -160,21 +162,6 @@ export default function VentasHistorial() {
   }, [getList, dialog]);
   
 
-  // const handleSearchClick = () => {
-  //   const filteredSales = ventaList.filter((venta) => {
-  //     const ventaDate = venta.fechaVenta ? new Date(venta.fechaVenta) : null;
-  //     if (ventaDate && dateFrom && dateTo) {
-  //       return ventaDate >= new Date(dateFrom) && ventaDate <= new Date(dateTo);
-  //     }
-  //     return false;
-  //   });
-  //   setVentaSearchList(filteredSales);
-  // };
-  // const handleClearSearch = () => {
-  //   setVentaSearchList(ventaList);
-  //   setDateFrom("");
-  //   setDateTo("");
-  // };
  
   return (
     <div>
@@ -280,9 +267,6 @@ export default function VentasHistorial() {
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
-            <StyledTableCell width={115} align="center">
-                Opciones
-              </StyledTableCell>
               <StyledTableCell>Fecha de Venta</StyledTableCell>
               <StyledTableCell>Vendedor</StyledTableCell>
               <StyledTableCell>Productos</StyledTableCell>
@@ -304,16 +288,13 @@ export default function VentasHistorial() {
             ).map((row) => (
               <StyledTableRow key={row.nombreProducto}>
                 <StyledTableCell component="th" scope="row">
-
-                </StyledTableCell>
-                <StyledTableCell component="th" scope="row">
                   {row.fechaVenta ? row.fechaVenta.toLocaleString() : null}
                 </StyledTableCell>
-                <StyledTableCell>{row.idUsuario}</StyledTableCell>
-                <StyledTableCell>{row.idProducto}</StyledTableCell>
-                <StyledTableCell>{row.nombre}</StyledTableCell>
-                <StyledTableCell>{row.efectivo}</StyledTableCell>
-                <StyledTableCell>{row.transferencia}</StyledTableCell>
+                <StyledTableCell>{row.nombreUsuario}</StyledTableCell>
+                <StyledTableCell>{row.nombreProducto}</StyledTableCell>
+                <StyledTableCell>{row.nombreCliente}</StyledTableCell>
+                <StyledTableCell>{row.efectivo? "SI" : "NO"}</StyledTableCell>
+                <StyledTableCell>{row.transferencia ? "SI" : "NO"}</StyledTableCell>
                 <StyledTableCell>{row.cantidad}</StyledTableCell>
                 <StyledTableCell>${row.total}</StyledTableCell>
               </StyledTableRow>

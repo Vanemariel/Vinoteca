@@ -128,35 +128,50 @@ export type Venta = {
 };
 /** detalles type used in the CRUD operations.
  * @type {object}
- * @property {number} idDetalleVenta
- * @property {number} idVenta
- * @property {number} cantidad
- * @property {number} total
- * @property {boolean} efectivo
- * @property {boolean} transferencia
- * @property {string} numeroDeFactura
+ * @property {string} idVenta
  * @property {number} idUsuario
  * @property {number} idProducto
  * @property {string} nombre
  * @property {string} nombreProducto
+ * @property {boolean} Efectivo
+ * @property {boolean} Transferencia
+ * @property {number} Cantidad
+ * @property {number} Total
+ *@
+ * @property {number} IdDetalleVenta
+ * @property {number} IdVenta
+ * @property {string} numeroDeFactura
  */
 export type DetalleVenta = {
-  idDetalleVenta?: number | null;
-  idVenta?: number | null;
+  idVenta: number | null;
   cantidad?: number | null;
   total?: number | null;
-  efectivo: boolean;
+  efectivo?: boolean;
   transferencia: boolean;
   numeroDeFactura: string;
-  idUsuario?: number | null;
+  nombreUsuario?: string | null;
   idProducto?: number | null;
-  nombre?: string | null;
-  nombreProducto: string | null;
+  fechaVenta: string;
+  nombreCliente?: string | null;
+  nombreProducto?: string | null;
+ 
 };
+// idDetalleVenta: null as any, 
+//     idVenta: null as any,
+//     cantidad: null as any,
+//     total: null as any,
+//     efectivo: true,
+//     transferencia: false,
+//     numeroDeFactura: null as any,
+//     nombreUsuario: null,
+//     idProducto: null as any,
+//     nombreCliente: null as any,
+//     nombreProducto: null,
+//    } as DetalleVenta);
 
 /** detalles type used in the CRUD operations.
  * @type {object}
- * @property {number} idDetalleCompra
+ * @property {number} IdDetalleVenta
  * @property {number} idCompra
  * @property {number} cantidad
  * @property {number} total

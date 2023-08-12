@@ -25,16 +25,32 @@ namespace Vinoteca.Server.Controllers
 
         #region HTTP GET 
         [HttpGet(ApiRoutes.DetalleDeVenta.GetAll)]
-        public async Task<ActionResult<List<DetalleDeVenta>>> GetAll()
+        public async Task<ActionResult<List<DetalleDeVentaDto>>> GetAll()
         {
             try
             {
                 List<DetalleDeVenta> detalleDeVentas = await this._context.TablaDetalleDeVentas
                     .Include(detalleDeVentas => detalleDeVentas.Producto)
                     .Include(detalleDeVentas => detalleDeVentas.Venta)
+                       .ThenInclude(Venta => Venta.Usuario)
                     .ToListAsync();
-
-                return Ok(detalleDeVentas);
+                var mappedData = detalleDeVentas.Select(detalle => new DetalleDeVentaDto
+                //return Ok(detalleDeVentas);
+                {
+                    idDetalleVenta = detalle.IdDetalleVenta,
+                    fechaVenta = detalle.Venta?.FechaVenta,
+                    idVenta = detalle.IdVenta,
+                    nombreUsuario = detalle.Venta.Usuario.Nombre,
+                    cantidad = detalle.Cantidad,
+                    total = detalle.Total,
+                    efectivo = detalle.Venta.Efectivo,
+                    transferencia = detalle.Venta.Transferencia,
+                    numeroDeFactura = detalle.Venta.NumeroDeFactura,
+                    idProducto = detalle.IdProducto,
+                    nombreCliente = detalle.Venta.NombreCliente,
+                    nombreProducto = detalle.Producto.NombreProducto
+                }).ToList();
+                return Ok(mappedData);
             }
             catch (Exception ex)
             {
@@ -47,16 +63,31 @@ namespace Vinoteca.Server.Controllers
         {
             try
             {
-                DetalleDeVenta? DetalleDeVta = await this._context.TablaDetalleDeVentas
-                    .Where(DetalleDeVta => DetalleDeVta.IdDetalleVenta == id)
-                    .FirstOrDefaultAsync();
-
-                if (DetalleDeVta == null)
+                var detalle = await this._context.TablaDetalleDeVentas
+                      .Include(detalle => detalle.Producto)
+                      .Include(detalle => detalle.Venta)
+                      .FirstOrDefaultAsync(detalle => detalle.IdDetalleVenta == id);
+               
+                if (detalle == null)
                 {
-                    throw new Exception($"no existe el det de caja con id igual a {id}.");
+                    return NotFound();
                 }
-
-                return Ok(DetalleDeVta);
+              
+                var detalleDTO = new DetalleDeVentaDto
+                {
+                    fechaVenta = detalle.Venta?.FechaVenta,
+                    idVenta = detalle.IdVenta,
+                    nombreUsuario = detalle.Venta.Usuario.Nombre,
+                    cantidad = detalle.Cantidad,
+                    total = detalle.Total,
+                    efectivo = detalle.Venta.Efectivo,
+                    transferencia = detalle.Venta.Transferencia,
+                    numeroDeFactura = detalle.Venta.NumeroDeFactura,
+                    idProducto = detalle.IdProducto,
+                    nombreCliente = detalle.Venta.NombreCliente,
+                    nombreProducto = detalle.Producto.NombreProducto
+                };
+                return Ok(detalleDTO);
             }
             catch (Exception ex)
             {
@@ -71,23 +102,20 @@ namespace Vinoteca.Server.Controllers
         {
             try
             {
-                // Verificar si el IdProducto y el IdVenta existen en la base de datos
-                var venta = _context.TablaVentas.FirstOrDefault(v => v.IdVenta == detvtadto.IdVenta);
-                var producto = _context.TablaProductos.FirstOrDefault(p => p.IdProducto == detvtadto.IdProducto);
+                var venta = _context.TablaVentas.FirstOrDefault(v => v.IdVenta == detvtadto.idVenta);
+                var producto = _context.TablaProductos.FirstOrDefault(p => p.IdProducto == detvtadto.idProducto);
 
                 if (venta == null || producto == null)
                 {
                     return BadRequest("La venta o el producto no existen en la base de datos.");
                 }
 
-                // Crear un nuevo objeto DetalleDeVenta
                 var detalleDeVenta = new DetalleDeVenta
                 {
-                    IdVenta = detvtadto.IdVenta,
-                    IdProducto = detvtadto.IdProducto
+                    IdVenta = detvtadto.idVenta,
+                    IdProducto = detvtadto.idProducto
                 };
 
-                // Agregar el detalle de venta a la tabla correspondiente
                 _context.TablaDetalleDeVentas.Add(detalleDeVenta);
                 await _context.SaveChangesAsync();
 
@@ -98,7 +126,6 @@ namespace Vinoteca.Server.Controllers
                 return BadRequest(e.Message);
             }
         }
-
 
         #endregion
 
@@ -113,16 +140,16 @@ namespace Vinoteca.Server.Controllers
             }
 
             // Verificar si el IdProducto y el IdVenta existen en la base de datos
-            var venta = _context.TablaVentas.FirstOrDefault(v => v.IdVenta == detvtadto.IdVenta);
-            var producto = _context.TablaProductos.FirstOrDefault(p => p.IdProducto == detvtadto.IdProducto);
+            var venta = _context.TablaVentas.FirstOrDefault(v => v.IdVenta == detvtadto.idVenta);
+            var producto = _context.TablaProductos.FirstOrDefault(p => p.IdProducto == detvtadto.idProducto);
 
             if (venta == null || producto == null)
             {
                 return BadRequest("La venta o el producto no existen en la base de datos.");
             }
 
-            detalleDeVenta.IdVenta = detvtadto.IdVenta;
-            detalleDeVenta.IdProducto = detvtadto.IdProducto;
+            detalleDeVenta.IdVenta = detvtadto.idVenta;
+            detalleDeVenta.IdProducto = detvtadto.idProducto;
 
             try
             {
