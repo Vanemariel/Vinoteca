@@ -159,7 +159,6 @@ export default function ListVentas() {
 
       setTotalVenta(totalVenta + row.precioVenta * 1);
 
-      // ACA VA esto setProductoVentaList
       setVentaSearchList([...ventaSearchList, productToAdd]); // ver
 
       setProductoVentaList([...productoVentaList, productToAdd]);
@@ -257,47 +256,21 @@ export default function ListVentas() {
         setProductoList(productoListResponse.data);
         setProductoSearchList(productoListResponse.data);
       } catch (error) {
-        console.log(
-          "🚀 ~ file: ListVentas.tsx:256 ~ fetchData ~ error:",
-          error
-        );
       }
       try {
         const usuarioList = await getList(action.USUARIO_CONTROLLER);
         setUsuarioList(usuarioList.data);
       } catch (error) {
-        console.log(
-          "🚀 ~ file: ListVentas.tsx:261 ~ fetchData ~ error:",
-          error
-        );
       }
     };
 
     fetchData();
-    // }, [getList, dialog]);
   }, []);
 
   const validate = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("formData", formData);
     console.log("ventaSearchList", ventaSearchList);
-
-    /* BORRAR */
-    // const flag = true;
-    // let ventaDto = {
-    //   fechaVenta: "2023-08-05",
-    //   numeroDeFactura: "3333",
-    //   efectivo: false,
-    //   transferencia: true,
-    //   totalVenta: 5750,
-    //   nombreCliente: "qqwdwqdwqd",
-    //   idUsuario: 1,
-    //   listaProductos: [
-    //     { idProducto: 2, cantidad: 1, total: 5400 },
-    //     { idProducto: 1, cantidad: 1, total: 350 },
-    //   ],
-    // };
-    /* BORRAR */
 
     const flag =
       formData.nombre !== "" &&
@@ -311,7 +284,6 @@ export default function ListVentas() {
     if (flag) {
       setLoading(true);
 
-      // Crea el objeto VentaDto con los datos de la venta y detalle de venta
       const ventaDto = {
         fechaVenta: formData.fechaVenta,
         numeroDeFactura: formData.numeroDeFactura,
@@ -329,7 +301,6 @@ export default function ListVentas() {
         }),
       };
 
-      // Realiza la petición para guardar los detalles de la venta en el backend
       try {
         const response = await newObject(action.VENTA_CONTROLLER, ventaDto);
         console.log("Detalles de la venta guardados:", response);
@@ -345,10 +316,6 @@ export default function ListVentas() {
             setProductoList(productoListResponse.data);
             setProductoSearchList(productoListResponse.data);
           } catch (error) {
-            console.log(
-              "🚀 ~ file: ListVentas.tsx:256 ~ fetchData ~ error:",
-              error
-            );
           }
 
           setFormData({

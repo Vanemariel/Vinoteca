@@ -141,7 +141,7 @@ export default function VentasHistorial() {
     nombreProducto: null,
    } as DetalleVenta);
 
-  useEffect(() => {
+   useEffect(() => {
     getList(action.DETALLEVENTA_CONTROLLER)
       .then((res: any) => {
         setVentaList(res.data);
@@ -156,7 +156,38 @@ export default function VentasHistorial() {
         });
         setLoaded(true);
       });
+    getList(action.VENTA_CONTROLLER)
+      .then((res: any) => {
+        setVentaList(res.data);
+        setVentaSearchList(res.data);
+        setLoaded(true);
+      })
+      .catch((err: any) => {
+        setSnackbar({
+          open: true,
+          severity: "error",
+          message: "ocurrio un error",
+        });
+        setLoaded(true);
+      });
   }, [getList, dialog]);
+  
+
+  // const handleSearchClick = () => {
+  //   const filteredSales = ventaList.filter((venta) => {
+  //     const ventaDate = venta.fechaVenta ? new Date(venta.fechaVenta) : null;
+  //     if (ventaDate && dateFrom && dateTo) {
+  //       return ventaDate >= new Date(dateFrom) && ventaDate <= new Date(dateTo);
+  //     }
+  //     return false;
+  //   });
+  //   setVentaSearchList(filteredSales);
+  // };
+  // const handleClearSearch = () => {
+  //   setVentaSearchList(ventaList);
+  //   setDateFrom("");
+  //   setDateTo("");
+  // };
  
   return (
     <div>
@@ -235,7 +266,15 @@ export default function VentasHistorial() {
                       />
                     </div>
                   </Grid>
-
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 3, mb: 2 }}
+                  >
+                    BUSCAR
+                  </Button>
+                  
                   <Grid container>
                     <Grid item xs></Grid>
                     <Grid item></Grid>
@@ -254,15 +293,15 @@ export default function VentasHistorial() {
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
-              <StyledTableCell width={115} align="center">
-                Acciones
+            <StyledTableCell width={115} align="center">
+                Opciones
               </StyledTableCell>
-              <StyledTableCell>fechaVenta</StyledTableCell>
+              <StyledTableCell>Fecha de Venta</StyledTableCell>
               <StyledTableCell>Vendedor</StyledTableCell>
               <StyledTableCell>Productos</StyledTableCell>
               <StyledTableCell>Cliente</StyledTableCell>
-              <StyledTableCell>efectivo</StyledTableCell>
-              <StyledTableCell>transferencia</StyledTableCell>
+              <StyledTableCell>Efectivo</StyledTableCell>
+              <StyledTableCell>Transferencia</StyledTableCell>
               <StyledTableCell>Cantidad</StyledTableCell>
               <StyledTableCell>Total</StyledTableCell>
             </TableRow>
@@ -276,20 +315,20 @@ export default function VentasHistorial() {
                 )
               : ventaSearchList
             ).map((row) => (
-              <StyledTableRow key={row.idProducto}>
+              <StyledTableRow key={row.nombreProducto}>
                 <StyledTableCell component="th" scope="row">
 
                 </StyledTableCell>
                 <StyledTableCell component="th" scope="row">
                   {row.fechaVenta ? row.fechaVenta.toLocaleString() : null}
                 </StyledTableCell>
+                <StyledTableCell>{row.idUsuario}</StyledTableCell>
+                <StyledTableCell>{row.idProducto}</StyledTableCell>
+                <StyledTableCell>{row.nombre}</StyledTableCell>
                 <StyledTableCell>{row.efectivo}</StyledTableCell>
                 <StyledTableCell>{row.transferencia}</StyledTableCell>
-                <StyledTableCell>${row.idProducto}</StyledTableCell>
+                <StyledTableCell>{row.cantidad}</StyledTableCell>
                 <StyledTableCell>${row.total}</StyledTableCell>
-                <StyledTableCell>${row.idUsuario}</StyledTableCell>
-                <StyledTableCell>${row.cantidad}</StyledTableCell>
-                <StyledTableCell>${row.precio}</StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>
