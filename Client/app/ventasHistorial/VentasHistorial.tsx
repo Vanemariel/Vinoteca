@@ -156,20 +156,7 @@ export default function VentasHistorial() {
         });
         setLoaded(true);
       });
-    getList(action.VENTA_CONTROLLER)
-      .then((res: any) => {
-        setVentaList(res.data);
-        setVentaSearchList(res.data);
-        setLoaded(true);
-      })
-      .catch((err: any) => {
-        setSnackbar({
-          open: true,
-          severity: "error",
-          message: "ocurrio un error",
-        });
-        setLoaded(true);
-      });
+   
   }, [getList, dialog]);
   
 
