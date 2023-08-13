@@ -68,15 +68,6 @@ export default function VentasHistorial() {
   const [quantity, setQuantity] = useState("0");
   const [description, setDescription] = useState("");
   const [provider, setProvider] = useState("");
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
-  };
-
   const [dateFrom, setDateFrom] = useState(""); // Agregar esta línea
   const [dateTo, setDateTo] = useState(""); // Agregar esta línea
   const [showDetails, setShowDetails] = useState(false);
@@ -114,13 +105,10 @@ export default function VentasHistorial() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
   const [ventaSearchList, setVentaSearchList] = useState([] as DetalleVenta[]); //para el buscador
-
   const [usuarioList, setUsuarioList] = useState<
     Array<{ idUsuario: number; nombre: string }>
   >([]);
-
   const [snackbar, setSnackbar] = useState({
     open: false,
     severity: "success",
@@ -161,8 +149,19 @@ export default function VentasHistorial() {
    
   }, [getList, dialog]);
   
-
- 
+  const filtrarVentasPorFecha = (listaVentas: DetalleVenta[], fechaDesde: string, fechaHasta: string) => {
+    return listaVentas.filter((venta) => {
+      const fechaVenta = new Date(venta.fechaVenta);
+      return fechaVenta >= new Date(fechaDesde) && fechaVenta <= new Date(fechaHasta);
+    });
+  };
+  
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+  
+    const ventasFiltradas = filtrarVentasPorFecha(ventaSearchList, dateFrom, dateTo);
+    setVentaSearchList(ventasFiltradas);
+  }; 
   return (
     <div>
       {/**Box INGRESAR PRODUCTOS */}
