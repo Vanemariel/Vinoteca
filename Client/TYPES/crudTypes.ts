@@ -104,11 +104,11 @@ export type Compra = {
  * @property {boolean} efectivo
  * @property {boolean} transferencia
  * @property {number} total
+ * @property {string} numeroDeFactura
  * @property {number} idUsuario
- * @property {string} nombre
  * @property {number} cantidad
  * @property {number} precio
- * @property {string} numeroDeFactura
+ * @property {string} nombre
  */
 export type Venta = {
   idVenta?: number | null;
@@ -120,9 +120,10 @@ export type Venta = {
   idUsuario?: number | null;
   cantidad: number;
   precio: number ;
+  nombre?: string | null;
+  //Porque estos de abajo no van arriba??
   precioVenta: number;
   idProducto?: number | null;
-  nombre?: string | null;
   nombreProducto: string | null;
   stock: number
 };
@@ -137,7 +138,6 @@ export type Venta = {
  * @property {boolean} Transferencia
  * @property {number} Cantidad
  * @property {number} Total
- *@
  * @property {number} IdDetalleVenta
  * @property {number} IdVenta
  * @property {string} numeroDeFactura
@@ -156,49 +156,34 @@ export type DetalleVenta = {
   nombreProducto?: string | null;
  
 };
-// idDetalleVenta: null as any, 
-//     idVenta: null as any,
-//     cantidad: null as any,
-//     total: null as any,
-//     efectivo: true,
-//     transferencia: false,
-//     numeroDeFactura: null as any,
-//     nombreUsuario: null,
-//     idProducto: null as any,
-//     nombreCliente: null as any,
-//     nombreProducto: null,
-//    } as DetalleVenta);
 
 /** detalles type used in the CRUD operations.
  * @type {object}
- * @property {number} IdDetalleVenta
  * @property {number} idCompra
- * @property {number} cantidad
- * @property {number} total
- * @property {boolean} efectivo
- * @property {boolean} transferencia
- * @property {string} numeroDeFactura
  * @property {number} idUsuario
  * @property {number} idProducto
- * @property {number} idProveedor
  * @property {string} nombre
- * @property {number} precio
+ * @property {string} nombreProducto
+ * @property {boolean} efectivo
+ * @property {boolean} transferencia
+ * @property {number} cantidad
+ * @property {number} total
+ * @property {number} IdDetalleCompra
+ * @property {number} IdCompra
+ * @property {string} numeroDeFactura
  */
 export type DetalleCompra = {
-  idVenta?: number | null;
-  fechaVenta: string | null;
-  efectivo: boolean;
+  idCompra?: number | null;
+  cantidad?: number | null;
+  total?: number | null;
+  efectivo?: boolean;
   transferencia: boolean;
-  total: number ;
   numeroDeFactura: string;
-  idUsuario?: number | null;
-  cantidad: number;
-  precio: number ;
-  precioVenta: number;
+  nombreUsuario?: string | null;
   idProducto?: number | null;
-  nombre?: string | null;
+  fechaCompra: string;
+  nombreProveedor?: string | null;
   nombreProducto: string | null;
-  stock: number
 };
 
   

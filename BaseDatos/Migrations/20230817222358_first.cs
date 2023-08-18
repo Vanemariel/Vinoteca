@@ -7,7 +7,7 @@
 namespace BaseDatos.Migrations
 {
     /// <inheritdoc />
-    public partial class pucho : Migration
+    public partial class first : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

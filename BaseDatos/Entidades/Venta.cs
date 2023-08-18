@@ -19,18 +19,14 @@ namespace BaseDatos.Entidades
         public bool Efectivo { get; set; }
         public bool Transferencia { get; set; }
         public float Total { get; set; } 
-        
         public int IdUsuario { get; set; }
         [ForeignKey("IdUsuario")]
         public Usuario Usuario { get; set; }
-
-        //public int IdCliente { get; set; }
-        //[ForeignKey("IdCliente")]
-        //public Cliente Cliente { get; set; }
         public string NombreCliente { get; set; }
-
-
+        
         [InverseProperty("Venta")]
         public List<DetalleDeVenta> DetalleDeVentas { get; set; }
     }
 }
+
+

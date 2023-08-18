@@ -10,7 +10,6 @@ namespace Shared.DTO
     {
         public int idVenta { get; set; }
         public int idProducto { get; set; }
-        //nuevo acá ajoba
         public int idDetalleVenta { get; set; }
         public string fechaVenta { get; set; }
         public string nombreUsuario { get; set; }

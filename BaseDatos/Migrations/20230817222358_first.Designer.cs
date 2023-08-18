@@ -12,8 +12,8 @@ using Vinoteca.BaseDatos;
 namespace BaseDatos.Migrations
 {
     [DbContext(typeof(BDContext))]
-    [Migration("20230807002459_pucho")]
-    partial class pucho
+    [Migration("20230817222358_first")]
+    partial class first
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

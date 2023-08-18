@@ -2,8 +2,11 @@
 
 import * as React from "react";
 import { useEffect, useState } from "react";
+import * as action from "../../Utilities/action";
+import { useStore } from "../../stores/crud";
+import { DetalleCompra, Compra } from "../../TYPES/crudTypes";
 
-import { styled } from "@mui/material/styles";
+import { styled, useTheme } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
@@ -11,17 +14,16 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Button, Grid } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { Button, Grid, useMediaQuery } from "@mui/material";
 import Typography from "@mui/material/Typography";
-import Modal from "@mui/material/Modal";
 import {
   Box,
-  InputAdornment,
+  Snackbar,
+  Alert,
+  AlertColor,
+  TablePagination,
+  TableFooter,
   TextField,
-  IconButton,
-  MenuItem,
   CssBaseline,
 } from "@mui/material";
 import { FormEvent } from "react";
@@ -55,44 +57,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function ComprasHistorial() {
- 
-
-  const createData = (
-    proveedor: string,
-    fecha: string,
-    vendedor: string,
-    total: number
-  ) => {
-    return {
-      proveedor,
-      fecha,
-      vendedor,
-      total,
-    };
-  };
-  const rows = [createData("", "", "", 1)];
-
-  const createTable = (producto: string, cantidad: number) => {
-    return {
-      producto,
-      cantidad,
-    };
-  };
-
-  const rowss = [createTable("", 1)];
-
-  const style = {
-    position: "absolute" as "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 400,
-    bgcolor: "background.paper",
-    border: "2px solid #000",
-    boxShadow: 24,
-    p: 4,
-  };
-
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -101,36 +65,100 @@ export default function ComprasHistorial() {
   const [quantity, setQuantity] = useState("0");
   const [description, setDescription] = useState("");
   const [provider, setProvider] = useState("");
-
-  const top100Films = [
-    { title: "The Shawshank Redemption", year: 1994 },
-    { title: "The Godfather", year: 1972 },
-    { title: "The Godfather: Part II", year: 1974 },
-  ];
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
-  };
-
   const [dateFrom, setDateFrom] = useState(""); // Agregar esta línea
   const [dateTo, setDateTo] = useState(""); // Agregar esta línea
- 
-  const [isTableVisible, setTableVisible] = useState(false);
-
   const [showDetails, setShowDetails] = useState(false);
-
   const handleShowDetails = () => {
     setShowDetails(true);
   };
+  const [loading, setLoading] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const { deleteObject, getList, newObject, updateObject } = useStore();
+  const [CompraList, setCompraList] = useState([] as Compra[]);
+  const [toDelete, setToDelete] = useState(null as any);
+  const [deleteDialog, setDeleteDialog] = useState(false);
+  const [dialog, setDialog] = useState(false);
+  const [isNew, setIsNew] = useState(false);
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const label = { inputProps: { "aria-label": "Checkbox demo" } };
+  const [okClicked, setOkClicked] = useState(false);
+  const [cancelClicked, setCancelClicked] = useState(false);
+  const handleOkClick = () => {
+    setOkClicked(true);
+  };
+  const handleCancelClick = () => {
+    setCancelClicked(true);
+    handleClose(); // Cierra el modal
+  };
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const handleCloseDetails = () => {
-    setShowDetails(false);
+  const handleChangePage = (event: any | null, newPage: number) => {
+    setPage(newPage);
   };
 
+  const handleChangeRowsPerPage = (event: any) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+  const [compraSearchList, setCompraSearchList] = useState([] as DetalleCompra[]); //para el buscador
+  const [usuarioList, setUsuarioList] = useState<
+    Array<{ idUsuario: number; nombre: string }>
+  >([]);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    severity: "success",
+    message: "",
+  });
+
+   const [formData, setFormData] = useState({
+    idDetalleCompra: null as any, 
+    fechaCompra:null as any,
+    idCompra: null as any,
+    cantidad: null as any,
+    total: null as any,
+    efectivo: true,
+    transferencia: false,
+    numeroDeFactura: null as any,
+    nombreUsuario: null,
+    idProducto: null as any,
+    nombreProveedor: null as any,
+    nombreProducto: null,
+   } as DetalleCompra);
+
+   useEffect(() => {
+    getList(action.DETALLECOMPRA_CONTROLLER)
+      .then((res: any) => {
+        setCompraList(res.data);
+        console.log("Pasa x acá", res.data)
+        setCompraSearchList(res.data);
+        setLoaded(true);
+      })
+      .catch((err: any) => {
+        setSnackbar({
+          open: true,
+          severity: "error",
+          message: "ocurrio un error",
+        });
+        setLoaded(true);
+      });
+   
+  }, [getList, dialog]);
+  
+  const filtrarComprasPorFecha = (listaCompras: DetalleCompra[], fechaDesde: string, fechaHasta: string) => {
+    return listaCompras.filter((compra) => {
+      const fechaCompra = new Date(compra.fechaCompra);
+      return fechaCompra >= new Date(fechaDesde) && fechaCompra <= new Date(fechaHasta);
+    });
+  };
+  
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+  
+    const comprasFiltradas = filtrarComprasPorFecha(compraSearchList, dateFrom, dateTo);
+    setCompraSearchList(comprasFiltradas);
+  };
 
   return (
     <div>
@@ -178,18 +206,6 @@ export default function ComprasHistorial() {
                   rowSpacing={1}
                   columnSpacing={{ xs: 1, sm: 2, md: 3 }}
                 >
-                  {/* <TextField
-                    select
-                    label="Buscar un proveedor"
-                    variant="outlined"
-                    fullWidth
-                    value={provider}
-                    onChange={(e) => setProvider(e.target.value)}
-                  >
-                    <MenuItem value="Option 1">Fecha</MenuItem>
-                    <MenuItem value="Option 2">Proveedor</MenuItem>
-                    
-                    </TextField> */}
                   <div
                     style={{
                       display: "flex",
@@ -247,67 +263,87 @@ export default function ComprasHistorial() {
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
-              <StyledTableCell width={115} align="center">
-                Opciones
-              </StyledTableCell>
-              <StyledTableCell align="right">Proveedores</StyledTableCell>
-              <StyledTableCell align="right">Fecha</StyledTableCell>
-              <StyledTableCell align="right">Vendedor</StyledTableCell>
-              <StyledTableCell align="right">Total</StyledTableCell>
+            <StyledTableCell>Fecha de Compra</StyledTableCell>
+              <StyledTableCell>Comprador</StyledTableCell>
+              <StyledTableCell>Productos</StyledTableCell>
+              <StyledTableCell>Proveedor</StyledTableCell>
+              <StyledTableCell>Efectivo</StyledTableCell>
+              <StyledTableCell>Transferencia</StyledTableCell>
+              <StyledTableCell>Cantidad</StyledTableCell>
+              <StyledTableCell>Total</StyledTableCell>
             </TableRow>
           </TableHead>
+
           <TableBody>
-            {rows.map((row) => (
-              <StyledTableRow key={row.proveedor}>
+            {(rowsPerPage > 0
+              ? compraSearchList.slice(
+                  page * rowsPerPage,
+                  page * rowsPerPage + rowsPerPage
+                )
+              : compraSearchList
+            ).map((row) => (
+              <StyledTableRow key={row.nombreProducto}>
                 <StyledTableCell component="th" scope="row">
-                  <IconButton color="primary">
-                    {" "}
-                    <EditIcon />{" "}
-                  </IconButton>
-                  <IconButton color="error">
-                    {" "}
-                    <DeleteIcon />{" "}
-                  </IconButton>
+                 {row.fechaCompra ? row.fechaCompra.toLocaleString() : null}
                 </StyledTableCell>
-                <StyledTableCell align="right">
-                  {" "}
-                  {row.proveedor}
-                </StyledTableCell>
-                <StyledTableCell align="right"> {row.fecha}</StyledTableCell>
-                <StyledTableCell align="right"> {row.vendedor}</StyledTableCell>
-                <StyledTableCell align="right"> ${row.total}</StyledTableCell>
+                <StyledTableCell>{row.nombreUsuario}</StyledTableCell>
+                <StyledTableCell>{row.nombreProducto}</StyledTableCell>
+                <StyledTableCell>{row.nombreProveedor}</StyledTableCell>
+                <StyledTableCell>{row.efectivo? "SI" : "NO"}</StyledTableCell>
+                <StyledTableCell>{row.transferencia ? "SI" : "NO"}</StyledTableCell>
+                <StyledTableCell>{row.cantidad}</StyledTableCell>
+                <StyledTableCell>${row.total}</StyledTableCell>
               </StyledTableRow>
             ))}
-          </TableBody>
+        </TableBody>
+        <TableFooter>
+            <StyledTableRow>
+              <TablePagination
+                rowsPerPageOptions={[5]}
+                colSpan={9}
+                count={compraSearchList.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                SelectProps={{
+                  inputProps: {
+                    "aria-label": "rows per page",
+                  },
+                  native: true,
+                }}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </StyledTableRow>
+          </TableFooter>
         </Table>
       </TableContainer>
 
-      <Button onClick={handleShowDetails} style={{ marginTop: "-6px" }}>
-        Ver Detalle de la Compra
-      </Button>
-      {showDetails && (
-        <>
-          <TableContainer component={Paper} style={{ marginTop: "10px" }}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <StyledTableCell align="right">Producto</StyledTableCell>
-                  <StyledTableCell align="right">Cantidad</StyledTableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rowss.map((row) => (
-                  <StyledTableRow key={row.producto}>
-                    <StyledTableCell align="right">{row.producto}</StyledTableCell>
-                    <StyledTableCell align="right">{row.cantidad}</StyledTableCell>
-                  </StyledTableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <Button onClick={handleCloseDetails}>Cerrar</Button>
-        </>
-      )}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={() =>
+          setSnackbar({
+            open: false,
+            severity: snackbar.severity,
+            message: snackbar.message,
+          })
+        }
+      >
+        <Alert
+          onClose={() =>
+            setSnackbar({
+              open: false,
+              severity: snackbar.severity,
+              message: snackbar.message,
+            })
+          }
+          severity={snackbar.severity as AlertColor}
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }
+      

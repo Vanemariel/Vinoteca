@@ -24,13 +24,32 @@ namespace Vinoteca.Server.Controllers
         }
         #region HTTPS
         [HttpGet(ApiRoutes.DetalleDeCompra.GetAll)]
-        public async Task<ActionResult<List<DetalleDeCompra>>> GetAll()
+        public async Task<ActionResult<List<DetalleDeCompraDto>>> GetAll()
         {
             try
             {
-                List<DetalleDeCompra> detCompras = await this._context.TablaDetalleDeCompras.ToListAsync();
-
-                return Ok(detCompras);
+                List<DetalleDeCompra> detCompras = await this._context.TablaDetalleDeCompras
+                    .Include(detCompras => detCompras.Producto)
+                    .Include(detCompras => detCompras.Compra)
+                    .ThenInclude(Compra => Compra.Proveedor)
+                    //.Include(Compra => Compra.Usuario)
+                    .ToListAsync();
+                var mappedData = detCompras.Select(detalleULTRA => new DetalleDeCompraDto
+                {
+                    idDetalleCompra = detalleULTRA.IdDetalleCompra,
+                    fechaCompra = detalleULTRA.Compra?.FechaCompra,
+                    idCompra = detalleULTRA.IdCompra,
+                    nombreUsuario = detalleULTRA.Compra?.Usuario.Nombre,
+                    cantidad = detalleULTRA.Cantidad,
+                    total = detalleULTRA.Total,
+                    efectivo = detalleULTRA.Compra.Efectivo,
+                    transferencia = detalleULTRA.Compra.Transferencia,
+                    numeroDeFactura = detalleULTRA.Compra.NumeroDeFactura,
+                    idProducto = detalleULTRA.IdProducto,
+                    //nombre = detalleULTRA.Compra.Nombre,
+                    nombreProducto = detalleULTRA.Producto.NombreProducto
+                }).ToList();
+                return Ok(mappedData);
             }
             catch (Exception ex)
             {
@@ -43,16 +62,30 @@ namespace Vinoteca.Server.Controllers
         {
             try
             {
-                DetalleDeCompra? detCompras = await this._context.TablaDetalleDeCompras
-                    .Where(detCompras => detCompras.IdDetalleCompra == id)
-                    .FirstOrDefaultAsync();
+                var detalleULTRA = await this._context.TablaDetalleDeCompras
+                    .Include(detalleULTRA => detalleULTRA.Producto)
+                      .Include(detalleULTRA => detalleULTRA.Compra)
+                      .FirstOrDefaultAsync(detalleULTRA => detalleULTRA.IdDetalleCompra == id);
 
-                if (detCompras == null)
+                if (detalleULTRA == null)
                 {
-                    throw new Exception($"no existe la compra con id igual a {id}.");
+                    return NotFound();
                 }
-
-                return Ok(detCompras);
+                var onice = new DetalleDeCompraDto
+                {
+                    fechaCompra = detalleULTRA.Compra?.FechaCompra,
+                    idCompra = detalleULTRA.IdCompra,
+                    nombreUsuario = detalleULTRA.Compra.Usuario.Nombre,
+                    cantidad = detalleULTRA.Cantidad,
+                    total = detalleULTRA.Total,
+                    efectivo = detalleULTRA.Compra.Efectivo,
+                    transferencia = detalleULTRA.Compra.Transferencia,
+                    numeroDeFactura = detalleULTRA.Compra.NumeroDeFactura,
+                    idProducto = detalleULTRA.IdProducto,
+                    //nombreProveedor = detalleULTRA.Compra.NombreProveedor,
+                    nombreProducto = detalleULTRA.Producto.NombreProducto
+                };
+                return Ok(onice);
             }
             catch (Exception ex)
             {
@@ -68,8 +101,8 @@ namespace Vinoteca.Server.Controllers
             try
             {
                 // Verificar si el IdProducto y el IdCompra existen en la base de datos
-                var compra = _context.TablaCompras.FirstOrDefault(v => v.IdCompra == DetalleDeCompraDTO.IdCompra);
-                var productol = _context.TablaProductos.FirstOrDefault(p => p.IdProducto == DetalleDeCompraDTO.IdProducto);
+                var compra = _context.TablaCompras.FirstOrDefault(v => v.IdCompra == DetalleDeCompraDTO.idCompra);
+                var productol = _context.TablaProductos.FirstOrDefault(p => p.IdProducto == DetalleDeCompraDTO.idProducto);
 
                 if (compra == null || productol == null)
                 {
@@ -78,8 +111,8 @@ namespace Vinoteca.Server.Controllers
                 // Crear un nuevo objeto DetalleDeVenta
                 var detalleDeCOMPRAS = new DetalleDeCompra
                 {
-                    IdCompra =DetalleDeCompraDTO.IdCompra,
-                    IdProducto = DetalleDeCompraDTO.IdProducto
+                    IdCompra =DetalleDeCompraDTO.idCompra,
+                    IdProducto = DetalleDeCompraDTO.idProducto
                 };
 
                 // Agregar el detalle de compra a la tabla correspondiente
@@ -107,8 +140,8 @@ namespace Vinoteca.Server.Controllers
                 return NotFound("No existe detalle para modificar");
             }
             // Verificar si el IdProducto y el IdCompra existen en la base de datos
-            var compra1 = _context.TablaCompras.Where(e => e.IdCompra == detalleDeCompra.IdCompra);
-            var producto43 = _context.TablaProductos.FirstOrDefault(p => p.IdProducto == detalleDeCompra.IdProducto);
+            var compra1 = _context.TablaCompras.Where(e => e.IdCompra == detalleDeCompra.idCompra);
+            var producto43 = _context.TablaProductos.FirstOrDefault(p => p.IdProducto == detalleDeCompra.idProducto);
 
             if (compra1 == null || producto43 == null)
             {

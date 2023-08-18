@@ -9,9 +9,18 @@ namespace Shared.DTO
     public class DetalleDeCompraDto
     {
         //EVERY DETAILS WORKS 
-        public int IdCompra { get;set; }
-        public int IdProducto { get;set; }
-        //public float PrecioCompra { get; set; }
-        //public int CantidadCompra { get; set; }
+        public int idCompra { get; set; }
+        public int idProducto { get; set; }
+        public int idDetalleCompra {get;set;}
+        public string fechaCompra { get; set; }
+        public string nombreUsuario { get; set; }
+        public string nombreProducto { get; set; }
+        public string nombre { get; set; }
+        public bool efectivo { get; set; }
+        public bool transferencia { get; set; }
+        public int cantidad { get; set; }
+        public float total { get; set; }
+        public string numeroDeFactura { get; set; }
+        
     }
 }
