@@ -12,6 +12,8 @@ namespace BaseDatos.Entidades
 {
     public class Compra
     {
+        public readonly string NombreProveedor;
+
         [Key]
         public int IdCompra { get; set; }
         public string FechaCompra { get; set; }

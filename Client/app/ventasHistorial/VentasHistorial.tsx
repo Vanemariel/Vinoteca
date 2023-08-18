@@ -112,9 +112,9 @@ export default function VentasHistorial() {
     message: "",
   });
 
-   const [formData, setFormData] = useState({
-    idDetalleVenta: null as any, 
-    fechaVenta:null as any,
+  const [formData, setFormData] = useState({
+    idDetalleVenta: null as any,
+    fechaVenta: null as any,
     idVenta: null as any,
     cantidad: null as any,
     total: null as any,
@@ -125,13 +125,12 @@ export default function VentasHistorial() {
     idProducto: null as any,
     nombreCliente: null as any,
     nombreProducto: null,
-   } as DetalleVenta);
+  } as DetalleVenta);
 
-   useEffect(() => {
+  useEffect(() => {
     getList(action.DETALLEVENTA_CONTROLLER)
       .then((res: any) => {
         setVentaList(res.data);
-        console.log("Pasa x acá", res.data)
         setVentaSearchList(res.data);
         setLoaded(true);
       })
@@ -143,22 +142,40 @@ export default function VentasHistorial() {
         });
         setLoaded(true);
       });
-   
   }, [getList, dialog]);
-  
-  const filtrarVentasPorFecha = (listaVentas: DetalleVenta[], fechaDesde: string, fechaHasta: string) => {
+
+  const filtrarVentasPorFecha = (
+    listaVentas: DetalleVenta[],
+    fechaDesde: string,
+    fechaHasta: string
+  ) => {
     return listaVentas.filter((venta) => {
       const fechaVenta = new Date(venta.fechaVenta);
-      return fechaVenta >= new Date(fechaDesde) && fechaVenta <= new Date(fechaHasta);
+      return (
+        fechaVenta >= new Date(fechaDesde) && fechaVenta <= new Date(fechaHasta)
+      );
     });
   };
-  
+
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-  
-    const ventasFiltradas = filtrarVentasPorFecha(ventaSearchList, dateFrom, dateTo);
+
+    const ventasFiltradas = filtrarVentasPorFecha(
+      ventaSearchList,
+      dateFrom,
+      dateTo
+    );
     setVentaSearchList(ventasFiltradas);
-  }; 
+  };
+  const handleReset = () => {
+    // Restaurar la lista original
+    const [originalVentaList, setOriginalVentaList] = useState([]);
+    setVentaSearchList(originalVentaList);
+    // Restaurar los valores de los campos de fecha
+    setDateFrom("");
+    setDateTo("");
+  };
+
   return (
     <div>
       {/**Box INGRESAR PRODUCTOS */}
@@ -244,7 +261,17 @@ export default function VentasHistorial() {
                   >
                     BUSCAR
                   </Button>
-                  
+
+                  <Button
+                    type="button"
+                    fullWidth
+                    variant="contained"
+                    onClick={handleReset}
+                    sx={{ mt: 3, mb: 2 }}
+                  >
+                    RESTAURAR LISTA
+                  </Button>
+
                   <Grid container>
                     <Grid item xs></Grid>
                     <Grid item></Grid>
@@ -289,8 +316,10 @@ export default function VentasHistorial() {
                 <StyledTableCell>{row.nombreUsuario}</StyledTableCell>
                 <StyledTableCell>{row.nombreProducto}</StyledTableCell>
                 <StyledTableCell>{row.nombreCliente}</StyledTableCell>
-                <StyledTableCell>{row.efectivo? "SI" : "NO"}</StyledTableCell>
-                <StyledTableCell>{row.transferencia ? "SI" : "NO"}</StyledTableCell>
+                <StyledTableCell>{row.efectivo ? "SI" : "NO"}</StyledTableCell>
+                <StyledTableCell>
+                  {row.transferencia ? "SI" : "NO"}
+                </StyledTableCell>
                 <StyledTableCell>{row.cantidad}</StyledTableCell>
                 <StyledTableCell>${row.total}</StyledTableCell>
               </StyledTableRow>

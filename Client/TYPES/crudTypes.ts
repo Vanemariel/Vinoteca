@@ -182,7 +182,7 @@ export type DetalleCompra = {
   nombreUsuario?: string | null;
   idProducto?: number | null;
   fechaCompra: string;
-  nombreProveedor?: string | null;
+  nombreProveedores?: string | null;
   nombreProducto: string | null;
 };
 

@@ -123,7 +123,7 @@ export default function ComprasHistorial() {
     numeroDeFactura: null as any,
     nombreUsuario: null,
     idProducto: null as any,
-    nombreProveedor: null as any,
+    nombreProveedores: null as any,
     nombreProducto: null,
    } as DetalleCompra);
 
@@ -131,7 +131,6 @@ export default function ComprasHistorial() {
     getList(action.DETALLECOMPRA_CONTROLLER)
       .then((res: any) => {
         setCompraList(res.data);
-        console.log("Pasa x acá", res.data)
         setCompraSearchList(res.data);
         setLoaded(true);
       })
@@ -158,6 +157,15 @@ export default function ComprasHistorial() {
   
     const comprasFiltradas = filtrarComprasPorFecha(compraSearchList, dateFrom, dateTo);
     setCompraSearchList(comprasFiltradas);
+  };
+
+  const handleReset = () => {
+    // Restaurar la lista original
+    const [originalVentaList, setOriginalVentaList] = useState([]);
+    setCompraSearchList(originalVentaList);
+    // Restaurar los valores de los campos de fecha
+    setDateFrom("");
+    setDateTo("");
   };
 
   return (
@@ -245,6 +253,17 @@ export default function ComprasHistorial() {
                   >
                     BUSCAR
                   </Button>
+
+                  <Button
+                    type="button"
+                    fullWidth
+                    variant="contained"
+                    onClick={handleReset}
+                    sx={{ mt: 3, mb: 2 }}
+                  >
+                    RESTAURAR LISTA
+                  </Button>
+                  
                   <Grid container>
                     <Grid item xs></Grid>
                     <Grid item></Grid>
@@ -288,7 +307,7 @@ export default function ComprasHistorial() {
                 </StyledTableCell>
                 <StyledTableCell>{row.nombreUsuario}</StyledTableCell>
                 <StyledTableCell>{row.nombreProducto}</StyledTableCell>
-                <StyledTableCell>{row.nombreProveedor}</StyledTableCell>
+                <StyledTableCell>{row.nombreProveedores}</StyledTableCell>
                 <StyledTableCell>{row.efectivo? "SI" : "NO"}</StyledTableCell>
                 <StyledTableCell>{row.transferencia ? "SI" : "NO"}</StyledTableCell>
                 <StyledTableCell>{row.cantidad}</StyledTableCell>

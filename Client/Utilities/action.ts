@@ -45,7 +45,7 @@ export const DETALLEVENTA_CONTROLLER = base + "Api/DetalleDeVenta/" + api + "det
  *
  */
 
-export const DETALLECOMPRA_CONTROLLER = base + "Api/DetalleDeCompra/" + api + "detallecompra";
+export const DETALLECOMPRA_CONTROLLER = base + "Api/DetalleDeCompra/" + api + "detalledecompra/";
 /**
  * General use endpoints.
  * @constant {string}

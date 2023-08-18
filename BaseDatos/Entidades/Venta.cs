@@ -18,10 +18,12 @@ namespace BaseDatos.Entidades
         public string NumeroDeFactura { get; set; }
         public bool Efectivo { get; set; }
         public bool Transferencia { get; set; }
-        public float Total { get; set; } 
+        public float Total { get; set; }
+        
         public int IdUsuario { get; set; }
         [ForeignKey("IdUsuario")]
         public Usuario Usuario { get; set; }
+        
         public string NombreCliente { get; set; }
         
         [InverseProperty("Venta")]

@@ -21,5 +21,4 @@ namespace Shared.DTO
         public float total { get; set; }
         public string numeroDeFactura { get; set; }
     }
-
 }

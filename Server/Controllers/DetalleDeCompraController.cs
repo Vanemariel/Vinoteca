@@ -30,23 +30,25 @@ namespace Vinoteca.Server.Controllers
             {
                 List<DetalleDeCompra> detCompras = await this._context.TablaDetalleDeCompras
                     .Include(detCompras => detCompras.Producto)
-                    .Include(detCompras => detCompras.Compra)
                     .ThenInclude(Compra => Compra.Proveedor)
-                    //.Include(Compra => Compra.Usuario)
+                    .Include(detCompras => detCompras.Compra)
+                    .ThenInclude(Compra => Compra.Usuario)
+                    
+
                     .ToListAsync();
                 var mappedData = detCompras.Select(detalleULTRA => new DetalleDeCompraDto
                 {
                     idDetalleCompra = detalleULTRA.IdDetalleCompra,
                     fechaCompra = detalleULTRA.Compra?.FechaCompra,
                     idCompra = detalleULTRA.IdCompra,
-                    nombreUsuario = detalleULTRA.Compra?.Usuario.Nombre,
+                    nombreUsuario = detalleULTRA.Compra.Usuario.Nombre,
                     cantidad = detalleULTRA.Cantidad,
                     total = detalleULTRA.Total,
                     efectivo = detalleULTRA.Compra.Efectivo,
                     transferencia = detalleULTRA.Compra.Transferencia,
                     numeroDeFactura = detalleULTRA.Compra.NumeroDeFactura,
                     idProducto = detalleULTRA.IdProducto,
-                    //nombre = detalleULTRA.Compra.Nombre,
+                    nombreProveedores = detalleULTRA.Compra.Proveedor.Nombre,
                     nombreProducto = detalleULTRA.Producto.NombreProducto
                 }).ToList();
                 return Ok(mappedData);
@@ -82,7 +84,7 @@ namespace Vinoteca.Server.Controllers
                     transferencia = detalleULTRA.Compra.Transferencia,
                     numeroDeFactura = detalleULTRA.Compra.NumeroDeFactura,
                     idProducto = detalleULTRA.IdProducto,
-                    //nombreProveedor = detalleULTRA.Compra.NombreProveedor,
+                    nombreProveedores = detalleULTRA.Compra.Proveedor.Nombre,
                     nombreProducto = detalleULTRA.Producto.NombreProducto
                 };
                 return Ok(onice);
