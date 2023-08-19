@@ -21,7 +21,7 @@ import AdbIcon from '@mui/icons-material/Adb';
 
 const routes = [
   {
-    label: 'Caja',
+    label: 'Movimientos de Caja',
     path: '/caja',
   },
   {
