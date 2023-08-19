@@ -28,14 +28,6 @@ import {
 } from "@mui/material";
 import { FormEvent } from "react";
 
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: "center",
-  color: theme.palette.text.secondary,
-}));
-
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.black,
@@ -57,43 +49,14 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function ComprasHistorial() {
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState("0");
-  const [quantity, setQuantity] = useState("0");
-  const [description, setDescription] = useState("");
-  const [provider, setProvider] = useState("");
+
   const [dateFrom, setDateFrom] = useState(""); // Agregar esta línea
   const [dateTo, setDateTo] = useState(""); // Agregar esta línea
-  const [showDetails, setShowDetails] = useState(false);
-  const handleShowDetails = () => {
-    setShowDetails(true);
-  };
-  const [loading, setLoading] = useState(false);
-  const [loaded, setLoaded] = useState(false);
-  const { deleteObject, getList, newObject, updateObject } = useStore();
-  const [CompraList, setCompraList] = useState([] as Compra[]);
-  const [toDelete, setToDelete] = useState(null as any);
-  const [deleteDialog, setDeleteDialog] = useState(false);
-  const [dialog, setDialog] = useState(false);
-  const [isNew, setIsNew] = useState(false);
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-  const label = { inputProps: { "aria-label": "Checkbox demo" } };
-  const [okClicked, setOkClicked] = useState(false);
-  const [cancelClicked, setCancelClicked] = useState(false);
-  const handleOkClick = () => {
-    setOkClicked(true);
-  };
-  const handleCancelClick = () => {
-    setCancelClicked(true);
-    handleClose(); // Cierra el modal
-  };
+
+  const { getList } = useStore();
+
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
   const handleChangePage = (event: any | null, newPage: number) => {
     setPage(newPage);
   };
@@ -102,37 +65,58 @@ export default function ComprasHistorial() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-  const [compraSearchList, setCompraSearchList] = useState([] as DetalleCompra[]); //para el buscador
-  const [usuarioList, setUsuarioList] = useState<
-    Array<{ idUsuario: number; nombre: string }>
-  >([]);
+
+
+  const [compraHistorialList, setCompraHistorialList] = useState([] as DetalleCompra[]);
+  const [origCompraHistorialList, setOrigCompraHistorialList] = useState([] as DetalleCompra[]);
+
+
   const [snackbar, setSnackbar] = useState({
     open: false,
     severity: "success",
     message: "",
   });
 
-   const [formData, setFormData] = useState({
-    idDetalleCompra: null as any, 
-    fechaCompra:null as any,
-    idCompra: null as any,
-    cantidad: null as any,
-    total: null as any,
-    efectivo: true,
-    transferencia: false,
-    numeroDeFactura: null as any,
-    nombreUsuario: null,
-    idProducto: null as any,
-    nombreProveedores: null as any,
-    nombreProducto: null,
-   } as DetalleCompra);
+  const filtrarComprasPorFecha = (
+    listaCompras: DetalleCompra[],
+    fechaDesde: string,
+    fechaHasta: string
+  ) => {
+    return listaCompras.filter((compra) => {
+      const fechaCompra = new Date(compra.fechaCompra);
+      return (
+        fechaCompra >= new Date(fechaDesde) &&
+        fechaCompra <= new Date(fechaHasta)
+      );
+    });
+  };
 
-   useEffect(() => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    
+    if (dateFrom === "" || dateTo === "") return 
+
+    const comprasFiltradas = filtrarComprasPorFecha(
+      origCompraHistorialList,
+      dateFrom,
+      dateTo
+    );
+    setCompraHistorialList(comprasFiltradas);
+  };
+
+  const handleReset = () => {
+    // Restaurar la lista original
+    setCompraHistorialList(origCompraHistorialList);
+    // Restaurar los valores de los campos de fecha
+    setDateFrom("");
+    setDateTo("");
+  };
+
+  useEffect(() => {
     getList(action.DETALLECOMPRA_CONTROLLER)
       .then((res: any) => {
-        setCompraList(res.data);
-        setCompraSearchList(res.data);
-        setLoaded(true);
+        setCompraHistorialList(res.data);
+        setOrigCompraHistorialList(res.data);
       })
       .catch((err: any) => {
         setSnackbar({
@@ -140,33 +124,8 @@ export default function ComprasHistorial() {
           severity: "error",
           message: "ocurrio un error",
         });
-        setLoaded(true);
       });
-   
-  }, [getList, dialog]);
-  
-  const filtrarComprasPorFecha = (listaCompras: DetalleCompra[], fechaDesde: string, fechaHasta: string) => {
-    return listaCompras.filter((compra) => {
-      const fechaCompra = new Date(compra.fechaCompra);
-      return fechaCompra >= new Date(fechaDesde) && fechaCompra <= new Date(fechaHasta);
-    });
-  };
-  
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-  
-    const comprasFiltradas = filtrarComprasPorFecha(compraSearchList, dateFrom, dateTo);
-    setCompraSearchList(comprasFiltradas);
-  };
-
-  const handleReset = () => {
-    // Restaurar la lista original
-    const [originalVentaList, setOriginalVentaList] = useState([]);
-    setCompraSearchList(originalVentaList);
-    // Restaurar los valores de los campos de fecha
-    setDateFrom("");
-    setDateTo("");
-  };
+  }, []);
 
   return (
     <div>
@@ -210,40 +169,40 @@ export default function ComprasHistorial() {
                   sx={{ mt: 2 }}
                 >
                   <Grid
-                  container
-                  rowSpacing={1}
-                  columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      marginBottom: "10px",
-                    }}
+                    container
+                    rowSpacing={1}
+                    columnSpacing={{ xs: 1, sm: 2, md: 3 }}
                   >
-                    <TextField
-                      label="Fecha desde"
-                      type="date"
-                      fullWidth
-                      InputLabelProps={{
-                        shrink: true,
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        marginBottom: "10px",
                       }}
-                      value={dateFrom}
-                      onChange={(e) => setDateFrom(e.target.value)}
-                      style={{ marginRight: "10px" }}
-                    />
-                    <TextField
-                      label="Fecha hasta"
-                      type="date"
-                      fullWidth
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      value={dateTo}
-                      onChange={(e) => setDateTo(e.target.value)}
-                      style={{ marginLeft: "10px" }}
-                    />
-                  </div>
+                    >
+                      <TextField
+                        label="Fecha desde"
+                        type="date"
+                        fullWidth
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        value={dateFrom}
+                        onChange={(e) => setDateFrom(e.target.value)}
+                        style={{ marginRight: "10px" }}
+                      />
+                      <TextField
+                        label="Fecha hasta"
+                        type="date"
+                        fullWidth
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        value={dateTo}
+                        onChange={(e) => setDateTo(e.target.value)}
+                        style={{ marginLeft: "10px" }}
+                      />
+                    </div>
                   </Grid>
                   <Button
                     type="submit"
@@ -263,7 +222,7 @@ export default function ComprasHistorial() {
                   >
                     RESTAURAR LISTA
                   </Button>
-                  
+
                   <Grid container>
                     <Grid item xs></Grid>
                     <Grid item></Grid>
@@ -282,7 +241,7 @@ export default function ComprasHistorial() {
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
-            <StyledTableCell>Fecha de Compra</StyledTableCell>
+              <StyledTableCell>Fecha de Compra</StyledTableCell>
               <StyledTableCell>Comprador</StyledTableCell>
               <StyledTableCell>Productos</StyledTableCell>
               <StyledTableCell>Proveedor</StyledTableCell>
@@ -295,32 +254,34 @@ export default function ComprasHistorial() {
 
           <TableBody>
             {(rowsPerPage > 0
-              ? compraSearchList.slice(
+              ? compraHistorialList.slice(
                   page * rowsPerPage,
                   page * rowsPerPage + rowsPerPage
                 )
-              : compraSearchList
-            ).map((row) => (
-              <StyledTableRow key={row.nombreProducto}>
+              : compraHistorialList
+            ).map((row: any, i: number) => (
+              <StyledTableRow key={i}>
                 <StyledTableCell component="th" scope="row">
-                 {row.fechaCompra ? row.fechaCompra.toLocaleString() : null}
+                  {row.fechaCompra ? row.fechaCompra.toLocaleString() : null}
                 </StyledTableCell>
                 <StyledTableCell>{row.nombreUsuario}</StyledTableCell>
                 <StyledTableCell>{row.nombreProducto}</StyledTableCell>
                 <StyledTableCell>{row.nombreProveedores}</StyledTableCell>
-                <StyledTableCell>{row.efectivo? "SI" : "NO"}</StyledTableCell>
-                <StyledTableCell>{row.transferencia ? "SI" : "NO"}</StyledTableCell>
+                <StyledTableCell>{row.efectivo ? "SI" : "NO"}</StyledTableCell>
+                <StyledTableCell>
+                  {row.transferencia ? "SI" : "NO"}
+                </StyledTableCell>
                 <StyledTableCell>{row.cantidad}</StyledTableCell>
                 <StyledTableCell>${row.total}</StyledTableCell>
               </StyledTableRow>
             ))}
-        </TableBody>
-        <TableFooter>
+          </TableBody>
+          <TableFooter>
             <StyledTableRow>
               <TablePagination
                 rowsPerPageOptions={[5]}
                 colSpan={9}
-                count={compraSearchList.length}
+                count={compraHistorialList.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 SelectProps={{
@@ -365,4 +326,3 @@ export default function ComprasHistorial() {
     </div>
   );
 }
-      

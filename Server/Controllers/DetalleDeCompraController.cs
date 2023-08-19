@@ -30,11 +30,9 @@ namespace Vinoteca.Server.Controllers
             {
                 List<DetalleDeCompra> detCompras = await this._context.TablaDetalleDeCompras
                     .Include(detCompras => detCompras.Producto)
-                    .ThenInclude(Compra => Compra.Proveedor)
+                        .ThenInclude(Compra => Compra.Proveedor)
                     .Include(detCompras => detCompras.Compra)
-                    .ThenInclude(Compra => Compra.Usuario)
-                    
-
+                        .ThenInclude(Compra => Compra.Usuario)
                     .ToListAsync();
                 var mappedData = detCompras.Select(detalleULTRA => new DetalleDeCompraDto
                 {

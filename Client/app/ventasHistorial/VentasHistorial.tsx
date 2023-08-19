@@ -28,14 +28,6 @@ import {
 } from "@mui/material";
 import { FormEvent } from "react";
 
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: "center",
-  color: theme.palette.text.secondary,
-}));
-
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.black,
@@ -57,40 +49,14 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function VentasHistorial() {
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState("0");
-  const [quantity, setQuantity] = useState("0");
-  const [description, setDescription] = useState("");
-  const [provider, setProvider] = useState("");
+
   const [dateFrom, setDateFrom] = useState(""); // Agregar esta línea
   const [dateTo, setDateTo] = useState(""); // Agregar esta línea
-  const [showDetails, setShowDetails] = useState(false);
-  const handleShowDetails = () => {
-    setShowDetails(true);
-  };
-  const [loading, setLoading] = useState(false);
+
   const [loaded, setLoaded] = useState(false);
-  const { deleteObject, getList, newObject, updateObject } = useStore();
-  const [ventaList, setVentaList] = useState([] as Venta[]);
-  const [toDelete, setToDelete] = useState(null as any);
-  const [deleteDialog, setDeleteDialog] = useState(false);
-  const [dialog, setDialog] = useState(false);
-  const [isNew, setIsNew] = useState(false);
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-  const label = { inputProps: { "aria-label": "Checkbox demo" } };
-  const [okClicked, setOkClicked] = useState(false);
-  const [cancelClicked, setCancelClicked] = useState(false);
-  const handleOkClick = () => {
-    setOkClicked(true);
-  };
-  const handleCancelClick = () => {
-    setCancelClicked(true);
-    handleClose(); // Cierra el modal
-  };
+  const { getList} = useStore();
+
+  
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -102,52 +68,33 @@ export default function VentasHistorial() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-  const [ventaSearchList, setVentaSearchList] = useState([] as DetalleVenta[]); //para el buscador
-  const [usuarioList, setUsuarioList] = useState<
-    Array<{ idUsuario: number; nombre: string }>
-  >([]);
+  const [ventaHistorialList, setVentaHistorialList] = useState([] as DetalleVenta[]); //para el buscador
+  const [origVentaHistorialList, setOrigVentaHistorialList] = useState([] as DetalleVenta[]);
+
   const [snackbar, setSnackbar] = useState({
     open: false,
     severity: "success",
     message: "",
   });
 
-  const [formData, setFormData] = useState({
-    idDetalleVenta: null as any,
-    fechaVenta: null as any,
-    idVenta: null as any,
-    cantidad: null as any,
-    total: null as any,
-    efectivo: true,
-    transferencia: false,
-    numeroDeFactura: null as any,
-    nombreUsuario: null,
-    idProducto: null as any,
-    nombreCliente: null as any,
-    nombreProducto: null,
-  } as DetalleVenta);
+  
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    console.log('AAA', event)
 
-  useEffect(() => {
-    getList(action.DETALLEVENTA_CONTROLLER)
-      .then((res: any) => {
-        setVentaList(res.data);
-        setVentaSearchList(res.data);
-        setLoaded(true);
-      })
-      .catch((err: any) => {
-        setSnackbar({
-          open: true,
-          severity: "error",
-          message: "ocurrio un error",
-        });
-        setLoaded(true);
-      });
-  }, [getList, dialog]);
+    if (dateFrom === "" || dateTo === "") return 
+  
+    const ventasFiltradas = filtrarVentasPorFecha(
+      origVentaHistorialList,
+      dateFrom,
+      dateTo
+    );
+    setVentaHistorialList(ventasFiltradas);
+  };
 
   const filtrarVentasPorFecha = (
     listaVentas: DetalleVenta[],
-    fechaDesde: string,
-    fechaHasta: string
+    fechaDesde: string, fechaHasta: string
   ) => {
     return listaVentas.filter((venta) => {
       const fechaVenta = new Date(venta.fechaVenta);
@@ -156,25 +103,26 @@ export default function VentasHistorial() {
       );
     });
   };
-
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const ventasFiltradas = filtrarVentasPorFecha(
-      ventaSearchList,
-      dateFrom,
-      dateTo
-    );
-    setVentaSearchList(ventasFiltradas);
-  };
+  
   const handleReset = () => {
-    // Restaurar la lista original
-    const [originalVentaList, setOriginalVentaList] = useState([]);
-    setVentaSearchList(originalVentaList);
+    // Restaurar la lista original usando el valor guardado en el estado
+    setVentaHistorialList(origVentaHistorialList);
     // Restaurar los valores de los campos de fecha
     setDateFrom("");
     setDateTo("");
   };
+
+  useEffect(() => {
+    getList(action.DETALLEVENTA_CONTROLLER)
+      .then((res: any) => {
+        setOrigVentaHistorialList(res.data);
+        setVentaHistorialList(res.data);
+        setLoaded(true);
+      })
+      .catch((err: any) => {
+        setLoaded(true);
+      });
+  }, []);
 
   return (
     <div>
@@ -303,13 +251,13 @@ export default function VentasHistorial() {
 
           <TableBody>
             {(rowsPerPage > 0
-              ? ventaSearchList.slice(
+              ? ventaHistorialList.slice(
                   page * rowsPerPage,
                   page * rowsPerPage + rowsPerPage
                 )
-              : ventaSearchList
-            ).map((row) => (
-              <StyledTableRow key={row.nombreProducto}>
+              : ventaHistorialList
+            ).map((row, i) => (
+              <StyledTableRow key={i}> 
                 <StyledTableCell component="th" scope="row">
                   {row.fechaVenta ? row.fechaVenta.toLocaleString() : null}
                 </StyledTableCell>
@@ -330,7 +278,7 @@ export default function VentasHistorial() {
               <TablePagination
                 rowsPerPageOptions={[5]}
                 colSpan={9}
-                count={ventaSearchList.length}
+                count={ventaHistorialList.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 SelectProps={{

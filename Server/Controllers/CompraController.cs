@@ -98,13 +98,13 @@ namespace Vinoteca.Server.Controllers
                 // Agregar los detalles de la compra a la base de datos
                 foreach (var prodCompra in compradto.listaProductos)
                 {
-                    var detalleCompra = new DetalleDeCompra
+                    _context.TablaDetalleDeCompras.Add(new DetalleDeCompra
                     {
                         Cantidad = prodCompra.cantidad,
                         IdProducto = prodCompra.idProducto,
                         Total = prodCompra.total,
                         IdCompra = newCompra.IdCompra
-                    };
+                    });
 
                     Producto? producto = _context.TablaProductos
                           .FirstOrDefault(prod => prod.IdProducto == prodCompra.idProducto);
@@ -114,7 +114,7 @@ namespace Vinoteca.Server.Controllers
                         throw new Exception("No se pudo encontrar el producto.");
                     }
 
-                    producto.Stock = producto.Stock - prodCompra.cantidad;
+                    producto.Stock = producto.Stock + prodCompra.cantidad;
                 };
             
                 await _context.SaveChangesAsync();
