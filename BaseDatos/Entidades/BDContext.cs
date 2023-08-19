@@ -74,7 +74,6 @@ namespace Vinoteca.BaseDatos
         public DbSet<Caja> TablaCajas { get; set; }
         public DbSet<Cliente> TablaClientes { get; set; }
         public DbSet<Compra> TablaCompras { get; set; }
-        public DbSet<DetalleDeCaja> TablaDetalleDeCajas { get; set; }
         public DbSet<DetalleDeCompra> TablaDetalleDeCompras { get; set; }
         public DbSet<DetalleDeVenta> TablaDetalleDeVentas { get; set; }
         public DbSet<Producto> TablaProductos { get; set; }

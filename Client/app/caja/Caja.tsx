@@ -87,6 +87,23 @@ export default function Caja() {
           />
         </Grid>
 
+       {/* <DialogActions
+          sx={{
+            margin: "auto",
+            background: "#ccc",
+            marginTop: "30px",
+          }}
+        >
+          <LoadingButton
+            loading={loading}
+            size="large"
+            onClick={(e: any) => getMovimientoCaja(e)}
+          >
+            {"Cerrar caja"}
+          </LoadingButton>
+        </DialogActions> */}
+
+
         <DialogActions
           sx={{
             margin: "auto",
@@ -102,6 +119,7 @@ export default function Caja() {
             {"Consultar caja"}
           </LoadingButton>
         </DialogActions>
+
       </Grid>
 
       <br />
