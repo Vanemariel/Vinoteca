@@ -11,8 +11,8 @@ using Vinoteca.BaseDatos;
 namespace BaseDatos.Migrations
 {
     [DbContext(typeof(BDContext))]
-    [Migration("20230821203511_firstCommit")]
-    partial class firstCommit
+    [Migration("20230821205236_asd")]
+    partial class asd
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,7 +32,10 @@ namespace BaseDatos.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCaja"));
 
-                    b.Property<float>("EgresoProvedores")
+                    b.Property<float>("EgresoProvedoresDebito")
+                        .HasColumnType("real");
+
+                    b.Property<float>("EgresoProvedoresEfectivo")
                         .HasColumnType("real");
 
                     b.Property<string>("FechaTurno")

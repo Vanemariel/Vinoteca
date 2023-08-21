@@ -8,7 +8,7 @@ namespace Shared.DTO
 {
     public class CajaDtoRequest
     {
-        public string fechaTurno { get; set; }
+        public string fechaTurno = "";
         public string? fondoCajaRecibido { get; set; }
         
     }

@@ -29,7 +29,10 @@ namespace BaseDatos.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCaja"));
 
-                    b.Property<float>("EgresoProvedores")
+                    b.Property<float>("EgresoProvedoresDebito")
+                        .HasColumnType("real");
+
+                    b.Property<float>("EgresoProvedoresEfectivo")
                         .HasColumnType("real");
 
                     b.Property<string>("FechaTurno")

@@ -7,7 +7,7 @@
 namespace BaseDatos.Migrations
 {
     /// <inheritdoc />
-    public partial class firstCommit : Migration
+    public partial class asd : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -20,7 +20,8 @@ namespace BaseDatos.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FechaTurno = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FondoCajaRecibido = table.Column<float>(type: "real", nullable: false),
-                    EgresoProvedores = table.Column<float>(type: "real", nullable: false),
+                    EgresoProvedoresDebito = table.Column<float>(type: "real", nullable: false),
+                    EgresoProvedoresEfectivo = table.Column<float>(type: "real", nullable: false),
                     IngresoVentaEfectivo = table.Column<float>(type: "real", nullable: false),
                     IngresoVentaDebito = table.Column<float>(type: "real", nullable: false),
                     FondoCajaEntregado = table.Column<float>(type: "real", nullable: false)

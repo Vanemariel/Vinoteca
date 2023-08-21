@@ -55,7 +55,7 @@ namespace Vinoteca.Server.Controllers
 
                 // Cerrar caja
                 if (
-                    CajaDto.fechaTurno != null && CajaDto.fondoCajaRecibido != null
+                    CajaDto.fechaTurno == "" && CajaDto.fondoCajaRecibido == ""
                 ){
                     Caja? fndCaja = await _context.TablaCajas
                         .FirstOrDefaultAsync(x => x.FechaTurno == CajaDto.fechaTurno);
