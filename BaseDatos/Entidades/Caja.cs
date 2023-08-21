@@ -9,7 +9,8 @@ namespace BaseDatos.Entidades
 
         public string FechaTurno { get; set; }
         public float FondoCajaRecibido { get; set; }
-        public float EgresoProvedores { get; set; }
+        public float EgresoProvedoresDebito { get; set; }
+        public float EgresoProvedoresEfectivo { get; set; }
         public float IngresoVentaEfectivo { get; set; }
         public float IngresoVentaDebito { get; set; }
         public float FondoCajaEntregado { get; set; }

@@ -5,6 +5,10 @@ using Shared.DTO;
 using System.Collections.Generic;
 using Vinoteca.BaseDatos;
 using Vinoteca.Server.Contracts;
+using static Vinoteca.Server.Contracts.ApiRoutes;
+using Caja = BaseDatos.Entidades.Caja;
+using Compra = BaseDatos.Entidades.Compra;
+using Venta = BaseDatos.Entidades.Venta;
 
 namespace Vinoteca.Server.Controllers
 {
@@ -51,29 +55,29 @@ namespace Vinoteca.Server.Controllers
 
                 // Cerrar caja
                 if (
-                    CajaDto.FechaTurno == new DateTime().ToString("yyyy-MM-dd") && 
-                    CajaDto.FondoCajaRecibido != null
+                    CajaDto.fechaTurno != null && CajaDto.fondoCajaRecibido != null
                 ){
                     Caja? fndCaja = await _context.TablaCajas
-                        .FirstOrDefaultAsync(x => x.FechaTurno == CajaDto.FechaTurno);
+                        .FirstOrDefaultAsync(x => x.FechaTurno == CajaDto.fechaTurno);
 
                     if (fndCaja != null)
                     {
                         throw new Exception("Error al cerrar caja. Ya has cerrado caja anteriormente");
                     }
 
-                    cajaResponse.FondoCajaRecibido = float.Parse(CajaDto.FondoCajaRecibido);
-                    cajaResponse.FechaTurno = CajaDto.FechaTurno;
+                    cajaResponse.fondoCajaRecibido = float.Parse(CajaDto.fondoCajaRecibido);
+                    cajaResponse.fechaTurno = CajaDto.fechaTurno;
                     cajaResponse = await calculateMovCaja(cajaResponse);
 
                     Caja newCaja = new Caja
                     {
-                        FondoCajaRecibido = cajaResponse.FondoCajaRecibido,
-                        FechaTurno =  cajaResponse.FechaTurno,
-                        EgresoProvedores= cajaResponse.EgresoProvedores,
-                        FondoCajaEntregado = cajaResponse.FondoCajaEntregado,
-                        IngresoVentaDebito = cajaResponse.IngresoVentaDebito,
-                        IngresoVentaEfectivo = cajaResponse.IngresoVentaEfectivo
+                        FondoCajaRecibido = cajaResponse.fondoCajaRecibido,
+                        FechaTurno =  cajaResponse.fechaTurno,
+                        EgresoProvedoresEfectivo = cajaResponse.egresoProvedoresEfectivo,
+                        EgresoProvedoresDebito = cajaResponse.egresoProvedoresDebito,
+                        FondoCajaEntregado = cajaResponse.fondoCajaEntregado,
+                        IngresoVentaDebito = cajaResponse.ingresoVentaDebito,
+                        IngresoVentaEfectivo = cajaResponse.ingresoVentaEfectivo
                     };
 
                     _context.TablaCajas.Add(newCaja);
@@ -86,7 +90,7 @@ namespace Vinoteca.Server.Controllers
                     // Para vr movimientos de caja en X dia
 
                     Caja? fndCaja = await _context.TablaCajas
-                     .FirstOrDefaultAsync(x => x.FechaTurno == CajaDto.FechaTurno);
+                     .FirstOrDefaultAsync(x => x.FechaTurno == CajaDto.fechaTurno);
 
                     if (fndCaja == null)
                     {
@@ -108,37 +112,46 @@ namespace Vinoteca.Server.Controllers
         {
     
             List<Compra> listaCompras = await _context.TablaCompras
-                .Where(c => c.FechaCompra == cajaDto.FechaTurno)
+                .Where(c => c.FechaCompra == cajaDto.fechaTurno)
                 .ToListAsync();
 
 
             listaCompras.ForEach((Compra compra) =>
             {
-                cajaDto.EgresoProvedores -= compra.Total;
+                if (compra.Transferencia)
+                {
+                    cajaDto.egresoProvedoresEfectivo += compra.Total;
+                }
+
+                if (compra.Efectivo)
+                {
+                    cajaDto.egresoProvedoresDebito += compra.Total;
+                }
             });
 
             List<Venta> listaVentas = await _context.TablaVentas
-                .Where(c => c.FechaVenta== cajaDto.FechaTurno)
+                .Where(c => c.FechaVenta== cajaDto.fechaTurno)
                 .ToListAsync();
 
             listaVentas.ForEach((Venta venta) =>
             {
                 if (venta.Transferencia)
                 {
-                    cajaDto.IngresoVentaDebito += venta.Total;
+                    cajaDto.ingresoVentaDebito += venta.Total;
                 }
 
                 if (venta.Efectivo)
                 {
-                    cajaDto.IngresoVentaEfectivo += venta.Total;
+                    cajaDto.ingresoVentaEfectivo += venta.Total;
                 }
             });
 
-            cajaDto.FondoCajaEntregado = (float)(
-                cajaDto.FondoCajaRecibido +
-                cajaDto.IngresoVentaDebito +
-                cajaDto.IngresoVentaEfectivo -
-                cajaDto.EgresoProvedores
+            cajaDto.fondoCajaEntregado = (float)(
+                cajaDto.fondoCajaRecibido +
+                cajaDto.ingresoVentaDebito +
+                cajaDto.ingresoVentaEfectivo -
+                cajaDto.egresoProvedoresEfectivo -
+                cajaDto.egresoProvedoresDebito
             );
 
             return cajaDto;
@@ -147,13 +160,14 @@ namespace Vinoteca.Server.Controllers
         {
             return new CajaDtoResponse
             {
-                IdCaja = caja.IdCaja,
-                FondoCajaRecibido = caja.FondoCajaRecibido,
-                FechaTurno =  caja.FechaTurno,
-                EgresoProvedores= caja.EgresoProvedores,
-                FondoCajaEntregado = caja.FondoCajaEntregado,
-                IngresoVentaDebito = caja.IngresoVentaDebito,
-                IngresoVentaEfectivo = caja.IngresoVentaEfectivo,
+                idCaja = caja.IdCaja,
+                fondoCajaRecibido = caja.FondoCajaRecibido,
+                fechaTurno =  caja.FechaTurno,
+                egresoProvedoresDebito = caja.EgresoProvedoresDebito,
+                egresoProvedoresEfectivo = caja.EgresoProvedoresEfectivo,
+                fondoCajaEntregado = caja.FondoCajaEntregado,
+                ingresoVentaDebito = caja.IngresoVentaDebito,
+                ingresoVentaEfectivo = caja.IngresoVentaEfectivo,
             };
         }
 

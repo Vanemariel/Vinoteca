@@ -7,11 +7,29 @@
 namespace BaseDatos.Migrations
 {
     /// <inheritdoc />
-    public partial class first : Migration
+    public partial class firstCommit : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "TablaCajas",
+                columns: table => new
+                {
+                    IdCaja = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FechaTurno = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FondoCajaRecibido = table.Column<float>(type: "real", nullable: false),
+                    EgresoProvedores = table.Column<float>(type: "real", nullable: false),
+                    IngresoVentaEfectivo = table.Column<float>(type: "real", nullable: false),
+                    IngresoVentaDebito = table.Column<float>(type: "real", nullable: false),
+                    FondoCajaEntregado = table.Column<float>(type: "real", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TablaCajas", x => x.IdCaja);
+                });
+
             migrationBuilder.CreateTable(
                 name: "TablaClientes",
                 columns: table => new
@@ -83,37 +101,6 @@ namespace BaseDatos.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TablaCajas",
-                columns: table => new
-                {
-                    IdCaja = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Fecha = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Inicio = table.Column<float>(type: "real", nullable: false),
-                    Cierre = table.Column<float>(type: "real", nullable: false),
-                    MañanaOTarde = table.Column<bool>(type: "bit", nullable: false),
-                    TipoIngreso = table.Column<bool>(type: "bit", nullable: false),
-                    IngresoEfectivo = table.Column<int>(type: "int", nullable: false),
-                    IngresoDébito = table.Column<int>(type: "int", nullable: false),
-                    TipoEgreso = table.Column<bool>(type: "bit", nullable: false),
-                    EgresoSueldo = table.Column<int>(type: "int", nullable: false),
-                    EgresoProveedores = table.Column<int>(type: "int", nullable: false),
-                    EgresoRetiro = table.Column<int>(type: "int", nullable: false),
-                    Ingreso = table.Column<int>(type: "int", nullable: false),
-                    IdUsuario = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TablaCajas", x => x.IdCaja);
-                    table.ForeignKey(
-                        name: "FK_TablaCajas_TablaUsuarios_IdUsuario",
-                        column: x => x.IdUsuario,
-                        principalTable: "TablaUsuarios",
-                        principalColumn: "IdUsuario",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "TablaCompras",
                 columns: table => new
                 {
@@ -166,34 +153,6 @@ namespace BaseDatos.Migrations
                         column: x => x.IdUsuario,
                         principalTable: "TablaUsuarios",
                         principalColumn: "IdUsuario",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TablaDetalleDeCajas",
-                columns: table => new
-                {
-                    IdDetalleCaja = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Importe = table.Column<float>(type: "real", nullable: false),
-                    Saldo = table.Column<float>(type: "real", nullable: false),
-                    IdCaja = table.Column<int>(type: "int", nullable: false),
-                    IdCompra = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TablaDetalleDeCajas", x => x.IdDetalleCaja);
-                    table.ForeignKey(
-                        name: "FK_TablaDetalleDeCajas_TablaCajas_IdCaja",
-                        column: x => x.IdCaja,
-                        principalTable: "TablaCajas",
-                        principalColumn: "IdCaja",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_TablaDetalleDeCajas_TablaCompras_IdCompra",
-                        column: x => x.IdCompra,
-                        principalTable: "TablaCompras",
-                        principalColumn: "IdCompra",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -273,11 +232,6 @@ namespace BaseDatos.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_TablaCajas_IdUsuario",
-                table: "TablaCajas",
-                column: "IdUsuario");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_TablaCompras_IdProveedor",
                 table: "TablaCompras",
                 column: "IdProveedor");
@@ -286,16 +240,6 @@ namespace BaseDatos.Migrations
                 name: "IX_TablaCompras_IdUsuario",
                 table: "TablaCompras",
                 column: "IdUsuario");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TablaDetalleDeCajas_IdCaja",
-                table: "TablaDetalleDeCajas",
-                column: "IdCaja");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TablaDetalleDeCajas_IdCompra",
-                table: "TablaDetalleDeCajas",
-                column: "IdCompra");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TablaDetalleDeCompras_IdCompra",
@@ -332,19 +276,16 @@ namespace BaseDatos.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "TablaClientes");
+                name: "TablaCajas");
 
             migrationBuilder.DropTable(
-                name: "TablaDetalleDeCajas");
+                name: "TablaClientes");
 
             migrationBuilder.DropTable(
                 name: "TablaDetalleDeCompras");
 
             migrationBuilder.DropTable(
                 name: "TablaDetalleDeVentas");
-
-            migrationBuilder.DropTable(
-                name: "TablaCajas");
 
             migrationBuilder.DropTable(
                 name: "TablaCompras");
