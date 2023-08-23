@@ -3,7 +3,7 @@ import create from 'zustand';
 
 interface State {
     getList: (action: string) => any;
-    getObject: (action: string, id: number) => any;
+    getObject: (action: string, id: any) => any;
     newObject: (action: string, obj: any) => any;
     updateObject: (action: string, obj: any) => any;
     deleteObject: (action: string, id: number) => any;
@@ -22,7 +22,7 @@ export const useStore = create<State>((set) => ({
         return response;
       }
     },
-    getObject: async (action: string, id: number) => {
+    getObject: async (action: string, id: any) => {
       let response;
       await axios
         .get(action + id)

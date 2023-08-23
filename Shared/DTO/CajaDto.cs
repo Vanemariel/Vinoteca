@@ -8,9 +8,9 @@ namespace Shared.DTO
 {
     public class CajaDtoRequest
     {
-        public string fechaTurno = "";
+        public string fechaTurno { get; set; }
         public string? fondoCajaRecibido { get; set; }
-        
+
     }
 
     public class CajaDtoResponse
@@ -22,7 +22,7 @@ namespace Shared.DTO
         public float egresoProvedoresDebito { get; set; }
         public float ingresoVentaEfectivo { get; set; }
         public float ingresoVentaDebito { get; set; }
-        public float fondoCajaEntregado{ get; set; }
+        public float fondoCajaEntregado { get; set; }
 
     }
 }

@@ -1,4 +1,5 @@
-﻿using BaseDatos.Entidades;
+﻿using Azure;
+using BaseDatos.Entidades;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shared.DTO;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using Vinoteca.BaseDatos;
 using Vinoteca.Server.Contracts;
 using static Vinoteca.Server.Contracts.ApiRoutes;
+
 using Caja = BaseDatos.Entidades.Caja;
 using Compra = BaseDatos.Entidades.Compra;
 using Venta = BaseDatos.Entidades.Venta;
@@ -28,89 +30,144 @@ namespace Vinoteca.Server.Controllers
         }
 
         #region HTTP GET 
-        //[HttpGet(ApiRoutes.Caja.GetAll)]
-        //public async Task<ActionResult<List<Caja>>> GetAll()
-        //{
-        //    try
-        //    {
-        //        List<Caja> Cajas = await this._context.TablaCajas.ToListAsync();
-
-        //        return Ok(Cajas);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest($"Ha ocurrido un error, {ex.Message}");
-        //    }
-        //}
-
-        #endregion
-
-        #region HTTP POST
-        [HttpPost(ApiRoutes.Caja.New)]
-        public async Task<ActionResult<CajaDtoResponse>> New(CajaDtoRequest CajaDto)
+        [HttpGet(ApiRoutes.Caja.GetByDate)]
+        public async Task<ObjectResult> GetByDate(string fechaTurno)
         {
+            ObjectResult response = new ObjectResult(null);
+
             try
             {
+                Caja? fndCaja = await _context.TablaCajas
+                 .FirstOrDefaultAsync(x => x.FechaTurno == fechaTurno);
+
+                if (fndCaja == null)
+                {
+                    throw new Exception("En el dia ingresado, no has iniciado caja.");
+                }
+
                 CajaDtoResponse cajaResponse = new CajaDtoResponse();
 
+                cajaResponse.idCaja = fndCaja.IdCaja;
+                cajaResponse.fondoCajaRecibido = fndCaja.FondoCajaRecibido;
+                cajaResponse.fechaTurno = fndCaja.FechaTurno;
+                cajaResponse = await calculateMovCaja(cajaResponse);
+
+                response.Value = cajaResponse;
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = 400;
+                response.Value = ex.Message;
+            }
+            return response;
+        }
+
+
+        #endregion
+        #region HTTP POST
+        [HttpPost(ApiRoutes.Caja.OpenCaja)]
+        public async Task<ObjectResult> OpenCaja(CajaDtoRequest CajaDto) /// INICIAMOS CAJA
+        {
+            ObjectResult response = new ObjectResult(null);
+
+            try
+            {
                 // Cerrar caja
-                if (
-                    CajaDto.fechaTurno == "" && CajaDto.fondoCajaRecibido == ""
-                ){
-                    Caja? fndCaja = await _context.TablaCajas
+                if (CajaDto.fechaTurno == "" || CajaDto.fondoCajaRecibido == null)
+                {
+                    throw new Exception("No ha ingresado los datos necesarios");
+                }
+
+                Caja? fndCaja = await _context.TablaCajas
                         .FirstOrDefaultAsync(x => x.FechaTurno == CajaDto.fechaTurno);
 
-                    if (fndCaja != null)
-                    {
-                        throw new Exception("Error al cerrar caja. Ya has cerrado caja anteriormente");
-                    }
-
-                    cajaResponse.fondoCajaRecibido = float.Parse(CajaDto.fondoCajaRecibido);
-                    cajaResponse.fechaTurno = CajaDto.fechaTurno;
-                    cajaResponse = await calculateMovCaja(cajaResponse);
-
-                    Caja newCaja = new Caja
-                    {
-                        FondoCajaRecibido = cajaResponse.fondoCajaRecibido,
-                        FechaTurno =  cajaResponse.fechaTurno,
-                        EgresoProvedoresEfectivo = cajaResponse.egresoProvedoresEfectivo,
-                        EgresoProvedoresDebito = cajaResponse.egresoProvedoresDebito,
-                        FondoCajaEntregado = cajaResponse.fondoCajaEntregado,
-                        IngresoVentaDebito = cajaResponse.ingresoVentaDebito,
-                        IngresoVentaEfectivo = cajaResponse.ingresoVentaEfectivo
-                    };
-
-                    _context.TablaCajas.Add(newCaja);
-                    await _context.SaveChangesAsync();
-
-                    cajaResponse = mapperCajaReponse(newCaja);
-                }
-                else
+                if (fndCaja != null)
                 {
-                    // Para vr movimientos de caja en X dia
-
-                    Caja? fndCaja = await _context.TablaCajas
-                     .FirstOrDefaultAsync(x => x.FechaTurno == CajaDto.fechaTurno);
-
-                    if (fndCaja == null)
-                    {
-                        throw new Exception("En el dia ingresado, no has cerrado caja.");
-                    }
-
-                    cajaResponse = mapperCajaReponse(fndCaja);
+                    throw new Exception("Error al cerrar caja. Ya has iniciado caja anteriormente");
                 }
 
-                return Ok(cajaResponse);
+                Caja newCaja = new Caja
+                {
+                    FondoCajaRecibido = float.Parse(CajaDto.fondoCajaRecibido),
+                    FechaTurno = CajaDto.fechaTurno,
+                    EgresoProvedoresEfectivo = 0,
+                    EgresoProvedoresDebito = 0,
+                    FondoCajaEntregado = 0,
+                    IngresoVentaDebito = 0,
+                    IngresoVentaEfectivo = 0
+                };
+
+                _context.TablaCajas.Add(newCaja);
+                await _context.SaveChangesAsync();
+
+                response.Value = "Se ha iniciado caja correctamente!";
             }
             catch (Exception e)
             {
-                return BadRequest(e.Message);
+                response.StatusCode = 400;
+                response.Value = e.Message;
             }
+            return response;
         }
+
+
+        [HttpPost(ApiRoutes.Caja.CloseCaja)]
+        public async Task<ObjectResult> CloseCaja(CajaDtoRequest CajaDto) /// CERRAMOS CAJA
+        {
+            ObjectResult response = new ObjectResult(null);
+
+            try
+            {
+                // Cerrar caja
+                if (CajaDto.fechaTurno == "")
+                {
+                    throw new Exception("No ha ingresado los datos necesarios");
+                }
+
+                Caja? fndCaja = await _context.TablaCajas
+                        .FirstOrDefaultAsync(x => x.FechaTurno == CajaDto.fechaTurno);
+
+                if (fndCaja == null)
+                {
+                    throw new Exception("Error al cerrar caja. No has iniciado caja anteriormente");
+                }
+
+                CajaDtoResponse cajaResponse = new CajaDtoResponse();
+
+                cajaResponse.fondoCajaRecibido = fndCaja.FondoCajaRecibido;
+                cajaResponse.fechaTurno = CajaDto.fechaTurno;
+                cajaResponse = await calculateMovCaja(cajaResponse);
+
+                Caja newCaja = new Caja
+                {
+                    FondoCajaRecibido = cajaResponse.fondoCajaRecibido,
+                    FechaTurno = cajaResponse.fechaTurno,
+                    EgresoProvedoresEfectivo = cajaResponse.egresoProvedoresEfectivo,
+                    EgresoProvedoresDebito = cajaResponse.egresoProvedoresDebito,
+                    FondoCajaEntregado = cajaResponse.fondoCajaEntregado,
+                    IngresoVentaDebito = cajaResponse.ingresoVentaDebito,
+                    IngresoVentaEfectivo = cajaResponse.ingresoVentaEfectivo
+                };
+
+                _context.TablaCajas.Add(newCaja);
+                await _context.SaveChangesAsync();
+
+                response.Value = "Se ha cerrado caja correctamente!";
+            }
+            catch (Exception e)
+            {
+                response.StatusCode = 400;
+                response.Value = e.Message;
+            }
+            return response;
+        }
+
+
+        #endregion
 
         private async Task<CajaDtoResponse> calculateMovCaja(CajaDtoResponse cajaDto)
         {
-    
+
             List<Compra> listaCompras = await _context.TablaCompras
                 .Where(c => c.FechaCompra == cajaDto.fechaTurno)
                 .ToListAsync();
@@ -130,7 +187,7 @@ namespace Vinoteca.Server.Controllers
             });
 
             List<Venta> listaVentas = await _context.TablaVentas
-                .Where(c => c.FechaVenta== cajaDto.fechaTurno)
+                .Where(c => c.FechaVenta == cajaDto.fechaTurno)
                 .ToListAsync();
 
             listaVentas.ForEach((Venta venta) =>
@@ -156,77 +213,6 @@ namespace Vinoteca.Server.Controllers
 
             return cajaDto;
         }
-        private CajaDtoResponse mapperCajaReponse(Caja caja)
-        {
-            return new CajaDtoResponse
-            {
-                idCaja = caja.IdCaja,
-                fondoCajaRecibido = caja.FondoCajaRecibido,
-                fechaTurno =  caja.FechaTurno,
-                egresoProvedoresDebito = caja.EgresoProvedoresDebito,
-                egresoProvedoresEfectivo = caja.EgresoProvedoresEfectivo,
-                fondoCajaEntregado = caja.FondoCajaEntregado,
-                ingresoVentaDebito = caja.IngresoVentaDebito,
-                ingresoVentaEfectivo = caja.IngresoVentaEfectivo,
-            };
-        }
 
-        #endregion
-
-        #region HTTP PUT
-        //[HttpPut(ApiRoutes.Caja.Update)]
-        //public ActionResult Update(int id, [FromBody] Caja caja)
-        //{
-        //    if (id != caja.IdCaja)
-        //    {
-        //        return BadRequest("Datos incorrectos");
-        //    }
-
-        //    var cajitas = _context.TablaCajas.Where(e => e.IdCaja == id).FirstOrDefault();
-        //    if (cajitas == null)
-        //    {
-        //        return NotFound("No existe la caja¿? para modificar");
-        //    }
-
-        //    cajitas.Fecha = cajitas.Fecha;
-        //    cajitas.Inicio = cajitas.Inicio;
-        //    cajitas.Cierre = cajitas.Cierre;
-
-        //    try
-        //    {
-        //        //throw(new Exception("Cualquier Verdura"));
-        //        _context.TablaCajas.Update(cajitas);
-        //        _context.SaveChanges();
-        //        return Ok();
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return BadRequest($"Los datos no han sido actualizados por: {e.Message}");
-        //    }
-        //}
-        #endregion
-
-        #region HTTP DELETE
-        //[HttpDelete(ApiRoutes.Caja.Delete)]
-        //public ActionResult Delete(int id)
-        //{
-        //    var cajuelas = _context.TablaCajas.Where(x => x.IdCaja == id).FirstOrDefault();
-
-        //    if (cajuelas == null)
-        //    {
-        //        return NotFound($"El registro {id} no fue encontrado");
-        //    }
-        //    try
-        //    {
-        //        _context.TablaCajas.Remove(cajuelas);
-        //        _context.SaveChanges();
-        //        return Ok($"El registro de {cajuelas.IdCaja} ha sido borrado.");
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return BadRequest($"Los datos no pudieron eliminarse por: {e.Message}");
-        //    }
-        //}
-        #endregion
     }
 }

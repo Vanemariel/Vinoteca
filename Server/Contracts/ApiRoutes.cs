@@ -70,9 +70,11 @@ namespace Vinoteca.Server.Contracts
         }
         public static class Caja
         {
-            public const string New = Base + "/caja";
+            public const string OpenCaja = Base + "/caja/OpenCaja";
+            public const string CloseCaja = Base + "/caja/CloseCaja";
+            public const string GetByDate = Base + "/caja/{fechaTurno}";
+
             public const string GetAll = Base + "/caja";
-            public const string GetById = Base + "/caja/{id}";
             public const string Delete = Base + "/caja/{id}";
             public const string Update = Base + "/caja";
         }

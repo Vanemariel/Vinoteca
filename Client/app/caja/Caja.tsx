@@ -24,75 +24,170 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { useStore } from "../../stores/crud";
 
 export default function Caja() {
-  const [loading, setLoading] = useState(false);
-  const {  newObject } = useStore();
 
+  const [loading, setLoading] = useState(false);
+  const { newObject, getObject } = useStore();
+
+  //// CAJA
+  const [formDataOpenCaja, setFormDataOpenCaja] = useState({
+    fechaTurno: "",
+    fondoCajaRecibido: 0,
+  });
   const [formDataCloseCaja, setFormDataCloseCaja] = useState({
     fechaTurno: "",
-    fondoCajaRecibido: 0,
-  });
-  const [formDataMovCaja, setFormDataMovCaja] = useState({
-    fechaTurno: "",
   });
 
-  const [movCaja, setMovCaja] = useState({
-    idCaja: 0,
-    fechaTurno: "",
-    fondoCajaRecibido: 0,
-    egresoProvedores: 0,
-    ingresoVentaEfectivo: 0,
-    ingresoVentaDebito: 0,
-    fondoCajaEntregado: 0,
-  });
-
-  const closeCaja = async (e: any) => {
+  const openCaja = async (e: any) => {
     e.preventDefault();
-
+    setLoading(false);
+    setShowDataMovCaja(false)
+    setMovCaja({
+      idCaja: 0,
+      fechaTurno: "",
+      fondoCajaRecibido: 0,
+      egresoProvedoresEfectivo: 0,
+      egresoProvedoresDebito: 0,
+      ingresoVentaEfectivo: 0,
+      ingresoVentaDebito: 0,
+      fondoCajaEntregado: 0,
+    })
+    
     try {
-      setLoading(false);
-      if (formDataCloseCaja.fechaTurno === "") {
+      setLoading(true);
+      if (formDataOpenCaja.fechaTurno === "") {
         return;
       }
 
-      if (formDataCloseCaja.fondoCajaRecibido === 0) {
+      if (formDataOpenCaja.fondoCajaRecibido === 0) {
         return;
       }
 
       const closeCajaResponse = await newObject(
-        action.CAJA_CONTROLLER,
-        formDataCloseCaja
+        `${action.CAJA_CONTROLLER}OpenCaja`,
+        formDataOpenCaja
       );
 
-      setMovCaja(closeCajaResponse.data);
-      setLoading(true);
-    } catch (error) {
-      console.log("🚀 ~ file: Caja.tsx:62 ~ closeCaja ~ error:", error);
+      alert(closeCajaResponse.data)
+      setFormDataOpenCaja({
+        fechaTurno: "",
+        fondoCajaRecibido: 0,
+      })
+    } catch (error: any) {
+      alert(error.response.data)
+    } finally {
       setLoading(false);
     }
   };
 
-  const getMovimientoCaja = (e: any) => {
+  const closeCaja = async (e: any) => {
     e.preventDefault();
     setLoading(false);
-    if (formDataMovCaja.fechaTurno === "") {
-      return;
+    setShowDataMovCaja(false)
+    setMovCaja({
+      idCaja: 0,
+      fechaTurno: "",
+      fondoCajaRecibido: 0,
+      egresoProvedoresEfectivo: 0,
+      egresoProvedoresDebito: 0,
+      ingresoVentaEfectivo: 0,
+      ingresoVentaDebito: 0,
+      fondoCajaEntregado: 0,
+    })
+
+    try {
+      setLoading(true);
+      if (formDataCloseCaja.fechaTurno === "") {
+        return;
+      }
+
+      const closeCajaResponse = await newObject(
+        `${action.CAJA_CONTROLLER}CloseCaja`,
+        formDataCloseCaja
+      );
+
+      alert(closeCajaResponse.data)
+      setFormDataCloseCaja({
+        fechaTurno: "",
+      })
+    } catch (error: any) {
+      alert(error.response.data)
+    } finally {
+      setLoading(false);
     }
-    setLoading(true);
+  };
+
+  //// MOVIMIENTOS DE CAJA
+  const [formDataMovCaja, setFormDataMovCaja] = useState({
+    fechaTurno: "",
+  });
+  const [showDataMovCaja, setShowDataMovCaja] = useState(false)
+  const [movCaja, setMovCaja] = useState({
+    idCaja: 0,
+    fechaTurno: "",
+    fondoCajaRecibido: 0,
+    egresoProvedoresEfectivo: 0,
+    egresoProvedoresDebito: 0,
+    ingresoVentaEfectivo: 0,
+    ingresoVentaDebito: 0,
+    fondoCajaEntregado: 0,
+  });
+  const [result, setResult] = useState({
+    ingresoTotal: 0,
+    gastoTotal: 0,
+    gananciaTotal: 0
+  })
+
+  const getMovimientoCaja = async (e: any) => {
+    e.preventDefault();
+    setLoading(false);
+    setShowDataMovCaja(false)
+
+    try {
+      setLoading(true);
+
+      if (formDataMovCaja.fechaTurno === "") {
+        return;
+      }
+
+      const movCajaResponse = await getObject(
+        action.CAJA_CONTROLLER,
+        formDataMovCaja.fechaTurno
+      );
+
+      console.log("🚀 ~ file: Caja.tsx:94 ~ getMovimientoCaja ~ movCajaResponse:", movCajaResponse)
+
+      setMovCaja(movCajaResponse.data)
+      setResult({
+        ingresoTotal: movCajaResponse.data.ingresoVentaDebito + movCajaResponse.data.ingresoVentaEfectivo,
+        gastoTotal: movCajaResponse.data.egresoProvedoresEfectivo - movCajaResponse.data.egresoProvedoresDebito,
+        gananciaTotal: (
+          movCajaResponse.data.ingresoVentaDebito + movCajaResponse.data.ingresoVentaEfectivo
+        ) - movCajaResponse.data.egresoProvedoresEfectivo - movCajaResponse.data.egresoProvedoresDebito
+      })
+      setShowDataMovCaja(true)
+
+    } catch (error: any) {
+      alert(error.response.data)
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <>
       <CssBaseline />
 
-      <Grid container component={Paper} padding={4}>
-        <Grid item md={12} sm={12} xs={12}>
+      <Grid container component={Paper} padding={4} sx={{
+        justifyContent: "space-between"
+      }}>
+        <Grid item md={5} sm={5} xs={5}>
           <Typography
             component="h1"
             variant="h5"
             textAlign="center"
             sx={{ pb: 4 }}
           >
-            Caja
+            Iniciar Caja
           </Typography>
 
           <TextField
@@ -100,9 +195,9 @@ export default function Caja() {
             type="date"
             fullWidth
             InputLabelProps={{ shrink: true }}
-            value={formDataCloseCaja.fechaTurno}
-            onChange={ e => setFormDataCloseCaja({
-              ...formDataCloseCaja,
+            value={formDataOpenCaja.fechaTurno}
+            onChange={e => setFormDataOpenCaja({
+              ...formDataOpenCaja,
               fechaTurno: e.target.value
             })}
           />
@@ -114,14 +209,62 @@ export default function Caja() {
             type="number"
             label="Fondo de caja recibido"
             fullWidth
-            value={formDataCloseCaja.fondoCajaRecibido}
+            value={formDataOpenCaja.fondoCajaRecibido}
             onChange={(e: any) =>
-              setFormDataCloseCaja({
-                ...formDataCloseCaja,
+              setFormDataOpenCaja({
+                ...formDataOpenCaja,
                 fondoCajaRecibido: e.target.value,
               })
             }
           />
+
+          <Grid item md={4} sm={4} xs={4}>
+            <DialogActions
+              sx={{
+                // margin: "auto",
+                background: "#ccc",
+                marginTop: "30px",
+              }}
+            >
+              <LoadingButton
+                loading={loading}
+                size="large"
+                onClick={(e: any) => openCaja(e)}
+              >
+                {"Iniciar caja"}
+              </LoadingButton>
+            </DialogActions>
+          </Grid>
+        </Grid>
+
+
+        <Grid item md={5} sm={5} xs={5}>
+          <Typography
+            component="h1"
+            variant="h5"
+            textAlign="center"
+            sx={{ pb: 4 }}
+          >
+            Cerrar Caja
+          </Typography>
+
+          <TextField
+            label="Fecha del turno"
+            type="date"
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+            value={formDataCloseCaja.fechaTurno}
+            onChange={e => setFormDataCloseCaja({
+              ...formDataCloseCaja,
+              fechaTurno: e.target.value
+            })}
+          />
+
+          <br />
+          <br />
+          <br />
+          <br />
+
 
           <Grid item md={4} sm={4} xs={4}>
             <DialogActions
@@ -141,6 +284,7 @@ export default function Caja() {
             </DialogActions>
           </Grid>
         </Grid>
+
       </Grid>
 
       <br />
@@ -196,7 +340,7 @@ export default function Caja() {
           </DialogActions>
         </Grid>
 
-        {loading && (
+        {showDataMovCaja && (
           <>
             <Grid item md={12} sm={12} xs={12}>
               <Typography
@@ -233,9 +377,29 @@ export default function Caja() {
               <Grid item md={6} sm={6} xs={12}>
                 <TextField
                   type="number"
-                  label="Egreso: Provedores"
+                  label="Egreso: Provedores efectivo"
                   fullWidth
-                  value={movCaja.egresoProvedores}
+                  value={movCaja.egresoProvedoresEfectivo}
+                  disabled
+                />
+              </Grid>
+
+              <Grid item md={6} sm={6} xs={12}>
+                <TextField
+                  type="number"
+                  label="Egreso: Provedores debito"
+                  fullWidth
+                  value={movCaja.egresoProvedoresDebito}
+                  disabled
+                />
+              </Grid>
+
+              <Grid item md={6} sm={6} xs={12}>
+                <TextField
+                  type="number"
+                  label="Fondo de caja recibido"
+                  fullWidth
+                  value={movCaja.fondoCajaRecibido}
                   disabled
                 />
               </Grid>
@@ -280,9 +444,7 @@ export default function Caja() {
                   <InputBase
                     disabled
                     sx={{ ma: 1, flex: 1, fontSize: "30px" }}
-                    value={
-                      movCaja.ingresoVentaDebito + movCaja.ingresoVentaEfectivo
-                    }
+                    value={result.ingresoTotal}
                     placeholder="500"
                     readOnly
                   />
@@ -307,7 +469,7 @@ export default function Caja() {
                   <InputBase
                     disabled
                     sx={{ ma: 1, flex: 1, fontSize: "30px" }}
-                    value={movCaja.egresoProvedores}
+                    value={result.gastoTotal}
                     readOnly
                   />
                 </Paper>
@@ -331,9 +493,7 @@ export default function Caja() {
                   <InputBase
                     disabled
                     sx={{ ma: 1, flex: 1, fontSize: "30px" }}
-                    value={
-                      (movCaja.ingresoVentaDebito + movCaja.ingresoVentaEfectivo) - movCaja.egresoProvedores
-                    }
+                    value={result.gananciaTotal}
                     placeholder="350"
                   />
                 </Paper>
