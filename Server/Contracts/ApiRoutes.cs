@@ -81,11 +81,8 @@ namespace Vinoteca.Server.Contracts
 
         public static class DetalleDeCaja
         {
-            public const string New = Base + "/detalledecaja";
             public const string GetAll = Base + "/detalledecaja";
-            public const string GetById = Base + "/detalledecaja/{id}";
             public const string Delete = Base + "/detalledecaja/{id}";
-            public const string Update = Base + "/detalledecaja";
         }
 
         public static class DetalleDeVenta

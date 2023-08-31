@@ -30,10 +30,13 @@ namespace BaseDatos.Entidades
         [ForeignKey("IdProveedor")]
         public  Proveedor Proveedor { get; set; }
 
-
-
         [InverseProperty("Compra")]
         public List<DetalleDeCompra> DetalleDeCompras { get; set; }
-    
+
+
+        /////////////
+        public int? IdDetalleCaja { get; set; }
+        [ForeignKey("IdDetalleCaja")]
+        public DetalleCaja? DetallesCaja { get; set; }
     }
 }

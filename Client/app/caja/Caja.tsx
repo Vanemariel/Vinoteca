@@ -25,17 +25,21 @@ import { useStore } from "../../stores/crud";
 
 export default function Caja() {
 
+
+  const fecha = new Date().toLocaleDateString()
+
   const [loading, setLoading] = useState(false);
   const { newObject, getObject } = useStore();
 
   //// CAJA
   const [formDataOpenCaja, setFormDataOpenCaja] = useState({
-    fechaTurno: "",
+    fechaTurno: fecha,
     fondoCajaRecibido: 0,
   });
   const [formDataCloseCaja, setFormDataCloseCaja] = useState({
-    fechaTurno: "",
-  });
+    fechaTurno: fecha,
+  })
+
 
   const openCaja = async (e: any) => {
     e.preventDefault();
@@ -118,8 +122,8 @@ export default function Caja() {
 
   //// MOVIMIENTOS DE CAJA
   const [formDataMovCaja, setFormDataMovCaja] = useState({
-    fechaTurno: "",
-  });
+    fechaTurno: fecha,
+  })
   const [showDataMovCaja, setShowDataMovCaja] = useState(false)
   const [movCaja, setMovCaja] = useState({
     idCaja: 0,
@@ -164,8 +168,8 @@ export default function Caja() {
           movCajaResponse.data.ingresoVentaDebito + movCajaResponse.data.ingresoVentaEfectivo
         ) - movCajaResponse.data.egresoProvedoresEfectivo - movCajaResponse.data.egresoProvedoresDebito
       })
-      setShowDataMovCaja(true)
 
+      setShowDataMovCaja(true)
     } catch (error: any) {
       alert(error.response.data)
     } finally {

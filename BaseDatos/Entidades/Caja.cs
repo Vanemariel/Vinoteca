@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BaseDatos.Entidades
 {
@@ -15,5 +16,10 @@ namespace BaseDatos.Entidades
         public float IngresoVentaDebito { get; set; }
         public float FondoCajaEntregado { get; set; }
 
+
+
+        public int? IdDetalleCaja { get; set; }
+        [ForeignKey("IdDetalleCaja")]
+        public DetalleCaja? DetallesCaja { get; set; }
     }
 }

@@ -28,6 +28,12 @@ namespace BaseDatos.Entidades
         
         [InverseProperty("Venta")]
         public List<DetalleDeVenta> DetalleDeVentas { get; set; }
+
+
+        ////////////////
+        public int? IdDetalleCaja { get; set; }
+        [ForeignKey("IdDetalleCaja")]
+        public DetalleCaja? DetallesCaja { get; set; }
     }
 }
 
