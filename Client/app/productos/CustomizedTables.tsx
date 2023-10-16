@@ -90,9 +90,9 @@ export default function CustomizedTables() {
   const [formData, setFormData] = useState({
     idProducto: 0,
     nombreProducto: "",
-    stock: null,
-    precioVenta: null,
-    precioCompra: null,
+    stock: 0,
+    precioVenta: 0,
+    precioCompra: 0,
     detalle: "",
     idProveedor: 0,
   } as Producto);
@@ -473,7 +473,7 @@ export default function CustomizedTables() {
               setFormData({
                 detalle: "",
                 idProveedor: null,
-                stock: null,
+                stock: 0,
                 precioVenta: null,
                 precioCompra: null,
                 nombreProducto: "",
