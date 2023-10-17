@@ -18,11 +18,13 @@ namespace BaseDatos.Entidades
         public Caja Caja { get; set; }
 
 
-        [InverseProperty("IdVenta")]
+        [InverseProperty("DetallesCaja")]
         public List<Venta>? ListadoVentas { get; set; }
 
 
-        [InverseProperty("IdCompra")]
+
+        [InverseProperty("DetallesCaja")]
         public List<Compra>? ListadoCompras { get; set; }
+
     }
 }
