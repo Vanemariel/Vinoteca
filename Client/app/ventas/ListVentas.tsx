@@ -41,8 +41,68 @@ import AddShoppingCartSharpIcon from "@mui/icons-material/AddShoppingCartSharp";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { FormEvent } from "react";
 import { Producto, Venta } from "../../TYPES/crudTypes";
+import "driver.js/dist/driver.css";
+import { executePopup } from "../../Utilities/drivejs";
+import HelpIcon from '@mui/icons-material/Help';
 
 export default function ListVentas() {
+  const steps = [
+    {
+      title: "¡Bienvenido a Ventas!",
+      description: "Aquí debes registrar todas tus ventas.",
+      side: "top",
+      align: "start",
+    },
+    {
+      element: '#titulo-registra-ventas',
+      title: "Registra tus ventas",
+      description: "Aqui deberas completar cada campo que se te solicite para poder hacer una venta",
+      side: "top",
+      align: "start",
+    },
+    {
+      element: '#titulo-buscar-producto',
+      title: "Buscar el producto a vender",
+      description: "Aqui podras filtrar la busqueda de un producto a vender",
+      side: "top",
+      align: "start",
+    },
+    {
+      element: '#titulo-carrito-producto',
+      title: "Agrega al carrito",
+      description: "Al apretar esta opcion se te sumara dicho producto seleccionado al carrito",
+      side: "top",
+      align: "start",
+    },
+    {
+        element: '#titulo-agrega-producto',
+        title: "Elije una cantidad a vender",
+        description: "Al apretar esta opcion podras poner la cantidad especifica del producto selccionado.",
+        side: "top",
+        align: "start",
+    },
+    {
+      element: '#titulo-eliminar-producto',
+      title: "Puedes eliminar el producto del carrito",
+      description: "Al apretar esta opcion se eliminara a tu producto de la lista de ventas.",
+      side: "top",
+      align: "start",
+    },
+    {
+      element: '#titulo-detalle-venta',
+      title: "Detalle de la venta",
+      description: "Aqui veras el total del total de los producto vendidos y debes seleccionar el metodo de pago antes de terminar la venta",
+      side: "top",
+      align: "start",
+    },
+    {
+      element: '[href="/compras"]',
+      title: "Ultimo paso",
+      description: "Haz click en Compras.",
+      side: "top",
+      align: "start",
+    }]
+
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
       backgroundColor: theme.palette.common.black,
@@ -346,7 +406,9 @@ export default function ListVentas() {
 
   return (
     <div>
+      <HelpIcon style={{ width: "80px", height: "40px"}} onClick={() => executePopup({ steps })}></HelpIcon>
       <DialogContent>
+      
         <Grid container spacing={2}>
           <Grid
             item
@@ -377,7 +439,7 @@ export default function ListVentas() {
                         alignItems: "center",
                       }}
                     >
-                      <Typography component="h1" variant="h5">
+                      <Typography component="h1" variant="h5" id= 'titulo-registra-ventas'>
                         "Registra tus ventas"{" "}
                       </Typography>
                       <Box
@@ -508,7 +570,7 @@ export default function ListVentas() {
                         alignItems: "center",
                       }}
                     >
-                      <Typography component="h1" variant="h5">
+                      <Typography id = 'titulo-detalle-venta'component="h1" variant="h5">
                         "Detalle de ventas"
                       </Typography>
                       <Box
@@ -623,6 +685,7 @@ export default function ListVentas() {
       </Dialog>
       {/*Buscador*/}
       <InputBase
+      id= 'titulo-buscar-producto'
         sx={{
           mr: 2,
           height: "40px",
@@ -677,7 +740,7 @@ export default function ListVentas() {
                     aria-label="edit"
                     onClick={() => handleAddButtonClick(producto)}
                   >
-                    <AddShoppingCartSharpIcon />
+                    <AddShoppingCartSharpIcon id= 'titulo-carrito-producto'/>
                     {/* <ToastContainer style={{ fontSize: "10px", padding: "8px 12px" }} /> */}
                   </IconButton>
                 </StyledTableCell>
@@ -741,7 +804,7 @@ export default function ListVentas() {
                       setDeleteDialog(true);
                     }}
                   >
-                    <DeleteIcon />
+                    <DeleteIcon id= 'titulo-cantidad-producto'/>
                   </IconButton>
                 </StyledTableCell>
 
@@ -760,7 +823,7 @@ export default function ListVentas() {
                   </button>
 
                   <input type="number" value={row.cantidad} disabled />
-                  <button onClick={(e) => updateVentaItem(index, "agregar")}>
+                  <button id= 'titulo-agrega-producto' onClick={(e) => updateVentaItem(index, "agregar")}>
                     Agregar
                   </button>
                 </StyledTableCell>

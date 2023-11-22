@@ -39,6 +39,10 @@ import {
 import { Producto, Proveedor } from "../../TYPES/crudTypes";
 import { useStore } from "../../stores/crud";
 
+import "driver.js/dist/driver.css";
+import { executePopup } from "../../Utilities/drivejs";
+import HelpIcon from '@mui/icons-material/Help';
+
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.black,
@@ -60,6 +64,51 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function CustomizedTables() {
+
+  const steps = [
+    {
+      title: "¡Bienvenido a Proveedores!",
+      description: "Aquí puedes manejar todos tus proveedores.",
+      side: "top",
+      align: "start",
+    },
+    {
+      element: '#titulo-agregar-proveedor',
+      title: "Agregar Proveedor",
+      description: "Al apretar esta opcion se te abrira un formulario con datos a completar para que agregues a tus proveedores.",
+      side: "top",
+      align: "start",
+    },
+    {
+      element: '#titulo-buscar-proveedor',
+      title: "Buscar proveedor",
+      description: "aqui podras filtrar la busqueda de un proveedor en partiular.",
+      side: "top",
+      align: "start",
+    },
+    {
+      element: '#titulo-editar-proveedor',
+      title: "Editar proveedor",
+      description: "Al apretar esta opcion se te abrira un formulario con datos a completar para que edites los datos de tu proveedor.",
+      side: "top",
+      align: "start",
+    },
+    {
+        element: '#titulo-eliminar-proveedor',
+        title: "Eliminar proveedor",
+        description: "Al apretar esta opcion se eliminara a tu proveedor.",
+        side: "top",
+        align: "start",
+    },
+    {
+      element: '[href="/productos"]',
+      title: "Ultimo paso",
+      description: "Haz click en Producto.",
+      side: "top",
+      align: "start",
+    },
+  ];
+
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const [deleteDialog, setDeleteDialog] = useState(false);
@@ -248,11 +297,14 @@ export default function CustomizedTables() {
             marginRight: "auto",
           }}
         >
+           <HelpIcon style={{ width: "80px", height: "40px"}} onClick={() => executePopup({ steps })}></HelpIcon>
           {"Proveedor"}
+         
         </Typography>
 
         {/*Buscador*/}
         <InputBase
+          id= "titulo-buscar-proveedor"
           sx={{
             mr: 2,
           }}
@@ -282,7 +334,7 @@ export default function CustomizedTables() {
             mr: 5,
           }}
           variant="contained"
-          id="containedButton"
+          id= 'titulo-agregar-proveedor'
           onClick={() => {
             setDialog(true);
             setIsNew(true);
@@ -535,7 +587,7 @@ export default function CustomizedTables() {
             });
           }}
         >
-          <EditIcon />
+          <EditIcon  id= 'titulo-editar-proveedor'/>
         </IconButton>
         <IconButton
           color="error"
@@ -545,7 +597,7 @@ export default function CustomizedTables() {
             setDeleteDialog(true);
           }}
         >
-          <DeleteIcon />
+          <DeleteIcon id='titulo-eliminar-proveedor'/>
         </IconButton>
       </StyledTableCell>
       <StyledTableCell component="th" scope="row">

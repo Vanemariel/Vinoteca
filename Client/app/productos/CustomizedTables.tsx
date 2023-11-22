@@ -19,6 +19,10 @@ import { MenuItem } from "@mui/material";
 import { Producto, Proveedor } from "../../TYPES/crudTypes";
 import { useStore } from "../../stores/crud";
 
+import "driver.js/dist/driver.css";
+import { executePopup } from "../../Utilities/drivejs";
+import HelpIcon from '@mui/icons-material/Help';
+
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.black,
@@ -40,6 +44,50 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function CustomizedTables() {
+
+  const steps = [
+    {
+      title: "¡Bienvenido a producto!",
+      description: "Aquí puedes manejar todos tus productos.",
+      side: "top",
+      align: "start",
+    },
+    {
+      element: '#titulo-agregar-producto',
+      title: "Agregar producto",
+      description: "Al apretar esta opcion se te abrira un formulario con datos a completar para que agregues a tus productos.",
+      side: "top",
+      align: "start",
+    },
+    {
+      element: '#titulo-buscar-producto',
+      title: "Buscar producto",
+      description: "aqui podras filtrar la busqueda de un producto en partiular.",
+      side: "top",
+      align: "start",
+    },
+    {
+      element: '#titulo-editar-producto',
+      title: "Editar producto",
+      description: "Al apretar esta opcion se te abrira un formulario con datos a completar para que edites los datos de tu producto.",
+      side: "top",
+      align: "start",
+    },
+    {
+        element: '#titulo-eliminar-producto',
+        title: "Eliminar producto",
+        description: "Al apretar esta opcion se eliminara a tu producto.",
+        side: "top",
+        align: "start",
+    },
+    {
+      element: '[href="/ventas"]',
+      title: "Ultimo paso",
+      description: "Haz click en Venta.",
+      side: "top",
+      align: "start",
+    }]
+
   const style = {
     position: "absolute" as "absolute",
     top: "50%",
@@ -240,11 +288,14 @@ export default function CustomizedTables() {
             marginRight: "auto",
           }}
         >
+          <HelpIcon style={{ width: "80px", height: "40px"}} onClick={() => executePopup({ steps })}></HelpIcon>
           {"Productos"}
+          
         </Typography>
 
         {/*Buscador*/}
         <InputBase
+          id= "titulo-buscar-producto"
           sx={{
             mr: 2,
           }}
@@ -273,7 +324,7 @@ export default function CustomizedTables() {
             mr: 5,
           }}
           variant="contained"
-          id="containedButton"
+          id= 'titulo-agregar-producto'
           onClick={() => {
             setDialog(true);
             setIsNew(true);
@@ -542,7 +593,7 @@ export default function CustomizedTables() {
                       });
                     }}
                   >
-                    <EditIcon />
+                    <EditIcon id= 'titulo-editar-producto'/>
                   </IconButton>
 
                   <IconButton
@@ -553,7 +604,7 @@ export default function CustomizedTables() {
                       setDeleteDialog(true);
                     }}
                   >
-                    <DeleteIcon />
+                    <DeleteIcon id='titulo-eliminar-producto'/>
                   </IconButton>
                 </StyledTableCell>
                 <StyledTableCell component="th" scope="row">

@@ -41,8 +41,68 @@ import AddShoppingCartSharpIcon from "@mui/icons-material/AddShoppingCartSharp";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { FormEvent } from "react";
 import { Producto, Compra } from "../../TYPES/crudTypes";
+import "driver.js/dist/driver.css";
+import { executePopup } from "../../Utilities/drivejs";
+import HelpIcon from '@mui/icons-material/Help';
 
 export default function ListCompras() {
+  const steps = [
+    {
+      title: "¡Bienvenido a Compras!",
+      description: "Aquí debes registrar todas tus compras.",
+      side: "top",
+      align: "start",
+    },
+    {
+      element: '#titulo-registra-compras',
+      title: "Registra tus ventas",
+      description: "Aqui deberas completar cada campo que se te solicite para poder hacer una compra",
+      side: "top",
+      align: "start",
+    },
+    {
+      element: '#titulo-buscar-producto',
+      title: "Buscar el producto a comprar",
+      description: "Aqui podras filtrar la busqueda de un producto a comprar",
+      side: "top",
+      align: "start",
+    },
+    {
+      element: '#titulo-carrito-producto',
+      title: "Agrega al carrito",
+      description: "Al apretar esta opcion se te sumara dicho producto seleccionado al carrito",
+      side: "top",
+      align: "start",
+    },
+    {
+        element: '#titulo-agrega-producto',
+        title: "Elije una cantidad a comprar",
+        description: "Al apretar esta opcion podras poner la cantidad especifica del producto selccionado.",
+        side: "top",
+        align: "start",
+    },
+    {
+      element: '#titulo-eliminar-producto',
+      title: "Puedes eliminar el producto del carrito",
+      description: "Al apretar esta opcion se eliminara a tu producto de la lista de compras.",
+      side: "top",
+      align: "start",
+    },
+    {
+      element: '#titulo-detalle-compra',
+      title: "Detalle de la compra",
+      description: "Aqui veras el total del total de los producto comprados y debes selleccionar el metodo de pago antes de terminar la compra",
+      side: "top",
+      align: "start",
+    },
+    {
+      element: '[href="/ventasHistorial"]',
+      title: "Ultimo paso",
+      description: "Haz click en Historial Ventas.",
+      side: "top",
+      align: "start",
+    }]
+
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
       backgroundColor: theme.palette.common.black,
@@ -364,6 +424,7 @@ export default function ListCompras() {
 
   return (
     <div>
+      <HelpIcon style={{ width: "80px", height: "40px"}} onClick={() => executePopup({ steps })}></HelpIcon>
       <DialogContent>
         <Grid container spacing={2}>
           <Grid
@@ -395,7 +456,7 @@ export default function ListCompras() {
                         alignItems: "center",
                       }}
                     >
-                      <Typography component="h1" variant="h5">
+                      <Typography component="h1" variant="h5" id= 'titulo-registra-compras'>
                         "Registra tus compras"{" "}
                       </Typography>
                       <Box
@@ -537,7 +598,7 @@ export default function ListCompras() {
                         alignItems: "center",
                       }}
                     >
-                      <Typography component="h1" variant="h5">
+                      <Typography  id = 'titulo-detalle-compra' component="h1" variant="h5">
                         "Detalle de compras"
                       </Typography>
                       <Box
@@ -655,6 +716,7 @@ export default function ListCompras() {
       </Dialog>
       {/*Buscador*/}
       <InputBase
+       id= 'titulo-buscar-producto'
         sx={{
           mr: 2,
           height: "40px",
@@ -709,7 +771,7 @@ export default function ListCompras() {
                     aria-label="edit"
                     onClick={() => handleAddButtonClick(producto)}
                   >
-                    <AddShoppingCartSharpIcon />
+                    <AddShoppingCartSharpIcon id= 'titulo-carrito-producto'/>
                     {/* <ToastContainer style={{ fontSize: "10px", padding: "8px 12px" }} /> */}
                   </IconButton>
                 </StyledTableCell>
@@ -773,7 +835,7 @@ export default function ListCompras() {
                       setDeleteDialog(true);
                     }}
                   >
-                    <DeleteIcon />
+                    <DeleteIcon id= 'titulo-cantidad-producto'/>
                   </IconButton>
                 </StyledTableCell>
 
@@ -792,7 +854,7 @@ export default function ListCompras() {
                   </button>
 
                   <input type="number" value={row.cantidad} disabled />
-                  <button onClick={(e) => updateCompraItem(index, "agregar")}>
+                  <button id= 'titulo-agrega-producto' onClick={(e) => updateCompraItem(index, "agregar")}>
                     Agregar
                   </button>
                 </StyledTableCell>

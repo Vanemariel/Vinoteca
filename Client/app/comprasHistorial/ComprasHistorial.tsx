@@ -27,6 +27,10 @@ import {
   CssBaseline,
 } from "@mui/material";
 import { FormEvent } from "react";
+import "driver.js/dist/driver.css";
+import { executePopup } from "../../Utilities/drivejs";
+import HelpIcon from '@mui/icons-material/Help';
+
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -49,6 +53,35 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function ComprasHistorial() {
+  const steps = [
+    {
+      title: "¡Bienvenido al Historial de todas las compras!",
+      description: "Aquí puedes ver todo lo que has comprado.",
+      side: "top",
+      align: "start",
+    },
+    {
+      element: '#titulo-fecha-compra',
+      title: "Busca por fecha",
+      description: "Al apretar esta opcion se te abrira un formulario con datos a completar para que agregues a tus proveedores.",
+      side: "top",
+      align: "start",
+    },
+    {
+      element: '#titulo-buscar-compra',
+      title: "Buscar",
+      description: "Al apretar este boton se mostrara en la tabla debajo las compras de la fecha seleccionada.",
+      side: "top",
+      align: "start",
+    },
+    {
+      element: '#titulo-limpiar-tabla',
+      title: "Limpia las Fechas",
+      description: "Al apretar esta opcion se te vaciara los campos de la fecha y la tabla mostara la lista completa.",
+      side: "top",
+      align: "start",
+    },
+  ];
 
   const [dateFrom, setDateFrom] = useState(""); // Agregar esta línea
   const [dateTo, setDateTo] = useState(""); // Agregar esta línea
@@ -129,8 +162,10 @@ export default function ComprasHistorial() {
 
   return (
     <div>
+      
       {/**Box INGRESAR PRODUCTOS */}
       <Grid item xs={6}>
+      <HelpIcon style={{ width: "80px", height: "40px"}} onClick={() => executePopup({ steps })}></HelpIcon>
         <Box
           sx={{
             position: "relative",
@@ -159,7 +194,7 @@ export default function ComprasHistorial() {
                   alignItems: "center",
                 }}
               >
-                <Typography component="h1" variant="h5">
+                <Typography id= 'titulo-fecha-compra' component="h1" variant="h5">
                   "Busca aqui tus compras"
                 </Typography>
                 <Box
@@ -205,6 +240,7 @@ export default function ComprasHistorial() {
                     </div>
                   </Grid>
                   <Button
+                  id= 'titulo-buscar-compra'
                     type="submit"
                     fullWidth
                     variant="contained"
@@ -214,6 +250,7 @@ export default function ComprasHistorial() {
                   </Button>
 
                   <Button
+                    id= 'titulo-limpiar-tabla'
                     type="button"
                     fullWidth
                     variant="contained"

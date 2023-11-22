@@ -17,16 +17,59 @@ import {
 import TextField from "@mui/material/TextField";
 import * as action from "../../Utilities/action";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LoadingButton } from "@mui/lab";
 
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { useStore } from "../../stores/crud";
 
+import "driver.js/dist/driver.css";
+import { executePopup } from "../../Utilities/drivejs";
+import HelpIcon from '@mui/icons-material/Help';
+
 export default function Caja() {
+  // Define los pasos de tu tour
+  const steps = [
+    {
+      title: "¡Bienvenido a la Caja!",
+      description: "Aquí puedes gestionar tus transacciones de caja.",
+      side: "top",
+      align: "start",
+    },
+    {
+      element: "#titulo-iniciar-caja",
+      title: "Iniciar Caja",
+      description:
+        "Coloca la fecha de hoy y ingresa el monto con el que va iniciar caja luego apriete INICIAR",
+      side: "top",
+      align: "start",
+    },
+    {
+      element: "#titulo-cerrar-caja",
+      title: "Cerrar Caja",
+      description:
+        "Coloca la fecha de hoy para cerrar la caja y apriete CERRAR, esto lo hara al finalizar el dia o turno.",
+      side: "top",
+      align: "start",
+    },
+    {
+      element: "#titulo-movimientos-caja",
+      title: "Movimientos de Caja",
+      description:
+        "Aqui Ud podre visualizar todos sus movimientos ganacias, perdidas como formas de pago de las ventas y compras.",
+      side: "top",
+      align: "start",
+    },
+    {
+      element: '[href="/provedores"]',
+      title: "Ultimo paso",
+      description: "Haz click en Proveedores.",
+      side: "top",
+      align: "start",
+    },
+  ];
 
-
-  const fecha = new Date().toLocaleDateString()
+  const fecha = new Date().toLocaleDateString();
 
   const [loading, setLoading] = useState(false);
   const { newObject, getObject } = useStore();
@@ -38,13 +81,12 @@ export default function Caja() {
   });
   const [formDataCloseCaja, setFormDataCloseCaja] = useState({
     fechaTurno: fecha,
-  })
-
+  });
 
   const openCaja = async (e: any) => {
     e.preventDefault();
     setLoading(false);
-    setShowDataMovCaja(false)
+    setShowDataMovCaja(false);
     setMovCaja({
       idCaja: 0,
       fechaTurno: "",
@@ -54,8 +96,8 @@ export default function Caja() {
       ingresoVentaEfectivo: 0,
       ingresoVentaDebito: 0,
       fondoCajaEntregado: 0,
-    })
-    
+    });
+
     try {
       setLoading(true);
       if (formDataOpenCaja.fechaTurno === "") {
@@ -71,13 +113,13 @@ export default function Caja() {
         formDataOpenCaja
       );
 
-      alert(closeCajaResponse.data)
+      alert(closeCajaResponse.data);
       setFormDataOpenCaja({
         fechaTurno: "",
         fondoCajaRecibido: 0,
-      })
+      });
     } catch (error: any) {
-      alert(error.response.data)
+      alert(error.response.data);
     } finally {
       setLoading(false);
     }
@@ -86,7 +128,7 @@ export default function Caja() {
   const closeCaja = async (e: any) => {
     e.preventDefault();
     setLoading(false);
-    setShowDataMovCaja(false)
+    setShowDataMovCaja(false);
     setMovCaja({
       idCaja: 0,
       fechaTurno: "",
@@ -96,7 +138,7 @@ export default function Caja() {
       ingresoVentaEfectivo: 0,
       ingresoVentaDebito: 0,
       fondoCajaEntregado: 0,
-    })
+    });
 
     try {
       setLoading(true);
@@ -109,12 +151,12 @@ export default function Caja() {
         formDataCloseCaja
       );
 
-      alert(closeCajaResponse.data)
+      alert(closeCajaResponse.data);
       setFormDataCloseCaja({
         fechaTurno: "",
-      })
+      });
     } catch (error: any) {
-      alert(error.response.data)
+      alert(error.response.data);
     } finally {
       setLoading(false);
     }
@@ -123,8 +165,8 @@ export default function Caja() {
   //// MOVIMIENTOS DE CAJA
   const [formDataMovCaja, setFormDataMovCaja] = useState({
     fechaTurno: fecha,
-  })
-  const [showDataMovCaja, setShowDataMovCaja] = useState(false)
+  });
+  const [showDataMovCaja, setShowDataMovCaja] = useState(false);
   const [movCaja, setMovCaja] = useState({
     idCaja: 0,
     fechaTurno: "",
@@ -138,13 +180,13 @@ export default function Caja() {
   const [result, setResult] = useState({
     ingresoTotal: 0,
     gastoTotal: 0,
-    gananciaTotal: 0
-  })
+    gananciaTotal: 0,
+  });
 
   const getMovimientoCaja = async (e: any) => {
     e.preventDefault();
     setLoading(false);
-    setShowDataMovCaja(false)
+    setShowDataMovCaja(false);
 
     try {
       setLoading(true);
@@ -157,21 +199,24 @@ export default function Caja() {
         action.CAJA_CONTROLLER,
         formDataMovCaja.fechaTurno
       );
-
-      console.log("🚀 ~ file: Caja.tsx:94 ~ getMovimientoCaja ~ movCajaResponse:", movCajaResponse)
-
-      setMovCaja(movCajaResponse.data)
+      setMovCaja(movCajaResponse.data);
       setResult({
-        ingresoTotal: movCajaResponse.data.ingresoVentaDebito + movCajaResponse.data.ingresoVentaEfectivo,
-        gastoTotal: movCajaResponse.data.egresoProvedoresEfectivo - movCajaResponse.data.egresoProvedoresDebito,
-        gananciaTotal: (
-          movCajaResponse.data.ingresoVentaDebito + movCajaResponse.data.ingresoVentaEfectivo
-        ) - movCajaResponse.data.egresoProvedoresEfectivo - movCajaResponse.data.egresoProvedoresDebito
-      })
+        ingresoTotal:
+          movCajaResponse.data.ingresoVentaDebito +
+          movCajaResponse.data.ingresoVentaEfectivo,
+        gastoTotal:
+          movCajaResponse.data.egresoProvedoresEfectivo -
+          movCajaResponse.data.egresoProvedoresDebito,
+        gananciaTotal:
+          movCajaResponse.data.ingresoVentaDebito +
+          movCajaResponse.data.ingresoVentaEfectivo -
+          movCajaResponse.data.egresoProvedoresEfectivo -
+          movCajaResponse.data.egresoProvedoresDebito,
+      });
 
-      setShowDataMovCaja(true)
+      setShowDataMovCaja(true);
     } catch (error: any) {
-      alert(error.response.data)
+      alert(error.response.data);
     } finally {
       setLoading(false);
     }
@@ -180,12 +225,18 @@ export default function Caja() {
   return (
     <>
       <CssBaseline />
-
-      <Grid container component={Paper} padding={4} sx={{
-        justifyContent: "space-between"
-      }}>
+      <Grid
+        container
+        component={Paper}
+        padding={4}
+        sx={{
+          justifyContent: "space-between",
+        }}
+      >
+        <HelpIcon style={{ width: "80px", height: "40px"}} onClick={() => executePopup({ steps })}></HelpIcon>
         <Grid item md={5} sm={5} xs={5}>
           <Typography
+            id="titulo-iniciar-caja"
             component="h1"
             variant="h5"
             textAlign="center"
@@ -200,10 +251,12 @@ export default function Caja() {
             fullWidth
             InputLabelProps={{ shrink: true }}
             value={formDataOpenCaja.fechaTurno}
-            onChange={e => setFormDataOpenCaja({
-              ...formDataOpenCaja,
-              fechaTurno: e.target.value
-            })}
+            onChange={(e) =>
+              setFormDataOpenCaja({
+                ...formDataOpenCaja,
+                fechaTurno: e.target.value,
+              })
+            }
           />
 
           <br />
@@ -241,9 +294,9 @@ export default function Caja() {
           </Grid>
         </Grid>
 
-
         <Grid item md={5} sm={5} xs={5}>
           <Typography
+            id="titulo-cerrar-caja"
             component="h1"
             variant="h5"
             textAlign="center"
@@ -258,17 +311,18 @@ export default function Caja() {
             fullWidth
             InputLabelProps={{ shrink: true }}
             value={formDataCloseCaja.fechaTurno}
-            onChange={e => setFormDataCloseCaja({
-              ...formDataCloseCaja,
-              fechaTurno: e.target.value
-            })}
+            onChange={(e) =>
+              setFormDataCloseCaja({
+                ...formDataCloseCaja,
+                fechaTurno: e.target.value,
+              })
+            }
           />
 
           <br />
           <br />
           <br />
           <br />
-
 
           <Grid item md={4} sm={4} xs={4}>
             <DialogActions
@@ -288,7 +342,6 @@ export default function Caja() {
             </DialogActions>
           </Grid>
         </Grid>
-
       </Grid>
 
       <br />
@@ -296,6 +349,7 @@ export default function Caja() {
       <Grid container component={Paper} padding={4}>
         <Grid item md={12} sm={12} xs={12}>
           <Typography
+            id="titulo-movimientos-caja"
             component="h1"
             variant="h5"
             textAlign="center"
@@ -321,10 +375,12 @@ export default function Caja() {
             fullWidth
             InputLabelProps={{ shrink: true }}
             value={formDataMovCaja.fechaTurno}
-            onChange={e => setFormDataMovCaja({
-              ...formDataMovCaja,
-              fechaTurno: e.target.value
-            })}
+            onChange={(e) =>
+              setFormDataMovCaja({
+                ...formDataMovCaja,
+                fechaTurno: e.target.value,
+              })
+            }
           />
 
           <DialogActions

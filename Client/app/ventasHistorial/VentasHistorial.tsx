@@ -27,6 +27,9 @@ import {
   CssBaseline,
 } from "@mui/material";
 import { FormEvent } from "react";
+import "driver.js/dist/driver.css";
+import { executePopup } from "../../Utilities/drivejs";
+import HelpIcon from '@mui/icons-material/Help';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -49,7 +52,43 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function VentasHistorial() {
-
+  const steps = [
+    {
+      title: "¡Bienvenido al Historial de todas las ventas!",
+      description: "Aquí puedes ver todo lo que has vendido.",
+      side: "top",
+      align: "start",
+    },
+    {
+      element: '#titulo-fecha-venta',
+      title: "Busca por fecha",
+      description: "Al apretar esta opcion se te abrira un formulario con datos a completar para que agregues a tus proveedores.",
+      side: "top",
+      align: "start",
+    },
+    {
+      element: '#titulo-buscar-venta',
+      title: "Buscar",
+      description: "Al apretar este boton se mostrara en la tabla debajo las ventas de la fecha seleccionada.",
+      side: "top",
+      align: "start",
+    },
+    {
+      element: '#titulo-limpiar-tabla',
+      title: "Limpia las Fechas",
+      description: "Al apretar esta opcion se te vaciara los campos de la fecha y la tabla mostara la lista completa.",
+      side: "top",
+      align: "start",
+    },
+    {
+      element: '[href="/comprasHistorial"]',
+      title: "Ultimo paso",
+      description: "Haz click en Producto.",
+      side: "top",
+      align: "start",
+    },
+  ];
+  
   const [dateFrom, setDateFrom] = useState(""); // Agregar esta línea
   const [dateTo, setDateTo] = useState(""); // Agregar esta línea
 
@@ -126,6 +165,7 @@ export default function VentasHistorial() {
 
   return (
     <div>
+       <HelpIcon style={{ width: "80px", height: "40px"}} onClick={() => executePopup({ steps })}></HelpIcon>
       {/**Box INGRESAR PRODUCTOS */}
       <Grid item xs={6}>
         <Box
@@ -156,7 +196,7 @@ export default function VentasHistorial() {
                   alignItems: "center",
                 }}
               >
-                <Typography component="h1" variant="h5">
+                <Typography id= 'titulo-fecha-venta' component="h1" variant="h5">
                   "Busca aqui tus ventas"
                 </Typography>
                 <Box
@@ -202,6 +242,7 @@ export default function VentasHistorial() {
                     </div>
                   </Grid>
                   <Button
+                    id= 'titulo-buscar-venta'
                     type="submit"
                     fullWidth
                     variant="contained"
@@ -211,6 +252,7 @@ export default function VentasHistorial() {
                   </Button>
 
                   <Button
+                    id= 'titulo-limpiar-tabla'
                     type="button"
                     fullWidth
                     variant="contained"
@@ -234,7 +276,7 @@ export default function VentasHistorial() {
       <Grid item xs={6}></Grid>
 
       {/*Table */}
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} sx={{ marginTop: "50px" }}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>

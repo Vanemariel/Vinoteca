@@ -1,9 +1,8 @@
 'use client';
 
-import { useState, MouseEvent } from 'react';
+import { useState, MouseEvent, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-
 import {
   AppBar,
   Box,
@@ -15,6 +14,7 @@ import {
   Button,
   MenuItem,
 } from '@mui/material';
+
 
 import MenuIcon from '@mui/icons-material/Menu';
 import AdbIcon from '@mui/icons-material/Adb';
@@ -74,6 +74,8 @@ function ResponsiveAppBar() {
   
   const pathName = window.location.pathname;
   const isHomePage = pathName === '/';
+ 
+ 
 
   return (
     <>
