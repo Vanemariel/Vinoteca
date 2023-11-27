@@ -48,13 +48,15 @@ const routes = [
   {
     label: 'Historial Compras',
     path: '/comprasHistorial',
-  }
+  },
+
 ];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  const [anchorElHelp, setAnchorElHelp] = useState<null | HTMLElement>(null);
 
   const handleOpenNavMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -71,16 +73,23 @@ function ResponsiveAppBar() {
     setAnchorElUser(null);
   };
 
-  
+  const handleOpenHelpMenu = (event: MouseEvent<HTMLElement>) => {
+    setAnchorElHelp(event.currentTarget);
+  };
+
+  const handleCloseHelpMenu = () => {
+    setAnchorElHelp(null);
+  };
+
   const pathName = window.location.pathname;
   const isHomePage = pathName === '/';
- 
- 
+
+
 
   return (
     <>
       {!isHomePage && (
-        <AppBar sx={{ background: "gray"}} position='static'>
+        <AppBar sx={{ background: "gray" }} position='static'>
           <Container maxWidth='xl'>
             <Toolbar disableGutters>
               <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
@@ -135,13 +144,14 @@ function ResponsiveAppBar() {
                       sx={{
                         display: { xs: 'block', md: 'none' },
                       }}>
-                      {routes.map(({ label, path }) => (
+                      {/* {routes.map(({ label, path }) => (
                         <Link href={path} key={path}>
                           <MenuItem onClick={handleCloseNavMenu}>
                             <Typography textAlign='center'>{label}</Typography>
                           </MenuItem>
                         </Link>
-                      ))}
+                      ))} */}
+
                     </Menu>
                   </Box>
 
@@ -180,6 +190,14 @@ function ResponsiveAppBar() {
                         </Button>
                       </Link>
                     ))}
+                    <Link
+                      href= "ManualHey.pdf" 
+                      target='_blank'
+                    >
+                      <Button sx={{ my: 2, color: 'white', display: 'block' }}>
+                        Ayuda
+                      </Button>
+                    </Link>
                   </Box>
 
                   <Box sx={{ flexGrow: 0 }}>
