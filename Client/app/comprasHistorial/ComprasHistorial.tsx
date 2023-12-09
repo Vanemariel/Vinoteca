@@ -63,7 +63,7 @@ export default function ComprasHistorial() {
     {
       element: '#titulo-fecha-compra',
       title: "Busca por fecha",
-      description: "Al apretar esta opcion se te abrira un formulario con datos a completar para que agregues a tus proveedores.",
+      description: "Selecciona la fecha desde y hasta y se te mostrara el registro de compras de ese periodo.",
       side: "top",
       align: "start",
     },

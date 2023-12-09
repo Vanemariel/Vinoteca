@@ -43,7 +43,7 @@ import { FormEvent } from "react";
 import { Producto, Compra } from "../../TYPES/crudTypes";
 import "driver.js/dist/driver.css";
 import { executePopup } from "../../Utilities/drivejs";
-import HelpIcon from '@mui/icons-material/Help';
+import HelpIcon from "@mui/icons-material/Help";
 
 export default function ListCompras() {
   const steps = [
@@ -54,44 +54,49 @@ export default function ListCompras() {
       align: "start",
     },
     {
-      element: '#titulo-registra-compras',
+      element: "#titulo-registra-compras",
       title: "Registra tus ventas",
-      description: "Aqui deberas completar cada campo que se te solicite para poder hacer una compra",
+      description:
+        "Aqui deberas completar cada campo que se te solicite para poder hacer una compra",
       side: "top",
       align: "start",
     },
     {
-      element: '#titulo-buscar-producto',
+      element: "#titulo-buscar-producto",
       title: "Buscar el producto a comprar",
       description: "Aqui podras filtrar la busqueda de un producto a comprar",
       side: "top",
       align: "start",
     },
     {
-      element: '#titulo-carrito-producto',
+      element: "#titulo-carrito-producto",
       title: "Agrega al carrito",
-      description: "Al apretar esta opcion se te sumara dicho producto seleccionado al carrito",
+      description:
+        "Al apretar esta opcion se te sumara dicho producto seleccionado al carrito",
       side: "top",
       align: "start",
     },
     {
-        element: '#titulo-agrega-producto',
-        title: "Elije una cantidad a comprar",
-        description: "Al apretar esta opcion podras poner la cantidad especifica del producto selccionado.",
-        side: "top",
-        align: "start",
+      element: "#titulo-agrega-producto",
+      title: "Elije una cantidad a comprar",
+      description:
+        "Al apretar esta opcion podras poner la cantidad especifica del producto selccionado.",
+      side: "top",
+      align: "start",
     },
     {
-      element: '#titulo-eliminar-producto',
+      element: "#titulo-eliminar-producto",
       title: "Puedes eliminar el producto del carrito",
-      description: "Al apretar esta opcion se eliminara a tu producto de la lista de compras.",
+      description:
+        "Al apretar esta opcion se eliminara a tu producto de la lista de compras.",
       side: "top",
       align: "start",
     },
     {
-      element: '#titulo-detalle-compra',
+      element: "#titulo-detalle-compra",
       title: "Detalle de la compra",
-      description: "Aqui veras el total del total de los producto comprados y debes selleccionar el metodo de pago antes de terminar la compra",
+      description:
+        "Aqui veras el total del total de los producto comprados y debes selleccionar el metodo de pago antes de terminar la compra",
       side: "top",
       align: "start",
     },
@@ -101,7 +106,8 @@ export default function ListCompras() {
       description: "Haz click en Historial Ventas.",
       side: "top",
       align: "start",
-    }]
+    },
+  ];
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -163,8 +169,6 @@ export default function ListCompras() {
     }[]
   >([]);
 
-
-
   const filteredProductoList = (textSearch: string) => {
     const ProductoFilter = productoList.filter((producto) => {
       return producto.nombreProducto
@@ -180,8 +184,8 @@ export default function ListCompras() {
     Array<{ idUsuario: number; nombre: string; apellido: string }>
   >([]);
   const [proveedorList, setProveedorList] = useState<
-  Array<{ idProveedor: number; nombre: string; apellido: string }>
->([]);
+    Array<{ idProveedor: number; nombre: string; apellido: string }>
+  >([]);
 
   const handleAddButtonClick = (row: any) => {
     const productToAdd = {
@@ -209,8 +213,8 @@ export default function ListCompras() {
     if (isProductAlreadyAdded) {
       toast.info("¡Este producto ya fue agregado a las compras!");
     } //else if (stock === undefined || stock === null || stock < 1) {
-      //toast.warning("No hay stock disponible para este producto");} 
-      else {
+    //toast.warning("No hay stock disponible para este producto");}
+    else {
       const updatedProductoList = productoList.map((producto) =>
         producto.idProducto === row.idProducto
           ? { ...producto, stock: row.stock }
@@ -234,7 +238,10 @@ export default function ListCompras() {
 
     let cantidad = productoCompra.cantidad;
     let stock = productoCompra.stock;
-    if (accion === "agregar" && productoCompra.stock >= 0 || productoCompra.stock <= 0) {
+    if (
+      (accion === "agregar" && productoCompra.stock >= 0) ||
+      productoCompra.stock <= 0
+    ) {
       cantidad = productoCompra.cantidad += 1;
       stock = productoCompra.stock += 1;
     }
@@ -314,23 +321,19 @@ export default function ListCompras() {
 
   useEffect(() => {
     const fetchData = async () => {
-
       try {
         const productoListResponse = await getList(action.PRODUCTO_CONTROLLER);
         setProductoList(productoListResponse.data);
         setProductoSearchList(productoListResponse.data);
-      } catch (error) {      
-      }
+      } catch (error) {}
       try {
         const usuarioList = await getList(action.USUARIO_CONTROLLER);
         setUsuarioList(usuarioList.data);
-      } catch (error) {
-      }
+      } catch (error) {}
       try {
         const proveedorList = await getList(action.PROVEEDOR_CONTROLLER);
         setProveedorList(proveedorList.data);
-      } catch (error) {
-      }
+      } catch (error) {}
     };
 
     fetchData();
@@ -341,9 +344,6 @@ export default function ListCompras() {
     e.preventDefault();
     console.log("formData", formData);
     console.log("compraSearchList", compraSearchList);
-
-   
-
     const flag =
       formData.idProveedor !== null &&
       formData.idUsuario &&
@@ -422,9 +422,59 @@ export default function ListCompras() {
     }
   };
 
+  const getCurrentDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = `${today.getMonth() + 1}`.padStart(2, "0");
+    const day = `${today.getDate()}`.padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+  const [formDatas, setFormDatas] = useState({
+    fechaCompra: getCurrentDate(),
+  });
+
+  const handleFechaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedDate = e.target.value;
+    const currentDate = getCurrentDate();
+
+    // Verifica si la fecha seleccionada no es posterior al día actual
+    if (selectedDate <= currentDate) {
+      setFormData({
+        ...formData,
+        fechaCompra: selectedDate,
+      });
+    } else {
+      // Si la fecha seleccionada es posterior al día actual, establece la fecha actual
+      setFormData({
+        ...formData,
+        fechaCompra: currentDate,
+      });
+
+      // Puedes mostrar un mensaje de error o realizar otra acción aquí
+      console.log("No puedes seleccionar una fecha posterior al día actual");
+    }
+  };
+
+  const [formDataa, setFormDataa] = useState({
+    efectivo: false,
+    transferencia: false,
+  });
+
+  const handleMetodoPagoChange =
+    (name: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      setFormData((prevData) => ({
+        ...prevData,
+        efectivo: name === "efectivo" ? e.target.checked : false,
+        transferencia: name === "transferencia" ? e.target.checked : false,
+      }));
+    };
+
   return (
     <div>
-      <HelpIcon style={{ width: "80px", height: "40px"}} onClick={() => executePopup({ steps })}></HelpIcon>
+      <HelpIcon
+        style={{ width: "80px", height: "40px" }}
+        onClick={() => executePopup({ steps })}
+      ></HelpIcon>
       <DialogContent>
         <Grid container spacing={2}>
           <Grid
@@ -456,7 +506,11 @@ export default function ListCompras() {
                         alignItems: "center",
                       }}
                     >
-                      <Typography component="h1" variant="h5" id= 'titulo-registra-compras'>
+                      <Typography
+                        component="h1"
+                        variant="h5"
+                        id="titulo-registra-compras"
+                      >
                         "Registra tus compras"{" "}
                       </Typography>
                       <Box
@@ -473,19 +527,14 @@ export default function ListCompras() {
                           {/* fecha */}
                           <Grid item xs={12}>
                             <TextField
-                              label="Fecha"
+                              label="Compra"
                               type="date"
                               fullWidth
                               InputLabelProps={{
                                 shrink: true,
                               }}
                               value={formData.fechaCompra}
-                              onChange={(e) =>
-                                setFormData({
-                                  ...formData,
-                                  fechaCompra: e.target.value,
-                                })
-                              }
+                              onChange={handleFechaChange}
                               style={{ marginRight: "10px" }}
                             />
                           </Grid>
@@ -598,7 +647,11 @@ export default function ListCompras() {
                         alignItems: "center",
                       }}
                     >
-                      <Typography  id = 'titulo-detalle-compra' component="h1" variant="h5">
+                      <Typography
+                        id="titulo-detalle-compra"
+                        component="h1"
+                        variant="h5"
+                      >
                         "Detalle de compras"
                       </Typography>
                       <Box
@@ -626,31 +679,24 @@ export default function ListCompras() {
                         {/* efectivo */}
                         <Grid item xs={4}>
                           <FormControlLabel
-                            control={<Checkbox checked={formData.efectivo} />}
-                            label="Efectivo"
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                efectivo: (e.target as HTMLInputElement)
-                                  .checked,
-                              })
+                            control={
+                              <Checkbox
+                                checked={formData.efectivo}
+                                onChange={handleMetodoPagoChange("efectivo")}
+                              />
                             }
+                            label="Efectivo"
                           />
-                        </Grid>
-                        {/* transferencia */}
-                        <Grid item xs={4}>
                           <FormControlLabel
                             control={
-                              <Checkbox checked={formData.transferencia} />
+                              <Checkbox
+                                checked={formData.transferencia}
+                                onChange={handleMetodoPagoChange(
+                                  "transferencia"
+                                )}
+                              />
                             }
                             label="Transferencia"
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                transferencia: (e.target as HTMLInputElement)
-                                  .checked,
-                              })
-                            }
                           />
                         </Grid>
 
@@ -666,10 +712,10 @@ export default function ListCompras() {
                               formData.idUsuario !== null &&
                               formData.cantidad !== null &&
                               formData.precio !== null &&
-                              formData.precioCompra!== null &&
+                              formData.precioCompra !== null &&
                               formData.idProducto !== null &&
                               formData.idProveedor !== null &&
-                              formData.nombreProducto!== null &&
+                              formData.nombreProducto !== null &&
                               formData.stock !== null
                             }
                             size="large"
@@ -716,7 +762,7 @@ export default function ListCompras() {
       </Dialog>
       {/*Buscador*/}
       <InputBase
-       id= 'titulo-buscar-producto'
+        id="titulo-buscar-producto"
         sx={{
           mr: 2,
           height: "40px",
@@ -771,7 +817,7 @@ export default function ListCompras() {
                     aria-label="edit"
                     onClick={() => handleAddButtonClick(producto)}
                   >
-                    <AddShoppingCartSharpIcon id= 'titulo-carrito-producto'/>
+                    <AddShoppingCartSharpIcon id="titulo-carrito-producto" />
                     {/* <ToastContainer style={{ fontSize: "10px", padding: "8px 12px" }} /> */}
                   </IconButton>
                 </StyledTableCell>
@@ -835,7 +881,7 @@ export default function ListCompras() {
                       setDeleteDialog(true);
                     }}
                   >
-                    <DeleteIcon id= 'titulo-cantidad-producto'/>
+                    <DeleteIcon id="titulo-cantidad-producto" />
                   </IconButton>
                 </StyledTableCell>
 
@@ -854,7 +900,10 @@ export default function ListCompras() {
                   </button>
 
                   <input type="number" value={row.cantidad} disabled />
-                  <button id= 'titulo-agrega-producto' onClick={(e) => updateCompraItem(index, "agregar")}>
+                  <button
+                    id="titulo-agrega-producto"
+                    onClick={(e) => updateCompraItem(index, "agregar")}
+                  >
                     Agregar
                   </button>
                 </StyledTableCell>

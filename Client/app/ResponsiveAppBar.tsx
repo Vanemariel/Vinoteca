@@ -191,7 +191,7 @@ function ResponsiveAppBar() {
                       </Link>
                     ))}
                     <Link
-                      href= "ManualHey.pdf" 
+                      href= "Manualdeuso.pdf" 
                       target='_blank'
                     >
                       <Button sx={{ my: 2, color: 'white', display: 'block' }}>

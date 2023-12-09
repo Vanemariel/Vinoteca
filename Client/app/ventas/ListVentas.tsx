@@ -14,7 +14,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Button, Grid, useMediaQuery } from "@mui/material";
+import { Button, Grid, RadioGroup, useMediaQuery } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Typography from "@mui/material/Typography";
 import {
@@ -43,7 +43,7 @@ import { FormEvent } from "react";
 import { Producto, Venta } from "../../TYPES/crudTypes";
 import "driver.js/dist/driver.css";
 import { executePopup } from "../../Utilities/drivejs";
-import HelpIcon from '@mui/icons-material/Help';
+import HelpIcon from "@mui/icons-material/Help";
 
 export default function ListVentas() {
   const steps = [
@@ -54,44 +54,49 @@ export default function ListVentas() {
       align: "start",
     },
     {
-      element: '#titulo-registra-ventas',
+      element: "#titulo-registra-ventas",
       title: "Registra tus ventas",
-      description: "Aqui deberas completar cada campo que se te solicite para poder hacer una venta",
+      description:
+        "Aqui deberas completar cada campo que se te solicite para poder hacer una venta",
       side: "top",
       align: "start",
     },
     {
-      element: '#titulo-buscar-producto',
+      element: "#titulo-buscar-producto",
       title: "Buscar el producto a vender",
       description: "Aqui podras filtrar la busqueda de un producto a vender",
       side: "top",
       align: "start",
     },
     {
-      element: '#titulo-carrito-producto',
+      element: "#titulo-carrito-producto",
       title: "Agrega al carrito",
-      description: "Al apretar esta opcion se te sumara dicho producto seleccionado al carrito",
+      description:
+        "Al apretar esta opcion se te sumara dicho producto seleccionado al carrito",
       side: "top",
       align: "start",
     },
     {
-        element: '#titulo-agrega-producto',
-        title: "Elije una cantidad a vender",
-        description: "Al apretar esta opcion podras poner la cantidad especifica del producto selccionado.",
-        side: "top",
-        align: "start",
+      element: "#titulo-agrega-producto",
+      title: "Elije una cantidad a vender",
+      description:
+        "Al apretar esta opcion podras poner la cantidad especifica del producto selccionado.",
+      side: "top",
+      align: "start",
     },
     {
-      element: '#titulo-eliminar-producto',
+      element: "#titulo-eliminar-producto",
       title: "Puedes eliminar el producto del carrito",
-      description: "Al apretar esta opcion se eliminara a tu producto de la lista de ventas.",
+      description:
+        "Al apretar esta opcion se eliminara a tu producto de la lista de ventas.",
       side: "top",
       align: "start",
     },
     {
-      element: '#titulo-detalle-venta',
+      element: "#titulo-detalle-venta",
       title: "Detalle de la venta",
-      description: "Aqui veras el total del total de los producto vendidos y debes seleccionar el metodo de pago antes de terminar la venta",
+      description:
+        "Aqui veras el total del total de los producto vendidos y debes seleccionar el metodo de pago antes de terminar la venta",
       side: "top",
       align: "start",
     },
@@ -101,7 +106,8 @@ export default function ListVentas() {
       description: "Haz click en Compras.",
       side: "top",
       align: "start",
-    }]
+    },
+  ];
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -162,8 +168,6 @@ export default function ListVentas() {
       total: number;
     }[]
   >([]);
-
-
 
   const filteredProductoList = (textSearch: string) => {
     const ProductoFilter = productoList.filter((producto) => {
@@ -310,18 +314,15 @@ export default function ListVentas() {
 
   useEffect(() => {
     const fetchData = async () => {
-
       try {
         const productoListResponse = await getList(action.PRODUCTO_CONTROLLER);
         setProductoList(productoListResponse.data);
         setProductoSearchList(productoListResponse.data);
-      } catch (error) {
-      }
+      } catch (error) {}
       try {
         const usuarioList = await getList(action.USUARIO_CONTROLLER);
         setUsuarioList(usuarioList.data);
-      } catch (error) {
-      }
+      } catch (error) {}
     };
 
     fetchData();
@@ -375,8 +376,7 @@ export default function ListVentas() {
             );
             setProductoList(productoListResponse.data);
             setProductoSearchList(productoListResponse.data);
-          } catch (error) {
-          }
+          } catch (error) {}
 
           setFormData({
             // Reinicia los valores del formulario
@@ -404,11 +404,65 @@ export default function ListVentas() {
     }
   };
 
+  const getCurrentDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = `${today.getMonth() + 1}`.padStart(2, "0");
+    const day = `${today.getDate()}`.padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const [formDatas, setFormDatas] = useState({
+    fechaVenta: getCurrentDate(),
+  });
+
+  const handleFechaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedDate = e.target.value;
+    const currentDate = getCurrentDate();
+
+    // Verifica si la fecha seleccionada no es posterior al día actual
+    if (selectedDate <= currentDate) {
+      setFormData({
+        ...formData,
+        fechaVenta: selectedDate,
+      });
+    } else {
+      // Si la fecha seleccionada es posterior al día actual, establece la fecha actual
+      setFormData({
+        ...formData,
+        fechaVenta: currentDate,
+      });
+
+      // Puedes mostrar un mensaje de error o realizar otra acción aquí
+      console.log("No puedes seleccionar una fecha posterior al día actual");
+    }
+  };
+
+  const [formDataa, setFormDataa] = useState({
+    efectivo: false,
+    transferencia: false,
+    // ... otras propiedades
+  });
+
+  const [loadinng, setLoadinng] = useState(false);
+
+  const handleMetodoPagoChange = (name: string) => (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      efectivo: name === "efectivo" ? e.target.checked : false,
+      transferencia: name === "transferencia" ? e.target.checked : false,
+    }));
+  };
+
   return (
     <div>
-      <HelpIcon style={{ width: "80px", height: "40px"}} onClick={() => executePopup({ steps })}></HelpIcon>
+      <HelpIcon
+        style={{ width: "80px", height: "40px" }}
+        onClick={() => executePopup({ steps })}
+      ></HelpIcon>
       <DialogContent>
-      
         <Grid container spacing={2}>
           <Grid
             item
@@ -439,7 +493,11 @@ export default function ListVentas() {
                         alignItems: "center",
                       }}
                     >
-                      <Typography component="h1" variant="h5" id= 'titulo-registra-ventas'>
+                      <Typography
+                        component="h1"
+                        variant="h5"
+                        id="titulo-registra-ventas"
+                      >
                         "Registra tus ventas"{" "}
                       </Typography>
                       <Box
@@ -463,12 +521,7 @@ export default function ListVentas() {
                                 shrink: true,
                               }}
                               value={formData.fechaVenta}
-                              onChange={(e) =>
-                                setFormData({
-                                  ...formData,
-                                  fechaVenta: e.target.value,
-                                })
-                              }
+                              onChange={handleFechaChange}
                               style={{ marginRight: "10px" }}
                             />
                           </Grid>
@@ -570,7 +623,11 @@ export default function ListVentas() {
                         alignItems: "center",
                       }}
                     >
-                      <Typography id = 'titulo-detalle-venta'component="h1" variant="h5">
+                      <Typography
+                        id="titulo-detalle-venta"
+                        component="h1"
+                        variant="h5"
+                      >
                         "Detalle de ventas"
                       </Typography>
                       <Box
@@ -595,34 +652,27 @@ export default function ListVentas() {
                             Seleccione el método de pago
                           </Typography>
                         </Grid>
-                        {/* efectivo */}
-                        <Grid item xs={4}>
-                          <FormControlLabel
-                            control={<Checkbox checked={formData.efectivo} />}
-                            label="Efectivo"
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                efectivo: (e.target as HTMLInputElement)
-                                  .checked,
-                              })
-                            }
-                          />
-                        </Grid>
-                        {/* transferencia */}
+                        {/* pago */}
                         <Grid item xs={4}>
                           <FormControlLabel
                             control={
-                              <Checkbox checked={formData.transferencia} />
+                              <Checkbox
+                                checked={formData.efectivo}
+                                onChange={handleMetodoPagoChange("efectivo")}
+                              />
+                            }
+                            label="Efectivo"
+                          />
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                checked={formData.transferencia}
+                                onChange={handleMetodoPagoChange(
+                                  "transferencia"
+                                )}
+                              />
                             }
                             label="Transferencia"
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                transferencia: (e.target as HTMLInputElement)
-                                  .checked,
-                              })
-                            }
                           />
                         </Grid>
 
@@ -635,8 +685,7 @@ export default function ListVentas() {
                               formData.fechaVenta !== null &&
                               formData.cantidad !== null &&
                               formData.idProducto !== null &&
-                              formData.efectivo !== null &&
-                              formData.transferencia !== null &&
+                              (formData.efectivo || formData.transferencia) && // Al menos uno de los métodos de pago seleccionado
                               formData.numeroDeFactura !== "" &&
                               formData.precioVenta !== null &&
                               formData.total !== null
@@ -685,7 +734,7 @@ export default function ListVentas() {
       </Dialog>
       {/*Buscador*/}
       <InputBase
-      id= 'titulo-buscar-producto'
+        id="titulo-buscar-producto"
         sx={{
           mr: 2,
           height: "40px",
@@ -740,7 +789,7 @@ export default function ListVentas() {
                     aria-label="edit"
                     onClick={() => handleAddButtonClick(producto)}
                   >
-                    <AddShoppingCartSharpIcon id= 'titulo-carrito-producto'/>
+                    <AddShoppingCartSharpIcon id="titulo-carrito-producto" />
                     {/* <ToastContainer style={{ fontSize: "10px", padding: "8px 12px" }} /> */}
                   </IconButton>
                 </StyledTableCell>
@@ -804,7 +853,7 @@ export default function ListVentas() {
                       setDeleteDialog(true);
                     }}
                   >
-                    <DeleteIcon id= 'titulo-cantidad-producto'/>
+                    <DeleteIcon id="titulo-cantidad-producto" />
                   </IconButton>
                 </StyledTableCell>
 
@@ -823,7 +872,10 @@ export default function ListVentas() {
                   </button>
 
                   <input type="number" value={row.cantidad} disabled />
-                  <button id= 'titulo-agrega-producto' onClick={(e) => updateVentaItem(index, "agregar")}>
+                  <button
+                    id="titulo-agrega-producto"
+                    onClick={(e) => updateVentaItem(index, "agregar")}
+                  >
                     Agregar
                   </button>
                 </StyledTableCell>

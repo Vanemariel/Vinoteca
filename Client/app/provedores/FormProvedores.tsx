@@ -558,9 +558,9 @@ export default function CustomizedTables() {
 
               <StyledTableCell>Nombre</StyledTableCell>
               <StyledTableCell>Descripcion</StyledTableCell>
-              <StyledTableCell>Horario desde</StyledTableCell>
-              <StyledTableCell>Horario hasta</StyledTableCell>
               <StyledTableCell>Telefono</StyledTableCell>
+              <StyledTableCell>Horario hasta</StyledTableCell>
+              <StyledTableCell>Horario desde</StyledTableCell>
             </TableRow>
           </TableHead>
 
