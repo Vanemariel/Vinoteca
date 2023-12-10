@@ -30,10 +30,10 @@ namespace Vinoteca.Server.Controllers
             try
             {
                 List<Venta> Ventas = await this._context.TablaVentas
-                    //.Include(venta => venta.Cliente) // no va por ahora
                     .Include(venta => venta.Usuario)
                     .Include(venta => venta.DetalleDeVentas)
                         .ThenInclude(detalle => detalle.Producto)
+                    .OrderBy(venta => venta.FechaVenta)
                     .ToListAsync();
 
                 return Ok(Ventas);
@@ -76,6 +76,14 @@ namespace Vinoteca.Server.Controllers
         {
             try
             {
+                Caja? fndCaja = await this._context.TablaCajas
+                  .Where(Cliente => Cliente.FechaTurno == ventadto.fechaVenta)
+                  .FirstOrDefaultAsync();
+
+                if (fndCaja == null)
+                {
+                    throw new Exception("No se ha iniciado la caja para realizar esta venta.");
+                }
 
                 Venta newVenta = new Venta
                 {

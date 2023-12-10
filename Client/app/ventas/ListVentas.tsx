@@ -156,7 +156,7 @@ export default function ListVentas() {
   };
   const [productoSearchList, setProductoSearchList] = useState(
     [] as Producto[]
-  ); //para el buscador
+  ); 
 
   const [productoVentaList, setProductoVentaList] = useState<
     {
@@ -177,9 +177,8 @@ export default function ListVentas() {
     });
     setProductoSearchList(ProductoFilter);
   };
-  const [ventaSearchList, setVentaSearchList] = useState<Venta[]>([]); //para el buscador
+  const [ventaSearchList, setVentaSearchList] = useState<Venta[]>([]);
   const [deleteIndex, setDeleteIndex] = useState(-1);
-  const [totalVenta, setTotalVenta] = useState(0); // total de la venta
   const [usuarioList, setUsuarioList] = useState<
     Array<{ idUsuario: number; nombre: string; apellido: string }>
   >([]);
@@ -206,28 +205,22 @@ export default function ListVentas() {
     const stock = productoList.find(
       (producto) => producto.idProducto === row.idProducto
     )?.stock;
-
     if (isProductAlreadyAdded) {
-      toast.info("¡Este producto ya fue agregado a las ventas!");
+      alert("¡Este producto ya fue agregado a las ventas!");
     } else if (stock === undefined || stock === null || stock < 1) {
-      toast.warning("No hay stock disponible para este producto");
+      alert("No hay stock disponible para este producto");
     } else {
       const updatedProductoList = productoList.map((producto) =>
         producto.idProducto === row.idProducto
           ? { ...producto, stock: stock }
           : producto
       );
-
       setProductoList(updatedProductoList);
       setProductoSearchList(updatedProductoList);
-
-      setTotalVenta(totalVenta + row.precioVenta * 1);
-
       setVentaSearchList([...ventaSearchList, productToAdd]); // ver
-
       setProductoVentaList([...productoVentaList, productToAdd]);
-    }
-  };
+    }
+  };
 
   const updateVentaItem = (index: number, accion: string) => {
     const productoVenta = ventaSearchList[index];
@@ -267,27 +260,24 @@ export default function ListVentas() {
   const deleteVentaItem = (index: number) => {
     const updatedVentaSearchList = [...ventaSearchList];
     const deletedItem = updatedVentaSearchList.splice(index, 1)[0];
-
     // Buscar el producto correspondiente en la lista de productos
     const producto = productoList.find(
       (prod) => prod.idProducto === deletedItem.idProducto
     );
-
     if (producto) {
       // Sumar la cantidad eliminada al stock del producto
       producto.stock += deletedItem.cantidad;
     }
-
     setVentaSearchList(updatedVentaSearchList);
     setDeleteDialog(false);
-    setDeleteIndex(-1);
 
     const deletedItemTotal = parseFloat(deletedItem.total.toString());
     const newTotalVenta = isNaN(deletedItemTotal)
-      ? totalVenta
-      : totalVenta - deletedItemTotal;
-    setTotalVenta(newTotalVenta);
-
+      ? formData.total
+      : formData.total - deletedItemTotal;
+    setFormData((prevVal) => ({
+      ...prevVal , total: newTotalVenta
+    }))  
     // Eliminar el elemento correspondiente de la lista de ventas
     const updatedVentas = productoVentaList.filter(
       (item) => item.idProducto !== deletedItem.idProducto
@@ -367,7 +357,6 @@ export default function ListVentas() {
         console.log("Detalles de la venta guardados:", response);
         setLoading(false);
         setDialog(false);
-
         if (response) {
           alert("Se realizo correctamente la venta");
           try {
@@ -390,19 +379,22 @@ export default function ListVentas() {
             transferencia: false,
             precio: 0,
             precioVenta: 0,
-            fechaVenta: null,
+            fechaVenta: getCurrentDate(),
             idProducto: null,
             numeroDeFactura: "",
             stock: 0,
           });
           setProductoVentaList([]);
+          setVentaSearchList([])
         }
-      } catch (error) {
+      } catch (error: unknown) {
+        const err = error as any
+        alert(err.response.data);
         console.log("Error al guardar los detalles de la venta:", error);
         setLoading(false);
-      }
-    }
-  };
+      }
+    }
+  };
 
   const getCurrentDate = () => {
     const today = new Date();
@@ -432,8 +424,6 @@ export default function ListVentas() {
         ...formData,
         fechaVenta: currentDate,
       });
-
-      // Puedes mostrar un mensaje de error o realizar otra acción aquí
       console.log("No puedes seleccionar una fecha posterior al día actual");
     }
   };
@@ -441,11 +431,9 @@ export default function ListVentas() {
   const [formDataa, setFormDataa] = useState({
     efectivo: false,
     transferencia: false,
-    // ... otras propiedades
   });
 
   const [loadinng, setLoadinng] = useState(false);
-
   const handleMetodoPagoChange =
     (name: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
       setFormData((prevData) => ({
@@ -454,9 +442,7 @@ export default function ListVentas() {
         transferencia: name === "transferencia" ? e.target.checked : false,
       }));
     };
-
   const cancelarVenta = () => {
-    // Restablecer todos los campos a sus valores iniciales
     setFormData({
       fechaVenta: null,
       efectivo: false,
@@ -470,10 +456,7 @@ export default function ListVentas() {
       idProducto: null,
       nombreProducto: "",
       stock: 0,
-      // ... (otros campos)
     });
-
-    // Puedes también restablecer la lista de productos para la venta, si es necesario
     setProductoVentaList([]);
   };
 
@@ -620,8 +603,8 @@ export default function ListVentas() {
               <Box
                 sx={{
                   marginTop: 8,
-                  width: "100%", // Ancho ajustado al 100%
-                  maxWidth: 1500, // Máximo ancho permitido
+                  width: "100%", 
+                  maxWidth: 1500, 
                 }}
               >
                 <Grid container>
@@ -706,7 +689,7 @@ export default function ListVentas() {
                               formData.fechaVenta !== null &&
                               formData.cantidad !== null &&
                               formData.idProducto !== null &&
-                              (formData.efectivo || formData.transferencia) && // Al menos uno de los métodos de pago seleccionado
+                              (formData.efectivo || formData.transferencia) &&
                               formData.numeroDeFactura !== "" &&
                               formData.precioVenta !== null &&
                               formData.total !== null
@@ -818,7 +801,6 @@ export default function ListVentas() {
                     onClick={() => handleAddButtonClick(producto)}
                   >
                     <AddShoppingCartSharpIcon id="titulo-carrito-producto" />
-                    {/* <ToastContainer style={{ fontSize: "10px", padding: "8px 12px" }} /> */}
                   </IconButton>
                 </StyledTableCell>
                 <StyledTableCell component="th" scope="row">
@@ -877,28 +859,18 @@ export default function ListVentas() {
                     color="error"
                     aria-label="delete"
                     onClick={() => {
-                      // setToDelete(row.idProducto);
+                      setDeleteIndex(index)
                       setDeleteDialog(true);
                     }}
                   >
                     <DeleteIcon id="titulo-cantidad-producto" />
                   </IconButton>
                 </StyledTableCell>
-
                 <StyledTableCell>{row.nombreProducto}</StyledTableCell>
                 <StyledTableCell>
-                  {/* <TextField
-                    type="number"
-                    value={row.cantidad}
-                    onChange={(e) =>
-                      updateVentaItem(index, parseInt(e.target.value, 10))
-                    }
-                  /> */}
-
                   <button onClick={(e) => updateVentaItem(index, "quitar")}>
                     Quitar
                   </button>
-
                   <input type="number" value={row.cantidad} disabled />
                   <button
                     id="titulo-agrega-producto"

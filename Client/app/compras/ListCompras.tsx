@@ -179,7 +179,6 @@ export default function ListCompras() {
   };
   const [compraSearchList, setCompraSearchList] = useState<Compra[]>([]); //para el buscador
   const [deleteIndex, setDeleteIndex] = useState(-1);
-  const [totalCompra, setTotalCompra] = useState(0); // total de la venta
   const [usuarioList, setUsuarioList] = useState<
     Array<{ idUsuario: number; nombre: string; apellido: string }>
   >([]);
@@ -201,34 +200,21 @@ export default function ListCompras() {
       precio: 0,
       stock: row.stock,
     };
-
     const isProductAlreadyAdded = compraSearchList.find(
       (producto) => producto.idProducto === row.idProducto
     );
-
-    const stock = productoList.find(
-      (producto) => producto.idProducto === row.idProducto
-    )?.stock;
-
     if (isProductAlreadyAdded) {
-      toast.info("¡Este producto ya fue agregado a las compras!");
-    } //else if (stock === undefined || stock === null || stock < 1) {
-    //toast.warning("No hay stock disponible para este producto");}
+      alert("¡Este producto ya fue agregado a las compras!");
+    } 
     else {
       const updatedProductoList = productoList.map((producto) =>
         producto.idProducto === row.idProducto
           ? { ...producto, stock: row.stock }
           : producto
       );
-
       setProductoList(updatedProductoList);
       setProductoSearchList(updatedProductoList);
-
-      setTotalCompra(totalCompra + row.precioCompra * 1);
-
-      // ACA VA esto setProductoVentaList
       setCompraSearchList([...compraSearchList, productToAdd]); // ver
-
       setProductoCompraList([...productoCompraList, productToAdd]);
     }
   };
@@ -274,7 +260,6 @@ export default function ListCompras() {
   const deleteCompraItem = (index: number) => {
     const updatedCompraSearchList = [...compraSearchList];
     const deletedItem = updatedCompraSearchList.splice(index, 1)[0];
-  
     const producto = productoList.find(
       (prod) => prod.idProducto === deletedItem.idProducto
     );
@@ -282,32 +267,27 @@ export default function ListCompras() {
     if (producto) {
       producto.stock += deletedItem.cantidad;
     }
-  
     // Calcular el nuevo total de la compra antes de actualizar la lista
     const deletedItemTotal = parseFloat(deletedItem.total.toString());
     const newTotalCompra = isNaN(deletedItemTotal)
-      ? totalCompra
-      : totalCompra - deletedItemTotal;
-  
+      ? formData.total
+      : formData.total - deletedItemTotal;
     // Actualizar el total de la compra primero
-    setTotalCompra(newTotalCompra);
-  
+    setFormData((prevVal) => ({
+      ...prevVal, total: newTotalCompra
+    }))
     // Actualizar la lista de compras
     setCompraSearchList(updatedCompraSearchList);
-  
     // Eliminar el elemento correspondiente de la lista de productos para la venta
     const updatedCompras = productoCompraList.filter(
       (item) => item.idProducto !== deletedItem.idProducto
     );
-  
     // Actualizar la lista de productos para la venta
     setProductoCompraList(updatedCompras);
-  
     // Cerrar el diálogo y restablecer el índice
     setDeleteDialog(false);
     setDeleteIndex(-1);
   };
-  
 
   const [formData, setFormData] = useState<Compra>({
     idProveedor: null,
@@ -342,9 +322,7 @@ export default function ListCompras() {
         setProveedorList(proveedorList.data);
       } catch (error) {}
     };
-
     fetchData();
-    // }, [getList, dialog]);
   }, []);
 
   const validate = async (e: React.FormEvent) => {
@@ -360,73 +338,71 @@ export default function ListCompras() {
       formData.efectivo !== null &&
       formData.total > 0;
 
-    if (flag) {
-      setLoading(true);
-
-      // Crea el objeto VentaDto con los datos de la venta y detalle de venta
-      const compraDto = {
-        fechaCompra: formData.fechaCompra,
-        numeroDeFactura: formData.numeroDeFactura,
-        efectivo: formData.efectivo,
-        transferencia: formData.transferencia,
-        totalCompra: formData.total,
-        idProveedor: formData.idProveedor,
-        idUsuario: formData.idUsuario,
-        listaProductos: compraSearchList.map((x) => {
-          return {
-            idProducto: x.idProducto,
-            cantidad: x.cantidad,
-            total: x.total,
-          };
-        }),
-      };
-
-      // Realiza la petición para guardar los detalles de la venta en el backend
-      try {
-        const response = await newObject(action.COMPRA_CONTROLLER, compraDto);
-        console.log("Detalles de la COMPRA guardados:", response);
-        setLoading(false);
-        setDialog(false);
-
-        if (response) {
-          alert("Se realizo correctamente la COMPRA");
-          try {
-            const productoListResponse = await getList(
-              action.PRODUCTO_CONTROLLER
-            );
-            setProductoList(productoListResponse.data);
-            setProductoSearchList(productoListResponse.data);
-          } catch (error) {
-            console.log(
-              "🚀 ~ file: ListVentas.tsx:256 ~ fetchData ~ error:",
-              error
-            );
+      if (flag) {
+        setLoading(true);
+  
+        // Crea el objeto VentaDto con los datos de la venta y detalle de venta
+        const compraDto = {
+          fechaCompra: formData.fechaCompra,
+          numeroDeFactura: formData.numeroDeFactura,
+          efectivo: formData.efectivo,
+          transferencia: formData.transferencia,
+          totalCompra: formData.total,
+          idProveedor: formData.idProveedor,
+          idUsuario: formData.idUsuario,
+          listaProductos: compraSearchList.map((x) => {
+            return {
+              idProducto: x.idProducto,
+              cantidad: x.cantidad,
+              total: x.total,
+            };
+          }),
+        };
+  
+        // Realiza la petición para guardar los detalles de la venta en el backend
+        try {
+          const response = await newObject(action.COMPRA_CONTROLLER, compraDto);
+          console.log("Detalles de la COMPRA guardados:", response);
+          setLoading(false);
+          setDialog(false);
+  
+          if (response) {
+            alert("Se realizo correctamente la COMPRA");
+            try {
+              const productoListResponse = await getList(
+                action.PRODUCTO_CONTROLLER
+              );
+              setProductoList(productoListResponse.data);
+              setProductoSearchList(productoListResponse.data);
+            } catch (error) {}
+  
+            setFormData({
+              // Reinicia los valores del formulario
+              idProveedor: null,
+              nombreProducto: "",
+              idCompra: null,
+              idUsuario: null,
+              cantidad: 0,
+              total: 0,
+              efectivo: false,
+              transferencia: false,
+              precio: 0,
+              precioCompra: 0,
+              fechaCompra: getCurrentDate(),
+              idProducto: null,
+              numeroDeFactura: "",
+              stock: 0,
+            });
+            setProductoCompraList([]);
+            setCompraSearchList([])
           }
-
-          setFormData({
-            // Reinicia los valores del formulario
-            idProveedor: null,
-            nombreProducto: "",
-            idCompra: null,
-            idUsuario: null,
-            cantidad: 0,
-            total: 0,
-            efectivo: false,
-            transferencia: false,
-            precio: 0,
-            precioCompra: 0,
-            fechaCompra: null,
-            idProducto: null,
-            numeroDeFactura: "",
-            stock: 0,
-          });
-          setProductoCompraList([]);
+        } catch (error: unknown) {
+          const err = error as any
+          alert(err.response.data);
+          console.log("Error al guardar los detalles de la compra:", error);
+          setLoading(false);
         }
-      } catch (error) {
-        console.log("Error al guardar los detalles de la compra:", error);
-        setLoading(false);
       }
-    }
   };
 
   const getCurrentDate = () => {
@@ -590,7 +566,6 @@ export default function ListCompras() {
                               }
                             />
                           </Grid>
-
                           {/**nombre proveedor */}
                           <Grid item xs={12}>
                             <InputLabel id="proveedor-label">
@@ -839,6 +814,7 @@ export default function ListCompras() {
                 Acciones
               </StyledTableCell>
               <StyledTableCell>Nombre Producto</StyledTableCell>
+              <StyledTableCell>Nombre Proveedor</StyledTableCell>
               <StyledTableCell>Stock</StyledTableCell>
               <StyledTableCell>Detalle</StyledTableCell>
               <StyledTableCell>Precio de compra</StyledTableCell>
@@ -864,9 +840,8 @@ export default function ListCompras() {
                     {/* <ToastContainer style={{ fontSize: "10px", padding: "8px 12px" }} /> */}
                   </IconButton>
                 </StyledTableCell>
-                <StyledTableCell component="th" scope="row">
-                  {producto.nombreProducto}
-                </StyledTableCell>
+                <StyledTableCell component="th" scope="row">{producto.nombreProducto}</StyledTableCell>
+                <StyledTableCell>{producto.idProveedor}</StyledTableCell>
                 <StyledTableCell>{producto.stock}</StyledTableCell>
                 <StyledTableCell>{producto.detalle}</StyledTableCell>
                 <StyledTableCell>${producto.precioVenta}</StyledTableCell>
@@ -921,7 +896,7 @@ export default function ListCompras() {
                     color="error"
                     aria-label="delete"
                     onClick={() => {
-                      // setToDelete(row.idProducto);
+                      setDeleteIndex(index)
                       setDeleteDialog(true);
                     }}
                   >
@@ -931,13 +906,6 @@ export default function ListCompras() {
 
                 <StyledTableCell>{row.nombreProducto}</StyledTableCell>
                 <StyledTableCell>
-                  {/* <TextField
-                    type="number"
-                    value={row.cantidad}
-                    onChange={(e) =>
-                      updateVentaItem(index, parseInt(e.target.value, 10))
-                    }
-                  /> */}
 
                   <button onClick={(e) => updateCompraItem(index, "quitar")}>
                     Quitar

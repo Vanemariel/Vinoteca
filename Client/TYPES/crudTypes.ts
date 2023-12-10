@@ -45,6 +45,7 @@ export type Producto = {
     precioVenta: number | null;
     precioCompra: number | null;
     idProveedor: number | null;
+    nombreProveedor: string;
   };
 
    /** proveedor type used in the CRUD operations.

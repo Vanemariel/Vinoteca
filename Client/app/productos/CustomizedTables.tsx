@@ -143,6 +143,7 @@ export default function CustomizedTables() {
     precioCompra: 0,
     detalle: "",
     idProveedor: 0,
+    nombreProveedor: "",
   } as Producto);
 
   useEffect(() => {
@@ -202,11 +203,12 @@ export default function CustomizedTables() {
       setFormData({
         idProducto: null as any,
         nombreProducto: "",
+        nombreProveedor: "",
         stock: null as any,
         precioVenta: null as any,
         precioCompra: null as any,
         detalle: "",
-        idProveedor: null,
+        idProveedor: null as any,
       });
       setLoading(false);
 
@@ -266,7 +268,7 @@ export default function CustomizedTables() {
     });
     setProductoSearchList(ProductoFilter);
   };
-
+  // Supongamos que proveedoresList contiene información de proveedores con campos idProveedor y nombre
   return (
     <div>
       {/* Header */}
@@ -376,6 +378,7 @@ export default function CustomizedTables() {
             precioVenta: 0,
             precioCompra: 0,
             nombreProducto: "",
+            nombreProveedor:"",
           });
           if (isNew) setIsNew(false);
         }}
@@ -403,6 +406,7 @@ export default function CustomizedTables() {
                     detalle: formData.detalle,
                     stock: formData.stock,
                     idProveedor: formData.idProveedor,
+                    nombreProveedor: formData.nombreProveedor,
                   })
                 }
               />
@@ -418,6 +422,7 @@ export default function CustomizedTables() {
                   setFormData({
                     idProducto: formData.idProducto,
                     nombreProducto: formData.nombreProducto,
+                    nombreProveedor: formData.nombreProveedor,
                     precioCompra: +e.target.value,
                     precioVenta: formData.precioVenta,
                     detalle: formData.detalle,
@@ -436,6 +441,7 @@ export default function CustomizedTables() {
                   setFormData({
                     idProducto: formData.idProducto,
                     nombreProducto: formData.nombreProducto,
+                    nombreProveedor: formData.nombreProveedor,
                     precioCompra: formData.precioCompra,
                     precioVenta: +e.target.value,
                     detalle: formData.detalle,
@@ -456,6 +462,7 @@ export default function CustomizedTables() {
                   setFormData({
                     idProducto: formData.idProducto,
                     nombreProducto: formData.nombreProducto,
+                    nombreProveedor: formData.nombreProveedor,
                     precioCompra: formData.precioCompra,
                     precioVenta: formData.precioVenta,
                     detalle: formData.detalle,
@@ -479,6 +486,7 @@ export default function CustomizedTables() {
                   setFormData({
                     idProducto: formData.idProducto,
                     nombreProducto: formData.nombreProducto,
+                    nombreProveedor: formData.nombreProveedor,
                     precioCompra: formData.precioCompra,
                     precioVenta: formData.precioVenta,
                     detalle: e.target.value,
@@ -528,6 +536,7 @@ export default function CustomizedTables() {
                 precioVenta: null,
                 precioCompra: null,
                 nombreProducto: "",
+                nombreProveedor: "",
               });
               if (isNew) setIsNew(false);
             }}
@@ -561,6 +570,7 @@ export default function CustomizedTables() {
                 Acciones
               </StyledTableCell>
               <StyledTableCell>Nombre</StyledTableCell>
+              <StyledTableCell>Nombre Proveedor</StyledTableCell>
               <StyledTableCell>Stock</StyledTableCell>
               <StyledTableCell>Detalle</StyledTableCell>
               <StyledTableCell>Precio de compra</StyledTableCell>
@@ -590,6 +600,7 @@ export default function CustomizedTables() {
                         stock: row.stock,
                         idProveedor: row.idProveedor,
                         nombreProducto: row.nombreProducto,
+                        nombreProveedor: row.nombreProveedor,
                       });
                     }}
                   >
@@ -607,9 +618,8 @@ export default function CustomizedTables() {
                     <DeleteIcon id='titulo-eliminar-producto'/>
                   </IconButton>
                 </StyledTableCell>
-                <StyledTableCell component="th" scope="row">
-                  {row.nombreProducto}
-                </StyledTableCell>
+                <StyledTableCell component="th" scope="row">{row.nombreProducto}</StyledTableCell>
+                <StyledTableCell>{row.nombreProveedor}</StyledTableCell>
                 <StyledTableCell>{row.stock}</StyledTableCell>
                 <StyledTableCell>{row.detalle}</StyledTableCell>
                 <StyledTableCell>${row.precioCompra}</StyledTableCell>

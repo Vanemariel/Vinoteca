@@ -222,6 +222,39 @@ export default function Caja() {
     }
   };
 
+  const getCurrentDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = `${today.getMonth() + 1}`.padStart(2, "0");
+    const day = `${today.getDate()}`.padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+  const [formDatas, setFormDatas] = useState({
+    Caja: getCurrentDate(),
+  });
+  const handleFechaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedDate = e.target.value;
+    const currentDate = getCurrentDate();
+
+    // Verifica si la fecha seleccionada no es posterior al día actual
+    if (selectedDate <= currentDate) {
+      setFormDatas({
+        ...formDatas,
+        Caja: selectedDate,
+      });
+    } else {
+      // Si la fecha seleccionada es posterior al día actual, establece la fecha actual
+      setFormDatas({
+        ...formDatas,
+        Caja: currentDate,
+      });
+
+      // Puedes mostrar un mensaje de error o realizar otra acción aquí
+      console.log("No puedes seleccionar una fecha posterior al día actual");
+    }
+  };
+
+
   return (
     <>
       <CssBaseline />
@@ -304,7 +337,6 @@ export default function Caja() {
           >
             Cerrar Caja
           </Typography>
-
           <TextField
             label="Fecha del turno"
             type="date"

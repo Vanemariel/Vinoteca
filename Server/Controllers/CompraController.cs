@@ -32,7 +32,7 @@ namespace Vinoteca.Server.Controllers
                 List<Compra> Compras = await this._context.TablaCompras
                     .Include(venta => venta.Proveedor)
                     .Include(venta => venta.Usuario)
-                    //.Include(venta => venta.producto)
+                    .OrderBy(compra => compra.FechaCompra)
                     .ToListAsync();
 
                 return Ok(Compras);
@@ -52,7 +52,6 @@ namespace Vinoteca.Server.Controllers
                     .Where(Compra => Compra.IdCompra == id)
                     .Include(venta => venta.Proveedor)
                     .Include(venta => venta.Usuario)
-                    //.Include(venta => venta.Producto)
                     .FirstOrDefaultAsync();
 
                 if (Compra == null)
@@ -74,6 +73,14 @@ namespace Vinoteca.Server.Controllers
         {
             try
             {
+                Caja? fndCaja = await this._context.TablaCajas
+                  .Where(Cliente => Cliente.FechaTurno == compradto.fechaCompra)
+                  .FirstOrDefaultAsync();
+
+                if (fndCaja == null)
+                {
+                    throw new Exception("No se ha iniciado la caja para realizar esta compra.");
+                }
                 Compra newCompra = new Compra
                 {
                     FechaCompra = compradto.fechaCompra,

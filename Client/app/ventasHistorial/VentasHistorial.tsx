@@ -30,6 +30,7 @@ import { FormEvent } from "react";
 import "driver.js/dist/driver.css";
 import { executePopup } from "../../Utilities/drivejs";
 import HelpIcon from '@mui/icons-material/Help';
+import { parse, format } from 'date-fns';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -89,13 +90,10 @@ export default function VentasHistorial() {
     },
   ];
   
-  const [dateFrom, setDateFrom] = useState(""); // Agregar esta línea
-  const [dateTo, setDateTo] = useState(""); // Agregar esta línea
-
+  const [dateFrom, setDateFrom] = useState(""); 
+  const [dateTo, setDateTo] = useState(""); 
   const [loaded, setLoaded] = useState(false);
   const { getList} = useStore();
-
-  
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -115,14 +113,12 @@ export default function VentasHistorial() {
     severity: "success",
     message: "",
   });
-
   
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     console.log('AAA', event)
 
     if (dateFrom === "" || dateTo === "") return 
-  
     const ventasFiltradas = filtrarVentasPorFecha(
       origVentaHistorialList,
       dateFrom,
@@ -133,15 +129,95 @@ export default function VentasHistorial() {
 
   const filtrarVentasPorFecha = (
     listaVentas: DetalleVenta[],
-    fechaDesde: string, fechaHasta: string
+    fechaDesde: string,
+    fechaHasta: string
   ) => {
-    return listaVentas.filter((venta) => {
+    const ventasFiltradas = listaVentas.filter((venta) => {
       const fechaVenta = new Date(venta.fechaVenta);
       return (
         fechaVenta >= new Date(fechaDesde) && fechaVenta <= new Date(fechaHasta)
       );
     });
+    // Ordenar las ventas por fecha de manera descendente
+    return ventasFiltradas.sort((a, b) => {
+      const fechaVentaA = new Date(a.fechaVenta);
+      const fechaVentaB = new Date(b.fechaVenta);
+      // Formatear las fechas como "DD/MM/YYYY" antes de comparar
+      const formattedDateA = format(fechaVentaA, 'dd/MM/yyyy');
+      const formattedDateB = format(fechaVentaB, 'dd/MM/yyyy');
+      // Comparar las fechas formateadas de forma descendente
+      if (formattedDateA > formattedDateB) {
+        return -1;
+      } else if (formattedDateA < formattedDateB) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
   };
+  
+/* const filtrarVentasPorFecha = (
+  listaVentas: DetalleVenta[],
+  fechaDesde: string,
+  fechaHasta: string
+) => {
+  const ventasFiltradas = listaVentas.filter((venta) => {
+    const fechaVenta = new Date(venta.fechaVenta);
+    return (
+      fechaVenta >= new Date(fechaDesde) && fechaVenta <= new Date(fechaHasta)
+    );
+  });
+
+  // Ordenar las ventas por fecha de manera descendente
+  return ventasFiltradas.sort((a, b) => {
+    const fechaVentaA = new Date(a.fechaVenta);
+    const fechaVentaB = new Date(b.fechaVenta);
+
+    // Formatear las fechas como "DD/MM/YYYY" antes de comparar
+    const formattedDateA = format(fechaVentaA, 'dd/MM/yyyy');
+    const formattedDateB = format(fechaVentaB, 'dd/MM/yyyy');
+
+    // Comparar las fechas formateadas de forma descendente
+    if (formattedDateA > formattedDateB) {
+      return -1;
+    } else if (formattedDateA < formattedDateB) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+};
+ */
+
+  // const filtrarVentasPorFecha = (
+  //   listaVentas: DetalleVenta[],
+  //   fechaDesde: string,
+  //   fechaHasta: string
+  // ) => {
+  //   const ventasFiltradas = listaVentas.filter((venta) => {
+  //     const fechaVenta = new Date(venta.fechaVenta);
+  //     return (
+  //       fechaVenta >= new Date(fechaDesde) && fechaVenta <= new Date(fechaHasta)
+  //     );
+  //   });
+  
+  //   // Ordenar las ventas por fecha de manera descendente
+  //   return ventasFiltradas.sort((a, b) => {
+  //     const fechaVentaA = new Date(a.fechaVenta);
+  //     const fechaVentaB = new Date(b.fechaVenta);
+  
+  //     // Ordenar de forma descendente
+  //     if (fechaVentaA > fechaVentaB) {
+  //       return -1;
+  //     } else if (fechaVentaA < fechaVentaB) {
+  //       return 1;
+  //     } else {
+  //       return 0;
+  //     }
+  //   });
+  // };
+  
+  
   
   const handleReset = () => {
     // Restaurar la lista original usando el valor guardado en el estado

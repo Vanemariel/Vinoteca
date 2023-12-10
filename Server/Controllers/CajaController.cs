@@ -57,6 +57,7 @@ namespace Vinoteca.Server.Controllers
             catch (Exception ex)
             {
                 response.StatusCode = 400;
+                 
                 response.Value = ex.Message;
             }
             return response;
