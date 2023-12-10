@@ -275,27 +275,25 @@ export default function ListCompras() {
     const updatedCompraSearchList = [...compraSearchList];
     const deletedItem = updatedCompraSearchList.splice(index, 1)[0];
   
-    // Buscar el producto correspondiente en la lista de productos
     const producto = productoList.find(
       (prod) => prod.idProducto === deletedItem.idProducto
     );
   
     if (producto) {
-      // Sumar la cantidad eliminada al stock del producto
       producto.stock += deletedItem.cantidad;
     }
   
-    // Actualizar la lista de compras
-    setCompraSearchList(updatedCompraSearchList);
-  
-    // Calcular el nuevo total de la compra
+    // Calcular el nuevo total de la compra antes de actualizar la lista
     const deletedItemTotal = parseFloat(deletedItem.total.toString());
     const newTotalCompra = isNaN(deletedItemTotal)
       ? totalCompra
       : totalCompra - deletedItemTotal;
   
-    // Actualizar el total de la compra
+    // Actualizar el total de la compra primero
     setTotalCompra(newTotalCompra);
+  
+    // Actualizar la lista de compras
+    setCompraSearchList(updatedCompraSearchList);
   
     // Eliminar el elemento correspondiente de la lista de productos para la venta
     const updatedCompras = productoCompraList.filter(
@@ -468,7 +466,7 @@ export default function ListCompras() {
     efectivo: false,
     transferencia: false,
   });
- 
+
   const handleMetodoPagoChange =
     (name: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
       setFormData((prevData) => ({
@@ -477,32 +475,35 @@ export default function ListCompras() {
         transferencia: name === "transferencia" ? e.target.checked : false,
       }));
       if (name === "transferencia" && e.target.checked) {
-        window.open( "https://www.mercadopago.com.ar/home#from-section=menu", "_blank");
+        window.open(
+          "https://www.mercadopago.com.ar/home#from-section=menu",
+          "_blank"
+        );
       }
     };
 
-    const cancelarVenta = () => {
-      // Restablecer todos los campos a sus valores iniciales
-      setFormData({
-        fechaCompra: null,
-        efectivo: false,
-        transferencia: false,
-        total: 0,
-        numeroDeFactura: "",
-        idUsuario: null,
-        cantidad: 0,
-        precio: 0,
-        precioCompra: 0,
-        idProducto: null,
-        idProveedor: null,
-        nombreProducto: "",
-        stock:0,
-        // ... (otros campos)
-      });
-    
-      // Puedes también restablecer la lista de productos para la venta, si es necesario
-      setProductoCompraList([]);
-    };
+  const cancelarVenta = () => {
+    // Restablecer todos los campos a sus valores iniciales
+    setFormData({
+      fechaCompra: null,
+      efectivo: false,
+      transferencia: false,
+      total: 0,
+      numeroDeFactura: "",
+      idUsuario: null,
+      cantidad: 0,
+      precio: 0,
+      precioCompra: 0,
+      idProducto: null,
+      idProveedor: null,
+      nombreProducto: "",
+      stock: 0,
+      // ... (otros campos)
+    });
+
+    // Puedes también restablecer la lista de productos para la venta, si es necesario
+    setProductoCompraList([]);
+  };
 
   return (
     <div>
@@ -759,12 +760,12 @@ export default function ListCompras() {
                             {"Terminar Compra"}
                           </LoadingButton>
                           <Button
-        size="large"
-        color="error"
-        onClick={() => cancelarVenta()}
-      >
-        {"Cancelar Compra"}
-      </Button>
+                            size="large"
+                            color="error"
+                            onClick={() => cancelarVenta()}
+                          >
+                            {"Cancelar Compra"}
+                          </Button>
                         </DialogActions>
                       </Box>
                     </Box>
@@ -896,7 +897,7 @@ export default function ListCompras() {
       </TableContainer>
       <br /> {/* Espacio entre las tablas */}
       <br /> {/* Espacio entre las tablas */}
-      
+     
       {/*Table ventas */}
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">

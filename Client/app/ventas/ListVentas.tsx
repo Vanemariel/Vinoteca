@@ -446,15 +446,14 @@ export default function ListVentas() {
 
   const [loadinng, setLoadinng] = useState(false);
 
-  const handleMetodoPagoChange = (name: string) => (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      efectivo: name === "efectivo" ? e.target.checked : false,
-      transferencia: name === "transferencia" ? e.target.checked : false,
-    }));
-  };
+  const handleMetodoPagoChange =
+    (name: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      setFormData((prevData) => ({
+        ...prevData,
+        efectivo: name === "efectivo" ? e.target.checked : false,
+        transferencia: name === "transferencia" ? e.target.checked : false,
+      }));
+    };
 
   const cancelarVenta = () => {
     // Restablecer todos los campos a sus valores iniciales
@@ -470,10 +469,10 @@ export default function ListVentas() {
       precioVenta: 0,
       idProducto: null,
       nombreProducto: "",
-      stock:0,
+      stock: 0,
       // ... (otros campos)
     });
-  
+
     // Puedes también restablecer la lista de productos para la venta, si es necesario
     setProductoVentaList([]);
   };
@@ -718,12 +717,12 @@ export default function ListVentas() {
                             {"Terminar Venta"}
                           </LoadingButton>
                           <Button
-        size="large"
-        color="error"
-        onClick={() => cancelarVenta()}
-      >
-        {"Cancelar Venta"}
-      </Button>
+                            size="large"
+                            color="error"
+                            onClick={() => cancelarVenta()}
+                          >
+                            {"Cancelar Venta"}
+                          </Button>
                         </DialogActions>
                       </Box>
                     </Box>
