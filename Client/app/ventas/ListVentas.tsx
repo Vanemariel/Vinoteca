@@ -456,6 +456,28 @@ export default function ListVentas() {
     }));
   };
 
+  const cancelarVenta = () => {
+    // Restablecer todos los campos a sus valores iniciales
+    setFormData({
+      fechaVenta: null,
+      efectivo: false,
+      transferencia: false,
+      total: 0,
+      numeroDeFactura: "",
+      idUsuario: null,
+      cantidad: 0,
+      precio: 0,
+      precioVenta: 0,
+      idProducto: null,
+      nombreProducto: "",
+      stock:0,
+      // ... (otros campos)
+    });
+  
+    // Puedes también restablecer la lista de productos para la venta, si es necesario
+    setProductoVentaList([]);
+  };
+
   return (
     <div>
       <HelpIcon
@@ -695,6 +717,13 @@ export default function ListVentas() {
                           >
                             {"Terminar Venta"}
                           </LoadingButton>
+                          <Button
+        size="large"
+        color="error"
+        onClick={() => cancelarVenta()}
+      >
+        {"Cancelar Venta"}
+      </Button>
                         </DialogActions>
                       </Box>
                     </Box>
