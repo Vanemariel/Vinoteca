@@ -310,8 +310,26 @@ export default function ListCompras() {
     const fetchData = async () => {
       try {
         const productoListResponse = await getList(action.PRODUCTO_CONTROLLER);
-        setProductoList(productoListResponse.data);
-        setProductoSearchList(productoListResponse.data);
+        productoListResponse.data.forEach((x: any) => {
+          const data = {
+            idProducto: x.idProducto,
+            nombreProducto: x.nombreProducto,
+            stock: x.stock,
+            detalle: x.detalle,
+            precioVenta: x.precioVenta,
+            precioCompra: x.precioCompra,
+            idProveedor: x.idProveedor,
+            nombreProveedor: `${x.proveedor.nombre} ${x.proveedor.descripcion}`,
+          }
+          
+          setProductoList((prevVal) => ([
+            ...prevVal, data
+          ]));
+          setProductoSearchList((prevVal) => ([
+            ...prevVal, data
+          ]));
+        })  
+        
       } catch (error) {}
       try {
         const usuarioList = await getList(action.USUARIO_CONTROLLER);
@@ -841,7 +859,7 @@ export default function ListCompras() {
                   </IconButton>
                 </StyledTableCell>
                 <StyledTableCell component="th" scope="row">{producto.nombreProducto}</StyledTableCell>
-                <StyledTableCell>{producto.idProveedor}</StyledTableCell>
+                <StyledTableCell>{producto.nombreProveedor}</StyledTableCell>
                 <StyledTableCell>{producto.stock}</StyledTableCell>
                 <StyledTableCell>{producto.detalle}</StyledTableCell>
                 <StyledTableCell>${producto.precioVenta}</StyledTableCell>

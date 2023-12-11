@@ -149,8 +149,25 @@ export default function CustomizedTables() {
   useEffect(() => {
     getList(action.PRODUCTO_CONTROLLER)
       .then((res: any) => {
-        setProductoList(res.data);
-        setProductoSearchList(res.data);
+        res.data.forEach((x: any) => {
+          const data = {
+            idProducto: x.idProducto,
+            nombreProducto: x.nombreProducto,
+            stock: x.stock,
+            detalle: x.detalle,
+            precioVenta: x.precioVenta,
+            precioCompra: x.precioCompra,
+            idProveedor: x.idProveedor,
+            nombreProveedor: `${x.proveedor.nombre} ${x.proveedor.descripcion}`,
+          }
+          
+          setProductoList((prevVal) => ([
+            ...prevVal, data
+          ]));
+          setProductoSearchList((prevVal) => ([
+            ...prevVal, data
+          ]));
+        })
         setLoaded(true);
       })
       .catch((err: any) => {
@@ -176,7 +193,7 @@ export default function CustomizedTables() {
         });
         setLoaded(true);
       });
-  }, [getList, dialog]);
+  }, [dialog]);
 
   const validate = async (e: Event) => {
     e.preventDefault();

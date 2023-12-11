@@ -142,82 +142,17 @@ export default function VentasHistorial() {
     return ventasFiltradas.sort((a, b) => {
       const fechaVentaA = new Date(a.fechaVenta);
       const fechaVentaB = new Date(b.fechaVenta);
-      // Formatear las fechas como "DD/MM/YYYY" antes de comparar
-      const formattedDateA = format(fechaVentaA, 'dd/MM/yyyy');
-      const formattedDateB = format(fechaVentaB, 'dd/MM/yyyy');
-      // Comparar las fechas formateadas de forma descendente
-      if (formattedDateA > formattedDateB) {
+  
+      // Ordenar de forma descendente
+      if (fechaVentaA > fechaVentaB) {
         return -1;
-      } else if (formattedDateA < formattedDateB) {
+      } else if (fechaVentaA < fechaVentaB) {
         return 1;
       } else {
         return 0;
       }
     });
   };
-  
-/* const filtrarVentasPorFecha = (
-  listaVentas: DetalleVenta[],
-  fechaDesde: string,
-  fechaHasta: string
-) => {
-  const ventasFiltradas = listaVentas.filter((venta) => {
-    const fechaVenta = new Date(venta.fechaVenta);
-    return (
-      fechaVenta >= new Date(fechaDesde) && fechaVenta <= new Date(fechaHasta)
-    );
-  });
-
-  // Ordenar las ventas por fecha de manera descendente
-  return ventasFiltradas.sort((a, b) => {
-    const fechaVentaA = new Date(a.fechaVenta);
-    const fechaVentaB = new Date(b.fechaVenta);
-
-    // Formatear las fechas como "DD/MM/YYYY" antes de comparar
-    const formattedDateA = format(fechaVentaA, 'dd/MM/yyyy');
-    const formattedDateB = format(fechaVentaB, 'dd/MM/yyyy');
-
-    // Comparar las fechas formateadas de forma descendente
-    if (formattedDateA > formattedDateB) {
-      return -1;
-    } else if (formattedDateA < formattedDateB) {
-      return 1;
-    } else {
-      return 0;
-    }
-  });
-};
- */
-
-  // const filtrarVentasPorFecha = (
-  //   listaVentas: DetalleVenta[],
-  //   fechaDesde: string,
-  //   fechaHasta: string
-  // ) => {
-  //   const ventasFiltradas = listaVentas.filter((venta) => {
-  //     const fechaVenta = new Date(venta.fechaVenta);
-  //     return (
-  //       fechaVenta >= new Date(fechaDesde) && fechaVenta <= new Date(fechaHasta)
-  //     );
-  //   });
-  
-  //   // Ordenar las ventas por fecha de manera descendente
-  //   return ventasFiltradas.sort((a, b) => {
-  //     const fechaVentaA = new Date(a.fechaVenta);
-  //     const fechaVentaB = new Date(b.fechaVenta);
-  
-  //     // Ordenar de forma descendente
-  //     if (fechaVentaA > fechaVentaB) {
-  //       return -1;
-  //     } else if (fechaVentaA < fechaVentaB) {
-  //       return 1;
-  //     } else {
-  //       return 0;
-  //     }
-  //   });
-  // };
-  
-  
   
   const handleReset = () => {
     // Restaurar la lista original usando el valor guardado en el estado
@@ -348,7 +283,6 @@ export default function VentasHistorial() {
           </Grid>
         </Box>
       </Grid>
-
       <Grid item xs={6}></Grid>
 
       {/*Table */}
