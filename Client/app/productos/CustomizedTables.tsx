@@ -197,54 +197,65 @@ export default function CustomizedTables() {
 
   const validate = async (e: Event) => {
     e.preventDefault();
+  
     if (
-      formData.nombreProducto != "" ||
-      formData.stock != null ||
-      formData.precioVenta != null ||
-      formData.precioCompra != null ||
-      formData.detalle != ""
+      formData.nombreProducto !== "" ||
+      formData.stock !== null ||
+      formData.precioVenta !== null ||
+      formData.precioCompra !== null ||
+      formData.detalle !== ""
     ) {
       setLoading(true);
+  
       let body = formData;
       let response = null;
-      if (isNew) {
-        delete body.idProducto;
-        response = await newObject(action.PRODUCTO_CONTROLLER, body);
-      } else {
-        response = await updateObject(action.PRODUCTO_CONTROLLER, body);
-      }
-      setLoading(false);
-
-      setDialog(false);
-
-      setFormData({
-        idProducto: null as any,
-        nombreProducto: "",
-        nombreProveedor: "",
-        stock: null as any,
-        precioVenta: null as any,
-        precioCompra: null as any,
-        detalle: "",
-        idProveedor: null as any,
-      });
-      setLoading(false);
-
-      getList(action.PRODUCTO_CONTROLLER)
-        .then((res: any) => {
-          setProductoList(res.data);
-          setLoaded(true);
-        })
-        .catch((err: any) => {
-          setSnackbar({
-            open: true,
-            severity: "success",
-            message: isNew
-              ? "creado" + " " + "con exito"
-              : "actualizado" + " " + "con exito",
-          });
+  
+      try {
+        if (isNew) {
+          delete body.idProducto;
+          response = await newObject(action.PRODUCTO_CONTROLLER, body);
+        } else {
+          response = await updateObject(action.PRODUCTO_CONTROLLER, body);
+        }
+  
+        setDialog(false);
+  
+        setFormData({
+          idProducto: null as any,
+          nombreProducto: "",
+          nombreProveedor: "",
+          stock: null as any,
+          precioVenta: null as any,
+          precioCompra: null as any,
+          detalle: "",
+          idProveedor: null as any,
         });
+  
+        // Solo carga la lista si es necesario
+        getList(action.PRODUCTO_CONTROLLER)
+          .then((res: any) => {
+            setProductoList(res.data);
+            setLoaded(true);
+          })
+          .catch((err: any) => {
+            setSnackbar({
+              open: true,
+              severity: "error",
+              message: "Ocurrió un error al obtener la lista de productos",
+            });
+          });
+      } catch (error) {
+        setSnackbar({
+          open: true,
+          severity: "error",
+          message: "Ocurrió un error al realizar la operación",
+        });
+      } finally {
+        setLoading(false);
+      }
     }
   };
+  
 
   const deleteItem = () => {
     deleteObject(action.PRODUCTO_CONTROLLER, toDelete as unknown as number)

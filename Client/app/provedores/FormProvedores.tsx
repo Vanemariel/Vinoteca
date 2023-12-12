@@ -613,7 +613,7 @@ export default function CustomizedTables() {
 <TableFooter>
   <StyledTableRow>
     <TablePagination
-      rowsPerPageOptions={[5, 10, 25]}
+      rowsPerPageOptions={[5]}
       colSpan={9}
       count={proveedorSearchList.length}
       rowsPerPage={rowsPerPage}

@@ -39,15 +39,15 @@ namespace Vinoteca.Server.Controllers
                     idDetalleCompra = detalleULTRA.IdDetalleCompra,
                     fechaCompra = detalleULTRA.Compra?.FechaCompra,
                     idCompra = detalleULTRA.IdCompra,
-                    nombreUsuario = detalleULTRA.Compra.Usuario.Nombre,
+                    nombreUsuario = detalleULTRA.Compra?.Usuario?.Nombre,
                     cantidad = detalleULTRA.Cantidad,
                     total = detalleULTRA.Total,
                     efectivo = detalleULTRA.Compra.Efectivo,
                     transferencia = detalleULTRA.Compra.Transferencia,
                     numeroDeFactura = detalleULTRA.Compra.NumeroDeFactura,
                     idProducto = detalleULTRA.IdProducto,
-                    nombreProveedores = detalleULTRA.Compra.Proveedor.Nombre,
-                    nombreProducto = detalleULTRA.Producto.NombreProducto
+                    nombreProveedores = detalleULTRA.Compra?.Proveedor.Nombre,
+                    nombreProducto = detalleULTRA.Producto?.NombreProducto
                 }).ToList();
                 return Ok(mappedData);
             }
