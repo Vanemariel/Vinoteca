@@ -306,40 +306,40 @@ export default function ListCompras() {
     stock: 0,
   });
 
+  const fetchData = async () => {
+    try {
+      const productoListResponse = await getList(action.PRODUCTO_CONTROLLER);
+
+      const productosListFormateado: any[] = []
+
+      productoListResponse.data.forEach((x: any) => {
+        const data = {
+          idProducto: x.idProducto,
+          nombreProducto: x.nombreProducto,
+          stock: x.stock,
+          detalle: x.detalle,
+          precioVenta: x.precioVenta,
+          precioCompra: x.precioCompra,
+          idProveedor: x.idProveedor,
+          nombreProveedor: `${x.proveedor.nombre} ${x.proveedor.descripcion}`,
+        } 
+        productosListFormateado.push(data)
+      })  
+      setProductoList(productosListFormateado);
+      setProductoSearchList(productosListFormateado);
+      
+    } catch (error) {}
+    try {
+      const usuarioList = await getList(action.USUARIO_CONTROLLER);
+      setUsuarioList(usuarioList.data);
+    } catch (error) {}
+    try {
+      const proveedorList = await getList(action.PROVEEDOR_CONTROLLER);
+      setProveedorList(proveedorList.data);
+    } catch (error) {}
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const productoListResponse = await getList(action.PRODUCTO_CONTROLLER);
-        productoListResponse.data.forEach((x: any) => {
-          const data = {
-            idProducto: x.idProducto,
-            nombreProducto: x.nombreProducto,
-            stock: x.stock,
-            detalle: x.detalle,
-            precioVenta: x.precioVenta,
-            precioCompra: x.precioCompra,
-            idProveedor: x.idProveedor,
-            nombreProveedor: `${x.proveedor.nombre} ${x.proveedor.descripcion}`,
-          }
-          
-          setProductoList((prevVal) => ([
-            ...prevVal, data
-          ]));
-          setProductoSearchList((prevVal) => ([
-            ...prevVal, data
-          ]));
-        })  
-        
-      } catch (error) {}
-      try {
-        const usuarioList = await getList(action.USUARIO_CONTROLLER);
-        setUsuarioList(usuarioList.data);
-      } catch (error) {}
-      try {
-        const proveedorList = await getList(action.PROVEEDOR_CONTROLLER);
-        setProveedorList(proveedorList.data);
-      } catch (error) {}
-    };
     fetchData();
   }, []);
 

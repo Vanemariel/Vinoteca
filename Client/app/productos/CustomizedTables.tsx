@@ -148,36 +148,33 @@ export default function CustomizedTables() {
 
   useEffect(() => {
     getList(action.PRODUCTO_CONTROLLER)
-      .then((res: any) => {
-        res.data.forEach((x: any) => {
-          const data = {
-            idProducto: x.idProducto,
-            nombreProducto: x.nombreProducto,
-            stock: x.stock,
-            detalle: x.detalle,
-            precioVenta: x.precioVenta,
-            precioCompra: x.precioCompra,
-            idProveedor: x.idProveedor,
-            nombreProveedor: `${x.proveedor.nombre} ${x.proveedor.descripcion}`,
-          }
-          
-          setProductoList((prevVal) => ([
-            ...prevVal, data
-          ]));
-          setProductoSearchList((prevVal) => ([
-            ...prevVal, data
-          ]));
-        })
-        setLoaded(true);
+    .then((res: any) => {
+      const productosListFormateado: any[] = []
+      res.data.forEach((x: any) => {
+        const data = {
+          idProducto: x.idProducto,
+          nombreProducto: x.nombreProducto,
+          stock: x.stock,
+          detalle: x.detalle,
+          precioVenta: x.precioVenta,
+          precioCompra: x.precioCompra,
+          idProveedor: x.idProveedor,
+          nombreProveedor: `${x.proveedor.nombre} ${x.proveedor.descripcion}`,
+        }
+        productosListFormateado.push(data)
       })
-      .catch((err: any) => {
-        setSnackbar({
-          open: true,
-          severity: "error",
-          message: "ocurrio un error",
-        });
-        setLoaded(true);
+      setProductoList(productosListFormateado);
+      setProductoSearchList(productosListFormateado);
+      setLoaded(true);
+    })
+    .catch((err: any) => {
+      setSnackbar({
+        open: true,
+        severity: "error",
+        message: "ocurrio un error",
       });
+      setLoaded(true);
+    });
 
     getList(action.PROVEEDOR_CONTROLLER)
       .then((res: any) => {
@@ -255,7 +252,6 @@ export default function CustomizedTables() {
       }
     }
   };
-  
 
   const deleteItem = () => {
     deleteObject(action.PRODUCTO_CONTROLLER, toDelete as unknown as number)
@@ -266,9 +262,9 @@ export default function CustomizedTables() {
           severity: "success",
           message: "Eliminado" + " " + "con excito",
         });
-        setProductoList(
-          productoList.filter((producto) => producto.idProducto !== toDelete)
-        );
+        const filter = productoList.filter((producto) => producto.idProducto !== toDelete)
+        setProductoList(filter);
+        setProductoSearchList(filter)
       })
       .catch((err: any) => {
         setSnackbar({
@@ -278,6 +274,7 @@ export default function CustomizedTables() {
         });
       });
   };
+
   const handleChange = (event: any) => {
     setFormData({
       ...formData,
@@ -296,7 +293,7 @@ export default function CustomizedTables() {
     });
     setProductoSearchList(ProductoFilter);
   };
-  // Supongamos que proveedoresList contiene información de proveedores con campos idProveedor y nombre
+  
   return (
     <div>
       {/* Header */}

@@ -132,17 +132,36 @@ namespace Vinoteca.Server.Controllers
         #endregion
 
         #region HTTP DELETE
-        [HttpDelete(ApiRoutes.Producto.Delete)]
         public ActionResult Delete(int id)
         {
-            var productox = _context.TablaProductos.Where(x => x.IdProducto == id).FirstOrDefault();
-
-            if (productox == null)
-            {
-                return NotFound($"El registro {id} no fue encontrado");
-            }
             try
             {
+                var productox = _context.TablaProductos.Where(x => x.IdProducto == id).FirstOrDefault();
+
+                if (productox == null)
+                {
+                    return NotFound($"El registro {id} no fue encontrado");
+                }
+
+                // Obtén todos los registros que coincidan con el ID
+                var registrosDetalleCompra = _context.TablaDetalleDeCompras.Where(x => x.IdProducto == id).ToList();
+
+                // Elimina cada entidad individualmente
+                foreach (var entidadAEliminar in registrosDetalleCompra)
+                {
+                    _context.TablaDetalleDeCompras.Remove(entidadAEliminar);
+                }
+
+                var registrosDetalleVenta = _context.TablaDetalleDeVentas.Where(x => x.IdProducto == id).ToList();
+
+                // Elimina cada entidad individualmente
+                foreach (var entidadAEliminar in registrosDetalleVenta)
+                {
+                    _context.TablaDetalleDeVentas.Remove(entidadAEliminar);
+                }
+
+                // Guarda los cambios en la base de datos
+
                 _context.TablaProductos.Remove(productox);
                 _context.SaveChanges();
                 return Ok($"El registro de {productox.IdProducto} ha sido borrado.");
